@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="color_primary">#6200ee</color>
+	<color name="color_primary_dark">#3700b3</color>
+	<color name="color_secondary">#03dac6</color>
+
+	<color name="color_background">#fff</color>
+	<color name="color_surface">#fff</color>
+	<color name="color_error">#b00020</color>
+	<color name="color_on_primary">#fff</color>
+	<color name="color_on_secondary">#000</color>
+	<color name="color_on_background">#000</color>
+	<color name="color_on_surface">#000</color>
+	<color name="color_on_error">#fff</color>
+</resources>

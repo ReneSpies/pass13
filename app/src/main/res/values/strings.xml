@@ -1,0 +1,7 @@
+<resources>
+	<string name="app_name">SimplePasswordGeneratorApp</string>
+	<string name="reminder">Don\'t forget to write it down!</string>
+	<string name="toolbar_title">A simple generator</string>
+	<string name="change_theme">Change Theme</string>
+	<string name="settings">Settings</string>
+</resources>
