@@ -4,6 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:id="@+id/container"
 	tools:context=".MainActivity">
 
 	<androidx.appcompat.widget.Toolbar
@@ -39,6 +40,7 @@
 			android:id="@+id/main_activity_renew_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:padding="@dimen/standard_8dp"
 			android:layout_marginEnd="@dimen/standard_4dp"
 			android:background="?attr/selectableItemBackgroundBorderless"
 			android:src="@drawable/ic_refresh_24dp" />
@@ -48,6 +50,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="@dimen/standard_4dp"
+			android:padding="@dimen/standard_8dp"
 			android:background="?attr/selectableItemBackgroundBorderless"
 			android:src="@drawable/ic_content_copy_24dp" />
 	</LinearLayout>
@@ -57,6 +60,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/standard_8dp"
+		android:padding="@dimen/standard_8dp"
 		android:background="?attr/selectableItemBackgroundBorderless"
 		android:src="@drawable/ic_file_download_24dp"
 		app:layout_constraintEnd_toEndOf="parent"

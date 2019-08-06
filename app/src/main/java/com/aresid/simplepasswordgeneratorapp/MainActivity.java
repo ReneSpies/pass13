@@ -1,16 +1,20 @@
 package com.aresid.simplepasswordgeneratorapp;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+
+import java.util.Random;
 
 public class MainActivity
 		extends AppCompatActivity
@@ -22,6 +26,8 @@ public class MainActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
+		Log.d(TAG, "onCreate:true");
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
@@ -31,9 +37,47 @@ public class MainActivity
 
 		mCurrentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
+		TextView password = findViewById(R.id.main_activity_password_view);
+		password.setText(generateNewPassword());
+
 		findViewById(R.id.main_activity_copy_button).setOnClickListener(this);
 		findViewById(R.id.main_activity_export_button).setOnClickListener(this);
 		findViewById(R.id.main_activity_renew_button).setOnClickListener(this);
+
+	}
+
+	private String generateNewPassword() {
+
+		Log.d(TAG, "generateNewPassword:true");
+
+		String newPassword = "";
+		char[] lowerChars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+		char[] upperChars = "abcdefghijklmnopqrstuvwxyz".toUpperCase().toCharArray();
+		char[] specialCharacters = "$%&=?!-_.,;:#*+<>".toCharArray();
+		char[] numbers = "0123456789".toCharArray();
+
+		char[][] pool = new char[][] {lowerChars, upperChars, specialCharacters, numbers};
+
+		// TODO: include preferences
+
+		/*
+		if (setting1)
+			array += setting1
+		if (setting2)
+			array += setting2
+
+		usw...
+		 */
+
+		Random random = new Random();
+
+		for (int i = 0; i < 8; i++) {
+
+			newPassword += lowerChars[random.nextInt(lowerChars.length)];
+
+		}
+
+		return newPassword;
 
 	}
 
@@ -96,6 +140,8 @@ public class MainActivity
 
 			case R.id.toolbar_settings:
 
+				startActivity(new Intent(this, SettingsActivity.class));
+
 				break;
 
 		}
@@ -123,6 +169,9 @@ public class MainActivity
 
 			case R.id.main_activity_renew_button:
 				Log.d(TAG, "onClick: renew button");
+
+				TextView password = findViewById(R.id.main_activity_password_view);
+				password.setText(generateNewPassword());
 
 				break;
 
