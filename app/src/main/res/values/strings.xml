@@ -4,4 +4,7 @@
 	<string name="toolbar_title">A simple generator</string>
 	<string name="change_theme">Change Theme</string>
 	<string name="settings">Settings</string>
+
+	<!-- TODO: Remove or change this placeholder text -->
+	<string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
