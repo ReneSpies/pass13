@@ -1,8 +1,10 @@
 package com.aresid.simplepasswordgeneratorapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,14 +16,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity
 		extends AppCompatActivity
-		implements View.OnClickListener {
+		implements View.OnClickListener,
+		           SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private static final String TAG = "MainActivity";
 	private int mCurrentNightMode;
+	private boolean mLowerCase;
+	private boolean mUpperCase;
+	private boolean mSpecialCharacters;
+	private boolean mNumbers;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +46,21 @@ public class MainActivity
 
 		mCurrentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-		TextView password = findViewById(R.id.main_activity_password_view);
-		password.setText(generateNewPassword());
-
 		findViewById(R.id.main_activity_copy_button).setOnClickListener(this);
 		findViewById(R.id.main_activity_export_button).setOnClickListener(this);
 		findViewById(R.id.main_activity_renew_button).setOnClickListener(this);
+
+		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		mLowerCase = preferences.getBoolean("lower case", true);
+		mUpperCase = preferences.getBoolean("upper case", true);
+		mSpecialCharacters = preferences.getBoolean("special characters", false);
+		mNumbers = preferences.getBoolean("numbers", false);
+
+		TextView password = findViewById(R.id.main_activity_password_view);
+		password.setText(generateNewPassword());
 
 	}
 
@@ -56,7 +74,7 @@ public class MainActivity
 		char[] specialCharacters = "$%&=?!-_.,;:#*+<>".toCharArray();
 		char[] numbers = "0123456789".toCharArray();
 
-		char[][] pool = new char[][] {lowerChars, upperChars, specialCharacters, numbers};
+		List<char[]> pool = new ArrayList<>();
 
 		// TODO: include preferences
 
@@ -69,11 +87,50 @@ public class MainActivity
 		usw...
 		 */
 
+		if (mLowerCase) {
+
+			Log.d(TAG, "generateNewPassword: " + mLowerCase);
+
+			pool.add(lowerChars);
+
+		}
+
+		if (mUpperCase) {
+
+			Log.d(TAG, "generateNewPassword: " + mUpperCase);
+			pool.add(upperChars);
+
+		}
+
+		if (mSpecialCharacters) {
+
+			Log.d(TAG, "generateNewPassword: " + mSpecialCharacters);
+			pool.add(specialCharacters);
+
+		}
+
+		if (mNumbers) {
+
+			Log.d(TAG, "generateNewPassword: " + mNumbers);
+			pool.add(numbers);
+
+		}
+
+		Log.d(TAG, "generateNewPassword: pool = " + pool);
+
+		if (pool.isEmpty()) {
+
+			return "You need to specify at least one setting";
+
+		}
+
 		Random random = new Random();
 
 		for (int i = 0; i < 8; i++) {
 
-			newPassword += lowerChars[random.nextInt(lowerChars.length)];
+			char[] chars = pool.get(random.nextInt(pool.size()));
+
+			newPassword += chars[random.nextInt(chars.length)];
 
 		}
 
@@ -174,6 +231,62 @@ public class MainActivity
 
 				TextView password = findViewById(R.id.main_activity_password_view);
 				password.setText(generateNewPassword());
+
+				break;
+
+		}
+
+	}
+
+	@Override
+	protected void onDestroy() {
+
+		Log.d(TAG, "onDestroy:true");
+
+		super.onDestroy();
+
+		PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+		Log.d(TAG, "onSharedPreferenceChanged:true");
+
+		Log.d(TAG, "onSharedPreferenceChanged: key = " + key);
+
+		switch (key) {
+
+			case "lower case":
+
+				mLowerCase = sharedPreferences.getBoolean(key, true);
+
+				Log.d(TAG, "onSharedPreferenceChanged: " + key + " = " + mLowerCase);
+
+				break;
+
+			case "upper case":
+
+				mUpperCase = sharedPreferences.getBoolean(key, true);
+
+				Log.d(TAG, "onSharedPreferenceChanged: " + key + " = " + mUpperCase);
+
+				break;
+
+			case "special characters":
+
+				mSpecialCharacters = sharedPreferences.getBoolean(key, false);
+
+				Log.d(TAG, "onSharedPreferenceChanged: " + key + " = " + mSpecialCharacters);
+
+				break;
+
+			case "numbers":
+
+				mNumbers = sharedPreferences.getBoolean(key, false);
+
+				Log.d(TAG, "onSharedPreferenceChanged: " + key + " = " + mNumbers);
 
 				break;
 

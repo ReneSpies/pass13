@@ -1,12 +1,15 @@
 package com.aresid.simplepasswordgeneratorapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NavUtils;
 
 /**
  * Created on: 8/7/2019
@@ -31,12 +34,10 @@ public class SettingsActivity
 		setContentView(R.layout.activity_settings);
 
 		Toolbar tb = findViewById(R.id.settings_activity_toolbar);
-		tb.setNavigationIcon(R.drawable.ic_arrow_24dp);
 		tb.setTitle("Settings");
+		tb.setNavigationIcon(R.drawable.ic_arrow_24dp);
 
 		setSupportActionBar(tb);
-
-		tb.setNavigationOnClickListener(this);
 
 		getSupportFragmentManager().beginTransaction().replace(R.id.settings_container, new SettingsFragment()).commit();
 
@@ -53,7 +54,7 @@ public class SettingsActivity
 
 			Log.d(TAG, "onClick: navigation button");
 
-			finish();
+			NavUtils.navigateUpFromSameTask(this);
 
 		}
 
@@ -65,4 +66,5 @@ public class SettingsActivity
 		Log.d(TAG, "showBackArrow:true");
 
 	}
+
 }
