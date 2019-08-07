@@ -8,17 +8,15 @@
 
 	<SwitchPreference
 		android:key="upper case"
-		android:checked="true"
+		android:enabled="true"
 		android:title="Include upper case characters" />
 
 	<SwitchPreference
 		android:key="lower case"
-		android:checked="true"
 		android:title="Include lower case characters" />
 
 	<SwitchPreference
 		android:key="numbers"
-		android:checked="true"
 		android:title="Include numbers" />
 
 	<Preference

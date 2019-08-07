@@ -1,5 +1,6 @@
 package com.aresid.simplepasswordgeneratorapp;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,9 +18,7 @@ import java.util.Random;
 
 public class MainActivity
 		extends AppCompatActivity
-		implements View.OnClickListener,
-		           SettingsFragment.OnSettingsFragmentInteractionListener,
-		           MainFragment.OnMainFragmentInteractionListener {
+		implements View.OnClickListener {
 
 	private static final String TAG = "MainActivity";
 	private int mCurrentNightMode;
@@ -141,7 +140,7 @@ public class MainActivity
 
 			case R.id.toolbar_settings:
 
-				getSupportFragmentManager().beginTransaction().replace(R.id.container, new SettingsFragment()).commit();
+				startActivity(new Intent(this, SettingsActivity.class));
 
 				break;
 
@@ -178,36 +177,7 @@ public class MainActivity
 
 				break;
 
-			case R.id.main_activity_toolbar:
-				Log.d(TAG, "onClick: toolbar navigation");
-
-				getSupportFragmentManager().beginTransaction().replace(R.id.container, MainFragment.newInstance()).commit();
-
-				break;
-
 		}
-
-	}
-
-	@Override
-	public void showBackArrow() {
-
-		Log.d(TAG, "showBackArrow:true");
-
-		Toolbar tb = findViewById(R.id.main_activity_toolbar);
-		tb.setNavigationIcon(R.drawable.ic_arrow_24dp);
-
-		tb.setNavigationOnClickListener(this);
-
-	}
-
-	@Override
-	public void removeBackArrow() {
-
-		Log.d(TAG, "removeBackArrow:true");
-
-		Toolbar tb = findViewById(R.id.main_activity_toolbar);
-		tb.setNavigationIcon(null);
 
 	}
 
