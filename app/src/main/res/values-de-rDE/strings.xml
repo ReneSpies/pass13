@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="copied">Kopiert!</string>
+	<string name="error_message">Da ist etwas schief gelaufen. Bitte versuchen Sie es nochmal.</string>
+	<string name="exported_message">Datei \'%1s\' nach %1s exportiert.</string>
+	<string name="no_settings_message">Sie müssen mindestens eine Einstellung vornehmen</string>
+	<string name="reminder">Aufschreiben nicht vergessen!</string>
+	<string name="settings">Einstellungen</string>
+	<string name="lower_case">Mit Kleinbuchstaben</string>
+	<string name="numbers">Mit Zahlen</string>
+	<string name="password_length">Passwort länge</string>
+	<string name="special_characters">Mit Sonderzeichen</string>
+	<string name="upper_case">Mit Großbuchstaben</string>
+</resources>

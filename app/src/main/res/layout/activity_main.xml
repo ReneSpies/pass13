@@ -6,7 +6,7 @@
 	android:layout_height="match_parent"
 	tools:context=".MainActivity">
 
-	<androidx.appcompat.widget.Toolbar
+	<com.google.android.material.appbar.MaterialToolbar
 		android:id="@+id/main_activity_toolbar"
 		android:layout_width="match_parent"
 		android:layout_height="?attr/actionBarSize"
@@ -18,7 +18,8 @@
 		android:id="@+id/main_activity_password_view"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="Hello World!"
+		android:layout_marginStart="32.13dp"
+		android:layout_marginEnd="32.13dp"
 		android:textAlignment="center"
 		android:textAppearance="?attr/textAppearanceBody1"
 		app:layout_constraintBottom_toBottomOf="parent"

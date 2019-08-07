@@ -1,12 +1,11 @@
 package com.aresid.simplepasswordgeneratorapp;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SeekBarPreference;
 
 /**
  * Created on: 06.08.2019
@@ -18,17 +17,7 @@ import androidx.preference.PreferenceFragmentCompat;
 public class SettingsFragment
 		extends PreferenceFragmentCompat {
 
-	private static final String                                TAG = "SettingsFragment";
-	private              OnSettingsFragmentInteractionListener mListener;
-
-	@Override
-	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-
-		Log.d(TAG, "onCreatePreferences:true");
-
-		addPreferencesFromResource(R.xml.preferences);
-
-	}
+	private static final String TAG = "SettingsFragment";
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,43 +26,22 @@ public class SettingsFragment
 
 		super.onCreate(savedInstanceState);
 
-		mListener.showBackArrow();
-
 	}
 
 	@Override
-	public void onDestroyView() {
+	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
 
-		Log.d(TAG, "onDestroyView:true");
+		Log.d(TAG, "onCreatePreferences:true");
 
-		super.onDestroyView();
+		addPreferencesFromResource(R.xml.preferences);
 
-		mListener = null;
-
-	}
-
-	@Override
-	public void onAttach(@NonNull Context context) {
-
-		Log.d(TAG, "onAttach:true");
-
-		super.onAttach(context);
-
-		if (context instanceof OnSettingsFragmentInteractionListener) {
-
-			mListener = (OnSettingsFragmentInteractionListener) context;
-
-		} else {
-
-			throw new ClassCastException(context.toString() + "must implement OnSettingsFragmentInteractionListener");
-
-		}
-
-	}
-
-	interface OnSettingsFragmentInteractionListener {
-
-		void showBackArrow();
+		SeekBarPreference seekBarPreference = findPreference(MainActivity.KEY_PASSWORD_LENGTH);
+		seekBarPreference.setAdjustable(true);
+		seekBarPreference.setMax(64);
+		seekBarPreference.setMin(6);
+		seekBarPreference.setDefaultValue(10);
+		seekBarPreference.setShowSeekBarValue(true);
+		seekBarPreference.setUpdatesContinuously(true);
 
 	}
 

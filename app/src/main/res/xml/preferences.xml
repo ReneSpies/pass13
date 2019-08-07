@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<SwitchPreference
 		android:key="special characters"
-		android:title="Include special characters"
-		android:summary="$%=?..." />
+		android:summary="$%=?..."
+		android:title="@string/special_characters" />
 
 	<SwitchPreference
-		android:key="upper case"
+		android:defaultValue="true"
 		android:enabled="true"
-		android:title="Include upper case characters" />
+		android:key="upper case"
+		android:title="@string/upper_case" />
 
 	<SwitchPreference
+		android:defaultValue="true"
 		android:key="lower case"
-		android:title="Include lower case characters" />
+		android:title="@string/lower_case" />
 
 	<SwitchPreference
 		android:key="numbers"
-		android:title="Include numbers" />
+		android:title="@string/numbers" />
 
-	<Preference
+	<SeekBarPreference
 		android:key="password length"
-		android:title="Password length" />
-
-</PreferenceScreen>
+		android:title="@string/password_length" />
+</androidx.preference.PreferenceScreen>

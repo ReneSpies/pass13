@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<color name="color_primary">#121212</color>
-	<color name="color_primary_dark">#3700b3</color>
+	<color name="color_primary_dark">#000</color>
 	<color name="color_secondary">#ffcc33</color>
-
-	<color name="color_background">#121212</color>
-	<color name="color_surface">#121212</color>
-	<color name="color_error">#cf6679</color>
-	<color name="color_on_primary">#000</color>
-	<color name="color_on_secondary">#000</color>
-	<color name="color_on_background">#fff</color>
-	<color name="color_on_surface">#fff</color>
-	<color name="color_on_error">#000</color>
 </resources>

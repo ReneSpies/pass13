@@ -1,10 +1,16 @@
 <resources>
-	<string name="app_name">SimplePasswordGeneratorApp</string>
+	<string name="app_name" translatable="false">SimplePasswordGeneratorApp</string>
 	<string name="reminder">Don\'t forget to write it down!</string>
-	<string name="toolbar_title">A simple generator</string>
-	<string name="change_theme">Change Theme</string>
+	<string name="toolbar_title" translatable="false">A simple generator</string>
+	<string name="change_theme" translatable="false">Change Theme</string>
 	<string name="settings">Settings</string>
-
-	<!-- TODO: Remove or change this placeholder text -->
-	<string name="hello_blank_fragment">Hello blank fragment</string>
+	<string name="copied">Copied!</string>
+	<string name="error_message">Something went wrong. Please try again.</string>
+	<string name="exported_message">File \'%1s\' exported to %1s</string>
+	<string name="no_settings_message">You need to specify at least one setting</string>
+	<string name="special_characters">Include special characters</string>
+	<string name="lower_case">Include lower case characters</string>
+	<string name="upper_case">Include upper case characters</string>
+	<string name="numbers">Include numbers</string>
+	<string name="password_length">Password length</string>
 </resources>
