@@ -1,4 +1,4 @@
-package com.aresid.simplepasswordgeneratorapp;
+package com.aresid.pass13;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -36,10 +36,10 @@ public class SettingsFragment
 		addPreferencesFromResource(R.xml.preferences);
 
 		SeekBarPreference seekBarPreference = findPreference(MainActivity.KEY_PASSWORD_LENGTH);
+		seekBarPreference.setDefaultValue(10);
 		seekBarPreference.setAdjustable(true);
 		seekBarPreference.setMax(64);
 		seekBarPreference.setMin(6);
-		seekBarPreference.setDefaultValue(10);
 		seekBarPreference.setShowSeekBarValue(true);
 		seekBarPreference.setUpdatesContinuously(true);
 

@@ -6,6 +6,7 @@
 		android:summary="$%=?..."
 		android:title="@string/special_characters" />
 
+
 	<SwitchPreference
 		android:defaultValue="true"
 		android:enabled="true"
@@ -22,6 +23,7 @@
 		android:title="@string/numbers" />
 
 	<SeekBarPreference
-		android:key="password length"
-		android:title="@string/password_length" />
+	android:defaultValue="10"
+	android:key="password length"
+	android:title="@string/password_length" />
 </androidx.preference.PreferenceScreen>

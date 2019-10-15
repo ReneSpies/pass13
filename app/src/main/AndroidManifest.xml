@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:dist="http://schemas.android.com/apk/distribution"
-	package="com.aresid.simplepasswordgeneratorapp">
+	package="com.aresid.pass13">
 
 	<dist:module dist:instant="true" />
 
@@ -15,7 +15,7 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
-		<activity android:name=".MainActivity">
+		<activity android:name="com.aresid.pass13.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<action android:name="android.intent.action.MAIN" />
@@ -24,12 +24,12 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name=".SettingsActivity"
+			android:name="com.aresid.pass13.SettingsActivity"
 			android:launchMode="singleTop"
-			android:parentActivityName=".MainActivity">
+			android:parentActivityName="com.aresid.pass13.MainActivity">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value=".MainActivity" />
+				android:value="com.aresid.pass13.MainActivity" />
 
 		</activity>
 	</application>

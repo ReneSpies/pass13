@@ -1,4 +1,4 @@
-package com.aresid.simplepasswordgeneratorapp;
+package com.aresid.pass13;
 
 import android.content.Context;
 
@@ -23,6 +23,6 @@ public class ExampleInstrumentedTest {
 		// Context of the app under test.
 		Context appContext = InstrumentationRegistry.getTargetContext();
 
-		assertEquals("com.aresid.simplepasswordgeneratorapp", appContext.getPackageName());
+		assertEquals("com.aresid.pass13", appContext.getPackageName());
 	}
 }

@@ -1,4 +1,4 @@
-package com.aresid.simplepasswordgeneratorapp;
+package com.aresid.pass13;
 
 import android.os.Bundle;
 import android.util.Log;
