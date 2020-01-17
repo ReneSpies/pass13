@@ -27,6 +27,8 @@ public class SettingsActivity
 
 		Log.d(TAG, "onCreate:true");
 
+		setTheme(R.style.AppTheme);
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
 

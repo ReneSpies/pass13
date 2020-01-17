@@ -57,6 +57,8 @@ public class MainActivity
 
 		Log.d(TAG, "onCreate:true");
 
+		setTheme(R.style.AppTheme);
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
@@ -223,14 +225,14 @@ public class MainActivity
 
 	}
 
-	private void setNightMode(boolean activated) {
+	private void setNightMode(boolean isActive) {
 
 		Log.d(TAG, "setNightMode:true");
-		Log.d(TAG, "setNightMode: activated = " + activated);
+		Log.d(TAG, "setNightMode: activated = " + isActive);
 
 		Toolbar tb = findViewById(R.id.main_activity_toolbar);
 
-		if (activated) {
+		if (isActive) {
 
 			tb.getMenu()
 			  .getItem(0)
@@ -410,7 +412,7 @@ public class MainActivity
 
 		switch (key) {
 
-			case "lower case":
+			case KEY_LOWER_CASE:
 
 				mLowerCase = sharedPreferences.getBoolean(key, true);
 
@@ -418,7 +420,7 @@ public class MainActivity
 
 				break;
 
-			case "upper case":
+			case KEY_UPPER_CASE:
 
 				mUpperCase = sharedPreferences.getBoolean(key, true);
 
@@ -426,7 +428,7 @@ public class MainActivity
 
 				break;
 
-			case "special characters":
+			case KEY_SPECIAL_CHARACTERS:
 
 				mSpecialCharacters = sharedPreferences.getBoolean(key, false);
 
@@ -434,7 +436,7 @@ public class MainActivity
 
 				break;
 
-			case "numbers":
+			case KEY_NUMBERS:
 
 				mNumbers = sharedPreferences.getBoolean(key, false);
 

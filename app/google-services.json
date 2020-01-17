@@ -1,38 +1,34 @@
 {
   "project_info": {
-    "project_number": "930375194703",
-    "firebase_url": "https://happyapp-243808.firebaseio.com",
-    "project_id": "happyapp-243808",
-    "storage_bucket": "happyapp-243808.appspot.com"
+    "project_number": "816486621120",
+    "firebase_url": "https://pass13-a-simple-password-gen.firebaseio.com",
+    "project_id": "pass13-a-simple-password-gen",
+    "storage_bucket": "pass13-a-simple-password-gen.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:930375194703:android:c3a3b1da41870c8f",
+        "mobilesdk_app_id": "1:816486621120:android:8f208474dc42e35e03f225",
         "android_client_info": {
-          "package_name": "com.aresid.happyapp"
+          "package_name": "com.aresid.pass13"
         }
       },
       "oauth_client": [
         {
-          "client_id": "930375194703-46iffc0tnj36lrese9tgg7h8afc4l2uo.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.aresid.happyapp",
-            "certificate_hash": "ec432f2f0b568c9e762c3c9f3ab5067b4f597720"
-          }
+          "client_id": "816486621120-hh7fcdjgtfd5qpvep6i9nnuic61cph2f.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDpvfHokgciUpMy0NrKUtjJDLhVsvcowqY"
+          "current_key": "AIzaSyBX3DLKJCF79uSHeYGgw6i0y135Mptm9Ek"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "930375194703-o6q02lgud4ofnlb5qcbpmkatkc2q575r.apps.googleusercontent.com",
+              "client_id": "816486621120-hh7fcdjgtfd5qpvep6i9nnuic61cph2f.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
