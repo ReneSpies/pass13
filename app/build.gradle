@@ -14,10 +14,10 @@ android {
     defaultConfig {
         applicationId "com.aresid.pass13"
         minSdkVersion 21
-        targetSdkVersion 28
-        versionName '1.5.13'
+        targetSdkVersion 29
+        versionName '1.6.13'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 6
+        versionCode = 7
     }
     buildTypes {
         release {
