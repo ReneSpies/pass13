@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+	android:opacity="opaque">
 	<item android:drawable="@color/color_white" />
 	<item>
-		<bitmap android:src="@drawable/ic_splash_screen" />
+		<bitmap
+			android:gravity="center"
+			android:src="@drawable/ic_pass13_logo_192" />
+	</item>
+	<item>
+		<nine-patch
+			android:gravity="center|bottom"
+			android:src="@drawable/ic_logo_192_9" />
 	</item>
 </layer-list>
