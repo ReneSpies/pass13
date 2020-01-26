@@ -31,12 +31,11 @@
 		android:id="@+id/main_activity_password_view"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginStart="32.13dp"
-		android:layout_marginEnd="32.13dp"
 		android:textAlignment="center"
-		android:textAppearance="?attr/textAppearanceBody1"
+		android:textAppearance="@style/TextAppearance.AppCompat.Large"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+		app:layout_constraintTop_toTopOf="parent"
+		tools:layout_editor_absoluteX="32dp" />
 
 	<LinearLayout
 		android:id="@+id/main_activity_linear_layout"
@@ -55,8 +54,8 @@
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="@dimen/standard_4dp"
 			android:background="?attr/selectableItemBackgroundBorderless"
-			android:padding="@dimen/standard_8dp"
-			android:src="@drawable/ic_refresh_24dp" />
+			android:padding="@dimen/standard_16dp"
+			android:src="@drawable/ic_refresh_36dp" />
 
 		<androidx.appcompat.widget.AppCompatImageButton
 			android:id="@+id/main_activity_copy_button"
@@ -64,8 +63,8 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="@dimen/standard_4dp"
 			android:background="?attr/selectableItemBackgroundBorderless"
-			android:padding="@dimen/standard_8dp"
-			android:src="@drawable/ic_content_copy_24dp" />
+			android:padding="@dimen/standard_16dp"
+			android:src="@drawable/ic_content_copy_36dp" />
 	</LinearLayout>
 
 	<androidx.appcompat.widget.AppCompatImageButton
@@ -74,8 +73,8 @@
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/standard_8dp"
 		android:background="?attr/selectableItemBackgroundBorderless"
-		android:padding="@dimen/standard_8dp"
-		android:src="@drawable/ic_file_download_24dp"
+		android:padding="@dimen/standard_16dp"
+		android:src="@drawable/ic_file_download_36dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/main_activity_linear_layout" />
@@ -87,6 +86,6 @@
 		android:layout_marginBottom="@dimen/standard_8dp"
 		android:text="@string/reminder"
 		android:textAlignment="center"
-		android:textAppearance="@style/TextAppearance.AppCompat.Small"
+		android:textAppearance="@style/TextAppearance.AppCompat.Large"
 		app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

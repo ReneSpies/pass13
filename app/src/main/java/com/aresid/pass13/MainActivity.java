@@ -63,8 +63,10 @@ public class MainActivity
 		setContentView(R.layout.activity_main);
 
 		Toolbar tb = findViewById(R.id.main_activity_toolbar);
-		tb.setTitle(R.string.toolbar_title);
+		tb.setElevation(0);
 		setSupportActionBar(tb);
+
+		getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 		SharedPreferences prefs = getSharedPreferences("night_mode", MODE_PRIVATE);
 
