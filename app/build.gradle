@@ -1,7 +1,15 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
-
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\renej\\GoogleDrive\\documents\\android\\keystore\\pass13_keystore.jks')
+            storePassword '4o?B2pK-j>K91Mn$<A2y!T1q'
+            keyPassword 'kN5-X0b;1o+Dq5H_2k*L7z+C'
+            keyAlias = 'pass13_release_key'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
@@ -16,6 +24,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -36,5 +45,3 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.0-alpha04'
     implementation 'androidx.preference:preference-ktx:1.1.0'
 }
-
-apply plugin: 'com.google.gms.google-services'
