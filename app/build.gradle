@@ -16,9 +16,9 @@ android {
         applicationId "com.aresid.simplepasswordgeneratorapp"
         minSdkVersion 21
         targetSdkVersion 29
-        versionName '1.8.13'
+        versionName '1.9.13'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 8
+        versionCode = 9
         signingConfig signingConfigs.release
     }
     buildTypes {
