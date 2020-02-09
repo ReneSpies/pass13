@@ -13,26 +13,29 @@ import androidx.preference.SeekBarPreference;
  * Author: René Spies
  * Copyright: © 2019 Ares ID
  */
-class SettingsFragment
+public class SettingsFragment
 		extends PreferenceFragmentCompat {
-	private static final String TAG = "SettingsFragment";
+	private static final String TAG                          = "SettingsFragment";
+	private static final int    SEEK_BAR_PREF_MAX_LENGTH     = 64;
+	private static final int    SEEK_BAR_PREF_MIN_LENGTH     = 6;
+	private static final int    SEEK_BAR_PREF_DEFAULT_LENGTH = 10;
 	
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate:true");
+		Log.d(TAG, "onCreate: called");
 		super.onCreate(savedInstanceState);
 	}
 	
 	@Override
 	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-		Log.d(TAG, "onCreatePreferences:true");
+		Log.d(TAG, "onCreatePreferences: called");
 		addPreferencesFromResource(R.xml.preferences);
 		SeekBarPreference seekBarPreference = findPreference(MainActivity.KEY_PASSWORD_LENGTH);
 		assert seekBarPreference != null;
-		seekBarPreference.setDefaultValue(10);
+		seekBarPreference.setDefaultValue(SEEK_BAR_PREF_DEFAULT_LENGTH);
 		seekBarPreference.setAdjustable(true);
-		seekBarPreference.setMax(64);
-		seekBarPreference.setMin(6);
+		seekBarPreference.setMax(SEEK_BAR_PREF_MAX_LENGTH);
+		seekBarPreference.setMin(SEEK_BAR_PREF_MIN_LENGTH);
 		seekBarPreference.setShowSeekBarValue(true);
 		seekBarPreference.setUpdatesContinuously(true);
 	}

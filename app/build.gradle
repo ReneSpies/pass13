@@ -4,14 +4,14 @@ apply plugin: 'com.google.gms.google-services'
 android {
     signingConfigs {
         release {
-            storeFile file('C:\\Users\\renej\\GoogleDrive\\documents\\android\\keystore\\pass13_keystore.jks')
-            storePassword '4o?B2pK-j>K91Mn$<A2y!T1q'
-            keyPassword 'kN5-X0b;1o+Dq5H_2k*L7z+C'
+            storeFile file('C:\\Users\\renej\\Documents\\Keystore\\pass13_keystore.jks')
+            storePassword '2He-p4=I7F-kVf4_F+o8<nC8'
+            keyPassword '2He-p4=I7F-kVf4_F+o8<nC8'
             keyAlias = 'pass13_release_key'
         }
     }
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.aresid.simplepasswordgeneratorapp"
         minSdkVersion 21
@@ -19,6 +19,7 @@ android {
         versionName '1.8.13'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 8
+        signingConfig signingConfigs.release
     }
     buildTypes {
         release {

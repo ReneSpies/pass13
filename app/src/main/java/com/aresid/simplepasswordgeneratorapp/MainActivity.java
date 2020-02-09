@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class MainActivity
@@ -39,12 +41,18 @@ public class MainActivity
 		implements View.OnClickListener,
 		           SharedPreferences.OnSharedPreferenceChangeListener {
 	static final         String  KEY_PASSWORD_LENGTH    = "password length";
+	private static final int     NIGHT_MODE_LIGHT       = 16;
+	private static final int     NIGHT_MODE_NIGHT       = 32;
 	private static final String  TAG                    = "MainActivity";
 	private static final String  PREFS_NIGHT_MODE       = "night_mode";
 	private static final String  KEY_LOWER_CASE         = "lower case";
 	private static final String  KEY_UPPER_CASE         = "upper case";
 	private static final String  KEY_SPECIAL_CHARACTERS = "special characters";
 	private static final String  KEY_NUMBERS            = "numbers";
+	private static final String  PASSWORD_TEXTVIEW_KEY  = "password";
+	private static final String  ALPHABET               = "abcdefghijklmnopqrstuvwxyz";
+	private static final String  SPECIAL_CHARS          = "$%&=?!-_.,;:#*+<>";
+	private static final String  NUMBERS                = "0123456789";
 	private              int     mCurrentNightMode;
 	private              boolean mLowerCase;
 	private              boolean mUpperCase;
@@ -53,40 +61,139 @@ public class MainActivity
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate:true");
+		Log.d(TAG, "onCreate: called");
 		setTheme(R.style.AppTheme);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Toolbar tb = findViewById(R.id.main_activity_toolbar);
-		tb.setElevation(0);
-		setSupportActionBar(tb);
-		getSupportActionBar().setDisplayShowTitleEnabled(false);
-		SharedPreferences prefs = getSharedPreferences("night_mode", MODE_PRIVATE);
+		setUpToolbar();
+		setCurrentNightModeFromSharedPrefs();
+		setOnClickListeners(findViewById(R.id.main_activity_copy_button), findViewById(R.id.main_activity_export_button), findViewById(R.id.main_activity_renew_button));
+		// Register OnSharedPreferencesChangeListener.
+		PreferenceManager.getDefaultSharedPreferences(this)
+		                 .registerOnSharedPreferenceChangeListener(this);
+		setSettingsValuesFromSharedPrefs();
+		// Sets password text to last saved state if activity is recreated.
+		if (savedInstanceState != null) {
+			setPasswordText(Objects.requireNonNull(savedInstanceState.getString(PASSWORD_TEXTVIEW_KEY)));
+		} else {
+			setPasswordText(generateNewPassword());
+		}
+	}
+	
+	private void setUpToolbar() {
+		Log.d(TAG, "setUpToolbar: called");
+		Toolbar toolbar = findViewById(R.id.main_activity_toolbar);
+		toolbar.setElevation(0);
+		setSupportActionBar(toolbar);
+		Objects.requireNonNull(getSupportActionBar())
+		       .setDisplayShowTitleEnabled(false);
+	}
+	
+	private void setCurrentNightModeFromSharedPrefs() {
+		Log.d(TAG, "setCurrentNightModeFromSharedPrefs: called");
+		SharedPreferences prefs = getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE);
 		if (prefs != null && prefs.contains(PREFS_NIGHT_MODE)) {
 			Log.d(TAG, "onCreate: prefs = " + prefs);
-			Log.d(TAG, "onCreate: prefs night mode = " + prefs.getInt("night_mode", 0));
+			Log.d(TAG, "onCreate: prefs night mode = " + prefs.getInt(PREFS_NIGHT_MODE, 0));
 			mCurrentNightMode = prefs.getInt(PREFS_NIGHT_MODE, getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK);
 		} else {
 			mCurrentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 		}
-		Log.d(TAG, "onCreate: mCurrentNightMode = " + mCurrentNightMode);
-		findViewById(R.id.main_activity_copy_button).setOnClickListener(this);
-		findViewById(R.id.main_activity_export_button).setOnClickListener(this);
-		findViewById(R.id.main_activity_renew_button).setOnClickListener(this);
-		PreferenceManager.getDefaultSharedPreferences(this)
-		                 .registerOnSharedPreferenceChangeListener(this);
+	}
+	
+	private void setOnClickListeners(ImageButton... buttons) {
+		Log.d(TAG, "setOnClickListeners: called");
+		for (ImageButton button : buttons) {
+			button.setOnClickListener(this);
+		}
+	}
+	
+	private void setSettingsValuesFromSharedPrefs() {
+		Log.d(TAG, "setSettingsValuesFromSharedPrefs: called");
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		mLowerCase = preferences.getBoolean(KEY_LOWER_CASE, true);
 		mUpperCase = preferences.getBoolean(KEY_UPPER_CASE, true);
 		mSpecialCharacters = preferences.getBoolean(KEY_SPECIAL_CHARACTERS, false);
 		mNumbers = preferences.getBoolean(KEY_NUMBERS, false);
+	}
+	
+	private void setPasswordText(@NonNull String text) {
+		Log.d(TAG, "setPasswordText: called");
 		TextView password = findViewById(R.id.main_activity_password_view);
-		password.setText(generateNewPassword());
+		password.setText(text);
+	}
+	
+	private String generateNewPassword() {
+		Log.d(TAG, "generateNewPassword: called");
+		StringBuilder newPassword = new StringBuilder();
+		char[] lowerChars = ALPHABET.toCharArray();
+		char[] upperChars = ALPHABET.toUpperCase()
+		                            .toCharArray();
+		char[] specialCharacters = SPECIAL_CHARS.toCharArray();
+		char[] numbers = NUMBERS.toCharArray();
+		List<char[]> pool = new ArrayList<>();
+		if (mLowerCase) {
+			pool.add(lowerChars);
+		}
+		if (mUpperCase) {
+			pool.add(upperChars);
+		}
+		if (mSpecialCharacters) {
+			pool.add(specialCharacters);
+		}
+		if (mNumbers) {
+			pool.add(numbers);
+		}
+		if (pool.isEmpty()) {
+			return getString(R.string.no_settings_message);
+		}
+		List<char[]> copyOfPool = new ArrayList<>(pool);
+		Random random = new Random();
+		int passwordLength = PreferenceManager.getDefaultSharedPreferences(this)
+		                                      .getInt(KEY_PASSWORD_LENGTH, 10);
+		for (int i = 0; i <= passwordLength; i++) {
+			if (copyOfPool.isEmpty()) {
+				for (int j = 0; j <= pool.size() - 1; j++) {
+					copyOfPool.add(pool.get(j));
+				}
+			}
+			char[] chars = copyOfPool.remove(random.nextInt(copyOfPool.size() == 0 ? copyOfPool.size() - 1 : copyOfPool.size()));
+			newPassword.append(chars[random.nextInt(chars.length)]);
+		}
+		return newPassword.toString();
+	}
+	
+	@Override
+	public void onConfigurationChanged(@NonNull Configuration newConfig) {
+		Log.d(TAG, "onConfigurationChanged: called");
+		mCurrentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+		getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE).edit()
+		                                                    .putInt(PREFS_NIGHT_MODE, mCurrentNightMode)
+		                                                    .apply();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		Log.d(TAG, "onDestroy: called");
+		super.onDestroy();
+		// Unregister OnSharedPreferencesChangedListener
+		PreferenceManager.getDefaultSharedPreferences(this)
+		                 .unregisterOnSharedPreferenceChangeListener(this);
+	}
+	
+	@Override
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
+		Log.d(TAG, "onSaveInstanceState: called");
+		super.onSaveInstanceState(outState);
+		// Saves the last text of password text view so it does not get lost upon activity recreation.
+		TextView password = findViewById(R.id.main_activity_password_view);
+		outState.putString(PASSWORD_TEXTVIEW_KEY, password.getText()
+		                                                  .toString());
 	}
 	
 	@Override
 	public void onClick(View v) {
-		Log.d(TAG, "onClick:true");
+		Log.d(TAG, "onClick: called");
 		Log.d(TAG, "onClick: id = " + v.getId());
 		TextView password = findViewById(R.id.main_activity_password_view);
 		switch (v.getId()) {
@@ -113,87 +220,13 @@ public class MainActivity
 				break;
 			case R.id.main_activity_renew_button:
 				Log.d(TAG, "onClick: renew button");
-				password.setText(generateNewPassword());
+				setPasswordText(generateNewPassword());
 				break;
 		}
-	}
-	
-	@Override
-	public void onConfigurationChanged(@NonNull Configuration newConfig) {
-		Log.d(TAG, "onConfigurationChanged:true");
-		mCurrentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
-		getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE).edit()
-		                                                    .putInt(PREFS_NIGHT_MODE, mCurrentNightMode)
-		                                                    .apply();
-	}
-	
-	@Override
-	protected void onDestroy() {
-		Log.d(TAG, "onDestroy:true");
-		super.onDestroy();
-		PreferenceManager.getDefaultSharedPreferences(this)
-		                 .unregisterOnSharedPreferenceChangeListener(this);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		Log.d(TAG, "onCreateOptionsMenu:true");
-		getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-		if (mCurrentNightMode == 32) {
-			setNightMode(true);
-		} else if (mCurrentNightMode == 16) {
-			setNightMode(false);
-		}
-		return true;
-	}
-	
-	private void setNightMode(boolean isActive) {
-		Log.d(TAG, "setNightMode:true");
-		Log.d(TAG, "setNightMode: activated = " + isActive);
-		Toolbar tb = findViewById(R.id.main_activity_toolbar);
-		if (isActive) {
-			tb.getMenu()
-			  .getItem(0)
-			  .setIcon(getDrawable(R.drawable.ic_brightness_7_24dp));
-			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-			mCurrentNightMode = 32;
-			getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE).edit()
-			                                                    .putInt(PREFS_NIGHT_MODE, mCurrentNightMode)
-			                                                    .apply();
-		} else {
-			tb.getMenu()
-			  .getItem(0)
-			  .setIcon(getDrawable(R.drawable.ic_brightness_4_24dp));
-			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-			mCurrentNightMode = 16;
-			getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE).edit()
-			                                                    .putInt(PREFS_NIGHT_MODE, mCurrentNightMode)
-			                                                    .apply();
-		}
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Log.d(TAG, "onOptionsItemSelected:true");
-		Log.d(TAG, "onOptionsItemSelected: item = " + item.toString());
-		switch (item.getItemId()) {
-			case R.id.toolbar_change_theme:
-				Log.d(TAG, "onOptionsItemSelected: current night mode = " + mCurrentNightMode);
-				if (mCurrentNightMode == 32) {
-					setNightMode(false);
-				} else if (mCurrentNightMode == 16) {
-					setNightMode(true);
-				}
-				break;
-			case R.id.toolbar_settings:
-				startActivity(new Intent(this, SettingsActivity.class));
-				break;
-		}
-		return true;
 	}
 	
 	private void saveFile(String text) {
-		Log.d(TAG, "saveFile:true");
+		Log.d(TAG, "saveFile: called");
 		try {
 			String name = "pfile_" + SimpleDateFormat.getDateTimeInstance()
 			                                         .format(new Date()) + ".txt";
@@ -218,57 +251,72 @@ public class MainActivity
 			writer.write(text);
 			writer.close();
 		} catch (IOException e) {
+			Toast.makeText(this, getString(R.string.error_message), Toast.LENGTH_LONG)
+			     .show();
 			Log.e(TAG, "saveFile: ", e);
 		}
 	}
 	
-	private String generateNewPassword() {
-		Log.d(TAG, "generateNewPassword:true");
-		StringBuilder newPassword = new StringBuilder();
-		char[] lowerChars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-		char[] upperChars = "abcdefghijklmnopqrstuvwxyz".toUpperCase()
-		                                                .toCharArray();
-		char[] specialCharacters = "$%&=?!-_.,;:#*+<>".toCharArray();
-		char[] numbers = "0123456789".toCharArray();
-		List<char[]> pool = new ArrayList<>();
-		if (mLowerCase) {
-			Log.d(TAG, "generateNewPassword: " + true);
-			pool.add(lowerChars);
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.d(TAG, "onCreateOptionsMenu: called");
+		getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+		if (mCurrentNightMode == NIGHT_MODE_LIGHT) {
+			setNightMode(true);
+		} else if (mCurrentNightMode == NIGHT_MODE_NIGHT) {
+			setNightMode(false);
 		}
-		if (mUpperCase) {
-			Log.d(TAG, "generateNewPassword: " + true);
-			pool.add(upperChars);
+		return true;
+	}
+	
+	private void setNightMode(boolean isActive) {
+		Log.d(TAG, "setNightMode: called");
+		Log.d(TAG, "setNightMode: activated = " + isActive);
+		Toolbar tb = findViewById(R.id.main_activity_toolbar);
+		if (isActive) {
+			tb.getMenu()
+			  .getItem(0)
+			  .setIcon(getDrawable(R.drawable.ic_brightness_7_24dp));
+			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+			mCurrentNightMode = NIGHT_MODE_LIGHT;
+			getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE).edit()
+			                                                    .putInt(PREFS_NIGHT_MODE, mCurrentNightMode)
+			                                                    .apply();
+		} else {
+			tb.getMenu()
+			  .getItem(0)
+			  .setIcon(getDrawable(R.drawable.ic_brightness_4_24dp));
+			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+			mCurrentNightMode = NIGHT_MODE_NIGHT;
+			getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE).edit()
+			                                                    .putInt(PREFS_NIGHT_MODE, mCurrentNightMode)
+			                                                    .apply();
 		}
-		if (mSpecialCharacters) {
-			Log.d(TAG, "generateNewPassword: " + true);
-			pool.add(specialCharacters);
-		}
-		if (mNumbers) {
-			Log.d(TAG, "generateNewPassword: " + true);
-			pool.add(numbers);
-		}
-		if (pool.isEmpty()) {
-			return getString(R.string.no_settings_message);
-		}
-		List<char[]> copyOfPool = new ArrayList<>(pool);
-		Random random = new Random();
-		int length = PreferenceManager.getDefaultSharedPreferences(this)
-		                              .getInt(KEY_PASSWORD_LENGTH, 10);
-		for (int i = 0; i <= length; i++) {
-			if (copyOfPool.isEmpty()) {
-				for (int j = 0; j <= pool.size() - 1; j++) {
-					copyOfPool.add(pool.get(j));
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.d(TAG, "onOptionsItemSelected: called");
+		Log.d(TAG, "onOptionsItemSelected: item = " + item.toString());
+		switch (item.getItemId()) {
+			case R.id.toolbar_change_theme:
+				Log.d(TAG, "onOptionsItemSelected: current night mode = " + mCurrentNightMode);
+				if (mCurrentNightMode == NIGHT_MODE_LIGHT) {
+					setNightMode(false);
+				} else if (mCurrentNightMode == NIGHT_MODE_NIGHT) {
+					setNightMode(true);
 				}
-			}
-			char[] chars = copyOfPool.remove(random.nextInt(copyOfPool.size() == 0 ? copyOfPool.size() - 1 : copyOfPool.size()));
-			newPassword.append(chars[random.nextInt(chars.length)]);
+				break;
+			case R.id.toolbar_settings:
+				startActivity(new Intent(this, SettingsActivity.class));
+				break;
 		}
-		return newPassword.toString();
+		return true;
 	}
 	
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		Log.d(TAG, "onSharedPreferenceChanged:true");
+		Log.d(TAG, "onSharedPreferenceChanged: called");
 		Log.d(TAG, "onSharedPreferenceChanged: key = " + key);
 		switch (key) {
 			case KEY_LOWER_CASE:

@@ -22,7 +22,7 @@ public class SettingsActivity
 	
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate:true");
+		Log.d(TAG, "onCreate: called");
 		setTheme(R.style.AppTheme);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
@@ -37,7 +37,7 @@ public class SettingsActivity
 	
 	@Override
 	public void onClick(View v) {
-		Log.d(TAG, "onClick:true");
+		Log.d(TAG, "onClick: called");
 		Log.d(TAG, "onClick: id = " + v.getId());
 		if (v.getId() == -1) {
 			Log.d(TAG, "onClick: navigation button");
