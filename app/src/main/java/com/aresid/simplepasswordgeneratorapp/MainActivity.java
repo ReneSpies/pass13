@@ -40,14 +40,17 @@ public class MainActivity
 		extends AppCompatActivity
 		implements View.OnClickListener,
 		           SharedPreferences.OnSharedPreferenceChangeListener {
-	static final         String  KEY_PASSWORD_LENGTH    = "password length";
-	private static final int     NIGHT_MODE_LIGHT       = 16;
-	private static final int     NIGHT_MODE_NIGHT       = 32;
-	private static final String  TAG                    = "MainActivity";
-	private static final String  PREFS_NIGHT_MODE       = "night_mode";
-	private static final String  KEY_LOWER_CASE         = "lower case";
-	private static final String  KEY_UPPER_CASE         = "upper case";
-	private static final String  KEY_SPECIAL_CHARACTERS = "special characters";
+	// TODO: Let user customize which special characters to use.
+	// TODO: Implement Google AdWords.
+	// TODO: Rollout a paid version for $1 USD.
+	static final         String KEY_PASSWORD_LENGTH    = "password length";
+	private static final int    NIGHT_MODE_LIGHT       = 16;
+	private static final int    NIGHT_MODE_NIGHT       = 32;
+	private static final String TAG                    = "MainActivity";
+	private static final String PREFS_NIGHT_MODE       = "night_mode";
+	private static final String KEY_LOWER_CASE         = "lower case";
+	private static final String KEY_UPPER_CASE         = "upper case";
+	private static final String KEY_SPECIAL_CHARACTERS = "special characters";
 	private static final String  KEY_NUMBERS            = "numbers";
 	private static final String  PASSWORD_TEXTVIEW_KEY  = "password";
 	private static final String  ALPHABET               = "abcdefghijklmnopqrstuvwxyz";
@@ -227,6 +230,7 @@ public class MainActivity
 	
 	private void saveFile(String text) {
 		Log.d(TAG, "saveFile: called");
+		// TODO: Change the save directory.
 		try {
 			String name = "pfile_" + SimpleDateFormat.getDateTimeInstance()
 			                                         .format(new Date()) + ".txt";
