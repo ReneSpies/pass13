@@ -3,13 +3,16 @@ package com.aresid.simplepasswordgeneratorapp;
 import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,10 +28,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -230,11 +232,20 @@ public class MainActivity
 	
 	private void saveFile(String text) {
 		Log.d(TAG, "saveFile: called");
-		// TODO: Change the save directory.
+		// TODO: Split into two versions. One for Android Q and one for the rest > KitKat.
 		try {
-			String name = "pfile_" + SimpleDateFormat.getDateTimeInstance()
+			String collection = MediaStore.Files.getContentUri("external")
+			                                    .toString();
+			String relativePath = "Documents/generated";
+			Uri collectionUri = Uri.parse(collection);
+			ContentValues values = new ContentValues();
+			values.put(MediaStore.MediaColumns.DISPLAY_NAME, "testfyle.txt");
+			values.put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath);
+			Uri fileUri = getContentResolver().insert(collectionUri, values);
+			Log.d(TAG, "saveFile: fileUri = " + fileUri);
+			String name = "pass13 from " + SimpleDateFormat.getDateTimeInstance()
 			                                         .format(new Date()) + ".txt";
-			File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/generated", name);
+			File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), name);
 			Log.d(TAG, "saveFile: file = " + file.getPath());
 			Log.d(TAG, "saveFile: parent file = " + file.getParentFile()
 			                                            .getPath());
@@ -243,17 +254,20 @@ public class MainActivity
 				file.getParentFile()
 				    .mkdirs();
 			}
-			if (!file.exists()) {
-				if (!file.createNewFile()) {
+			if (!file.getParentFile()
+			         .exists()) {
+				if (!file.getParentFile()
+				         .createNewFile()) {
 					Toast.makeText(this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT)
 					     .show();
 				}
 			}
 			Toast.makeText(this, getString(R.string.exported_message, file.getName(), file.getPath()), Toast.LENGTH_LONG)
 			     .show();
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
-			writer.write(text);
-			writer.close();
+			OutputStreamWriter osw = new OutputStreamWriter(getContentResolver().openOutputStream(fileUri));
+//			BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
+			osw.write(text);
+			osw.close();
 		} catch (IOException e) {
 			Toast.makeText(this, getString(R.string.error_message), Toast.LENGTH_LONG)
 			     .show();
