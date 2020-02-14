@@ -5,11 +5,12 @@
 	<string name="settings">Settings</string>
 	<string name="copied">Copied!</string>
 	<string name="error_message">Something went wrong. Please try again.</string>
-	<string name="exported_message">File \'%1s\' exported to %1s</string>
-	<string name="no_settings_message">You need to specify at least one setting</string>
+	<string name="exported_message">exported to \"%1s\" as \"%1s\"</string>
+	<string name="no_settings_message">You need to specify at least one preference</string>
 	<string name="special_characters">Include special characters</string>
 	<string name="lower_case">Include lower case characters</string>
 	<string name="upper_case">Include upper case characters</string>
 	<string name="numbers">Include numbers</string>
 	<string name="password_length">Password length</string>
+	<string name="fileName">generated on %1s.txt</string>
 </resources>

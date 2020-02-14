@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -22,13 +23,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
@@ -45,14 +51,14 @@ public class MainActivity
 	// TODO: Let user customize which special characters to use.
 	// TODO: Implement Google AdWords.
 	// TODO: Rollout a paid version for $1 USD.
-	static final         String KEY_PASSWORD_LENGTH    = "password length";
-	private static final int    NIGHT_MODE_LIGHT       = 16;
-	private static final int    NIGHT_MODE_NIGHT       = 32;
-	private static final String TAG                    = "MainActivity";
-	private static final String PREFS_NIGHT_MODE       = "night_mode";
-	private static final String KEY_LOWER_CASE         = "lower case";
-	private static final String KEY_UPPER_CASE         = "upper case";
-	private static final String KEY_SPECIAL_CHARACTERS = "special characters";
+	static final         String  KEY_PASSWORD_LENGTH    = "password length";
+	private static final int     NIGHT_MODE_LIGHT       = 16;
+	private static final int     NIGHT_MODE_NIGHT       = 32;
+	private static final String  TAG                    = "MainActivity";
+	private static final String  PREFS_NIGHT_MODE       = "night_mode";
+	private static final String  KEY_LOWER_CASE         = "lower case";
+	private static final String  KEY_UPPER_CASE         = "upper case";
+	private static final String  KEY_SPECIAL_CHARACTERS = "special characters";
 	private static final String  KEY_NUMBERS            = "numbers";
 	private static final String  PASSWORD_TEXTVIEW_KEY  = "password";
 	private static final String  ALPHABET               = "abcdefghijklmnopqrstuvwxyz";
@@ -219,9 +225,15 @@ public class MainActivity
 				if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 					ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 13);
 				}
-				saveFile(password.getText()
-				                 .toString()
-				                 .trim());
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+					saveFileIfApiGreaterQ(password.getText()
+					                              .toString()
+					                              .trim());
+				} else {
+					saveFileIfApiBelowQ(password.getText()
+					                            .toString()
+					                            .trim());
+				}
 				break;
 			case R.id.main_activity_renew_button:
 				Log.d(TAG, "onClick: renew button");
@@ -230,25 +242,35 @@ public class MainActivity
 		}
 	}
 	
-	private void saveFile(String text) {
-		Log.d(TAG, "saveFile: called");
-		// TODO: Split into two versions. One for Android Q and one for the rest > KitKat.
+	@RequiresApi (api = Build.VERSION_CODES.Q)
+	private void saveFileIfApiGreaterQ(String text) {
+		Log.d(TAG, "saveFileIfApiGreaterQ: called");
 		try {
+			String fileName = generateFileName();
 			String collection = MediaStore.Files.getContentUri("external")
 			                                    .toString();
 			String relativePath = "Documents/generated";
 			Uri collectionUri = Uri.parse(collection);
 			ContentValues values = new ContentValues();
-			values.put(MediaStore.MediaColumns.DISPLAY_NAME, "testfyle.txt");
+			values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
 			values.put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath);
 			Uri fileUri = getContentResolver().insert(collectionUri, values);
-			Log.d(TAG, "saveFile: fileUri = " + fileUri);
-			String name = "pass13 from " + SimpleDateFormat.getDateTimeInstance()
-			                                         .format(new Date()) + ".txt";
-			File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), name);
-			Log.d(TAG, "saveFile: file = " + file.getPath());
-			Log.d(TAG, "saveFile: parent file = " + file.getParentFile()
-			                                            .getPath());
+			OutputStreamWriter osw = new OutputStreamWriter(Objects.requireNonNull(getContentResolver().openOutputStream(Objects.requireNonNull(fileUri))));
+			osw.write(text);
+			osw.close();
+			String filePath = values.getAsString(MediaStore.MediaColumns.RELATIVE_PATH);
+			displaySnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.exported_message, filePath, fileName), 7000);
+		} catch (IOException e) {
+			Log.e(TAG, "saveFileIfApiGreaterQ: ", e);
+			// TODO: Exception handling!
+			displayErrorSnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.error_message));
+		}
+	}
+	
+	private void saveFileIfApiBelowQ(String text) {
+		Log.d(TAG, "saveFileIfApiBelowQ: called");
+		try {
+			File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS + "/generated"), generateFileName());
 			if (!file.getParentFile()
 			         .exists()) {
 				file.getParentFile()
@@ -262,16 +284,44 @@ public class MainActivity
 					     .show();
 				}
 			}
-			Toast.makeText(this, getString(R.string.exported_message, file.getName(), file.getPath()), Toast.LENGTH_LONG)
-			     .show();
-			OutputStreamWriter osw = new OutputStreamWriter(getContentResolver().openOutputStream(fileUri));
-//			BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
-			osw.write(text);
-			osw.close();
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
+			writer.write(text);
+			writer.close();
+			displaySnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.exported_message, shortenFilePathName(file.getParent()), file.getName()), 7000);
 		} catch (IOException e) {
-			Toast.makeText(this, getString(R.string.error_message), Toast.LENGTH_LONG)
-			     .show();
-			Log.e(TAG, "saveFile: ", e);
+			Log.e(TAG, "saveFileIfApiBelowQ: ", e);
+			// TODO: Exception handling!
+			displayErrorSnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.error_message));
+		}
+	}
+	
+	private String generateFileName() {
+		Log.d(TAG, "getFileName: called");
+		return getString(R.string.fileName, SimpleDateFormat.getDateTimeInstance()
+		                                                    .format(new Date()));
+	}
+	
+	private void displaySnackbar(View snackbarView, String message, int duration) {
+		Log.d(TAG, "displaySnackbar: called");
+		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
+		        .setDuration(duration)
+		        .setBackgroundTint(ContextCompat.getColor(this, R.color.colorSecondary))
+		        .show();
+	}
+	
+	private void displayErrorSnackbar(View snackbarView, String message) {
+		Log.d(TAG, "displayErrorSnackbar: called");
+		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
+		        .setBackgroundTint(ContextCompat.getColor(this, R.color.colorError))
+		        .show();
+	}
+	
+	private String shortenFilePathName(String pathName) {
+		Log.d(TAG, "shortenFilePathName: called");
+		if (pathName != null && pathName.contains("Documents/generated")) {
+			return "Documents/generated";
+		} else {
+			return pathName;
 		}
 	}
 	
