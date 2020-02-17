@@ -53,6 +53,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="@dimen/standard_4dp"
 			android:background="?attr/selectableItemBackgroundBorderless"
+			android:onClick="onRefreshClick"
 			android:padding="@dimen/standard_8dp"
 			android:src="@drawable/ic_refresh_24dp"/>
 		
@@ -62,6 +63,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="@dimen/standard_4dp"
 			android:background="?attr/selectableItemBackgroundBorderless"
+			android:onClick="onCopyClick"
 			android:padding="@dimen/standard_8dp"
 			android:src="@drawable/ic_content_copy_24dp"/>
 	</LinearLayout>
@@ -72,6 +74,7 @@
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/standard_8dp"
 		android:background="?attr/selectableItemBackgroundBorderless"
+		android:onClick="onExportClick"
 		android:padding="@dimen/standard_8dp"
 		android:src="@drawable/ic_file_download_24dp"
 		app:layout_constraintEnd_toEndOf="parent"

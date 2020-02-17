@@ -18,9 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -46,8 +44,7 @@ import java.util.Random;
 
 public class MainActivity
 		extends AppCompatActivity
-		implements View.OnClickListener,
-		           SharedPreferences.OnSharedPreferenceChangeListener {
+		implements SharedPreferences.OnSharedPreferenceChangeListener {
 	// TODO: Let user customize which special characters to use.
 	// TODO: Implement Google AdWords.
 	// TODO: Rollout a paid version for $1 USD.
@@ -64,6 +61,7 @@ public class MainActivity
 	private static final String  ALPHABET               = "abcdefghijklmnopqrstuvwxyz";
 	private static final String  SPECIAL_CHARS          = "$%&=?!-_.,;:#*+<>";
 	private static final String  NUMBERS                = "0123456789";
+	private static final String  SHORT_PATH_NAME        = "Documents/generated";
 	private              int     mCurrentNightMode;
 	private              boolean mLowerCase;
 	private              boolean mUpperCase;
@@ -78,7 +76,6 @@ public class MainActivity
 		setContentView(R.layout.activity_main);
 		setUpToolbar();
 		setCurrentNightModeFromSharedPrefs();
-		setOnClickListeners(findViewById(R.id.main_activity_copy_button), findViewById(R.id.main_activity_export_button), findViewById(R.id.main_activity_renew_button));
 		// Register OnSharedPreferencesChangeListener.
 		PreferenceManager.getDefaultSharedPreferences(this)
 		                 .registerOnSharedPreferenceChangeListener(this);
@@ -109,13 +106,6 @@ public class MainActivity
 			mCurrentNightMode = prefs.getInt(PREFS_NIGHT_MODE, getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK);
 		} else {
 			mCurrentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-		}
-	}
-	
-	private void setOnClickListeners(ImageButton... buttons) {
-		Log.d(TAG, "setOnClickListeners: called");
-		for (ImageButton button : buttons) {
-			button.setOnClickListener(this);
 		}
 	}
 	
@@ -203,129 +193,6 @@ public class MainActivity
 	}
 	
 	@Override
-	public void onClick(View v) {
-		Log.d(TAG, "onClick: called");
-		Log.d(TAG, "onClick: id = " + v.getId());
-		TextView password = findViewById(R.id.main_activity_password_view);
-		switch (v.getId()) {
-			case R.id.main_activity_copy_button:
-				Log.d(TAG, "onClick: copy button");
-				ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-				ClipData clip = ClipData.newPlainText("password", password.getText()
-				                                                          .toString()
-				                                                          .trim());
-				assert clipboardManager != null;
-				clipboardManager.setPrimaryClip(clip);
-				Log.d(TAG, "onClick: clipboard = " + clipboardManager.getPrimaryClip());
-				Toast.makeText(this, getResources().getString(R.string.copied), Toast.LENGTH_SHORT)
-				     .show();
-				break;
-			case R.id.main_activity_export_button:
-				Log.d(TAG, "onClick: export button");
-				if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-					ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 13);
-				}
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-					saveFileIfApiGreaterQ(password.getText()
-					                              .toString()
-					                              .trim());
-				} else {
-					saveFileIfApiBelowQ(password.getText()
-					                            .toString()
-					                            .trim());
-				}
-				break;
-			case R.id.main_activity_renew_button:
-				Log.d(TAG, "onClick: renew button");
-				setPasswordText(generateNewPassword());
-				break;
-		}
-	}
-	
-	@RequiresApi (api = Build.VERSION_CODES.Q)
-	private void saveFileIfApiGreaterQ(String text) {
-		Log.d(TAG, "saveFileIfApiGreaterQ: called");
-		try {
-			String fileName = generateFileName();
-			String collection = MediaStore.Files.getContentUri("external")
-			                                    .toString();
-			String relativePath = "Documents/generated";
-			Uri collectionUri = Uri.parse(collection);
-			ContentValues values = new ContentValues();
-			values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
-			values.put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath);
-			Uri fileUri = getContentResolver().insert(collectionUri, values);
-			OutputStreamWriter osw = new OutputStreamWriter(Objects.requireNonNull(getContentResolver().openOutputStream(Objects.requireNonNull(fileUri))));
-			osw.write(text);
-			osw.close();
-			String filePath = values.getAsString(MediaStore.MediaColumns.RELATIVE_PATH);
-			displaySnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.exported_message, filePath, fileName), 7000);
-		} catch (IOException e) {
-			Log.e(TAG, "saveFileIfApiGreaterQ: ", e);
-			// TODO: Exception handling!
-			displayErrorSnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.error_message));
-		}
-	}
-	
-	private void saveFileIfApiBelowQ(String text) {
-		Log.d(TAG, "saveFileIfApiBelowQ: called");
-		try {
-			File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS + "/generated"), generateFileName());
-			if (!file.getParentFile()
-			         .exists()) {
-				file.getParentFile()
-				    .mkdirs();
-			}
-			if (!file.getParentFile()
-			         .exists()) {
-				if (!file.getParentFile()
-				         .createNewFile()) {
-					Toast.makeText(this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT)
-					     .show();
-				}
-			}
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
-			writer.write(text);
-			writer.close();
-			displaySnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.exported_message, shortenFilePathName(file.getParent()), file.getName()), 7000);
-		} catch (IOException e) {
-			Log.e(TAG, "saveFileIfApiBelowQ: ", e);
-			// TODO: Exception handling!
-			displayErrorSnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.error_message));
-		}
-	}
-	
-	private String generateFileName() {
-		Log.d(TAG, "getFileName: called");
-		return getString(R.string.fileName, SimpleDateFormat.getDateTimeInstance()
-		                                                    .format(new Date()));
-	}
-	
-	private void displaySnackbar(View snackbarView, String message, int duration) {
-		Log.d(TAG, "displaySnackbar: called");
-		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
-		        .setDuration(duration)
-		        .setBackgroundTint(ContextCompat.getColor(this, R.color.colorSecondary))
-		        .show();
-	}
-	
-	private void displayErrorSnackbar(View snackbarView, String message) {
-		Log.d(TAG, "displayErrorSnackbar: called");
-		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
-		        .setBackgroundTint(ContextCompat.getColor(this, R.color.colorError))
-		        .show();
-	}
-	
-	private String shortenFilePathName(String pathName) {
-		Log.d(TAG, "shortenFilePathName: called");
-		if (pathName != null && pathName.contains("Documents/generated")) {
-			return "Documents/generated";
-		} else {
-			return pathName;
-		}
-	}
-	
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		Log.d(TAG, "onCreateOptionsMenu: called");
 		getMenuInflater().inflate(R.menu.toolbar_menu, menu);
@@ -403,6 +270,115 @@ public class MainActivity
 				mNumbers = sharedPreferences.getBoolean(key, false);
 				Log.d(TAG, "onSharedPreferenceChanged: " + key + " = " + mNumbers);
 				break;
+		}
+	}
+	
+	public void onRefreshClick(View view) {
+		Log.d(TAG, "onRefreshClick: called");
+		setPasswordText(generateNewPassword());
+	}
+	
+	public void onCopyClick(View view) {
+		Log.d(TAG, "onCopyClick: called");
+		TextView password = findViewById(R.id.main_activity_password_view);
+		ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+		ClipData clip = ClipData.newPlainText("generated", password.getText()
+		                                                           .toString()
+		                                                           .trim());
+		assert clipboardManager != null;
+		clipboardManager.setPrimaryClip(clip);
+		Log.d(TAG, "onClick: clipboard = " + clipboardManager.getPrimaryClip());
+		displaySnackbar(view, getString(R.string.copied), Snackbar.LENGTH_LONG);
+	}
+	
+	private void displaySnackbar(View snackbarView, String message, int duration) {
+		Log.d(TAG, "displaySnackbar: called");
+		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
+		        .setDuration(duration)
+		        .setBackgroundTint(ContextCompat.getColor(this, R.color.colorSecondary))
+		        .show();
+	}
+	
+	public void onExportClick(View view) {
+		Log.d(TAG, "onExportClick: called");
+		TextView password = findViewById(R.id.main_activity_password_view);
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 13);
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			saveFileIfApiGreaterQ(password.getText()
+			                              .toString()
+			                              .trim());
+		} else {
+			saveFileIfApiBelowQ(password.getText()
+			                            .toString()
+			                            .trim());
+		}
+	}
+	
+	@RequiresApi (api = Build.VERSION_CODES.Q)
+	private void saveFileIfApiGreaterQ(String text) {
+		Log.d(TAG, "saveFileIfApiGreaterQ: called");
+		try {
+			String fileName = generateFileName();
+			String collection = MediaStore.Files.getContentUri("external")
+			                                    .toString();
+			Uri collectionUri = Uri.parse(collection);
+			ContentValues values = new ContentValues();
+			values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+			values.put(MediaStore.MediaColumns.RELATIVE_PATH, SHORT_PATH_NAME);
+			Uri fileUri = getContentResolver().insert(collectionUri, values);
+			OutputStreamWriter osw = new OutputStreamWriter(Objects.requireNonNull(getContentResolver().openOutputStream(Objects.requireNonNull(fileUri))));
+			osw.write(text);
+			osw.close();
+			String filePath = values.getAsString(MediaStore.MediaColumns.RELATIVE_PATH);
+			displaySnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.exported_message, filePath, fileName), 7000);
+		} catch (IOException e) {
+			Log.e(TAG, "saveFileIfApiGreaterQ: ", e);
+			displayErrorSnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.error_message));
+		}
+	}
+	
+	private void saveFileIfApiBelowQ(String text) {
+		Log.d(TAG, "saveFileIfApiBelowQ: called");
+		try {
+			File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS + "/generated"), generateFileName());
+			if (!file.exists()) {
+				Objects.requireNonNull(file.getParentFile())
+				       .mkdirs();
+				if (!file.createNewFile()) {
+					displayErrorSnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.error_message));
+				}
+			}
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
+			writer.write(text);
+			writer.close();
+			displaySnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.exported_message, shortenFilePathName(file.getParent()), file.getName()), 7000);
+		} catch (IOException e) {
+			Log.e(TAG, "saveFileIfApiBelowQ: ", e);
+			displayErrorSnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.error_message));
+		}
+	}
+	
+	private String generateFileName() {
+		Log.d(TAG, "getFileName: called");
+		return getString(R.string.fileName, SimpleDateFormat.getDateTimeInstance()
+		                                                    .format(new Date()));
+	}
+	
+	private void displayErrorSnackbar(View snackbarView, String message) {
+		Log.d(TAG, "displayErrorSnackbar: called");
+		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
+		        .setBackgroundTint(ContextCompat.getColor(this, R.color.colorError))
+		        .show();
+	}
+	
+	private String shortenFilePathName(String pathName) {
+		Log.d(TAG, "shortenFilePathName: called");
+		if (pathName != null && pathName.contains(SHORT_PATH_NAME)) {
+			return SHORT_PATH_NAME;
+		} else {
+			return pathName;
 		}
 	}
 }
