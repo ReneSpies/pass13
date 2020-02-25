@@ -16,6 +16,9 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme.Launcher">
+		<meta-data
+			android:name="com.google.android.gms.ads.APPLICATION_ID"
+			android:value="ca-app-pub-8653245564899173~5011556209"/>
 		<activity android:name="com.aresid.simplepasswordgeneratorapp.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW"/>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:ads="http://schemas.android.com/apk/res-auto"
                                                    xmlns:app="http://schemas.android.com/apk/res-auto"
                                                    xmlns:tools="http://schemas.android.com/tools"
                                                    android:layout_width="match_parent"
@@ -82,11 +83,14 @@
 		app:layout_constraintTop_toBottomOf="@+id/main_activity_linear_layout"/>
 	
 	<androidx.appcompat.widget.AppCompatTextView
+		android:id="@+id/main_activity_reminder_textview"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginBottom="@dimen/standard_8dp"
 		android:text="@string/reminder"
 		android:textAlignment="center"
 		android:textAppearance="@style/TextAppearance.AppCompat.Small"
-		app:layout_constraintBottom_toBottomOf="parent"/>
+		ads:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
