@@ -28,7 +28,7 @@ public class SettingsActivity
 		setContentView(R.layout.activity_settings);
 		Toolbar tb = findViewById(R.id.settings_activity_toolbar);
 		tb.setTitle(getString(R.string.settings));
-		tb.setNavigationIcon(R.drawable.ic_arrow_24dp);
+		tb.setNavigationIcon(R.drawable.ic_arrow);
 		setSupportActionBar(tb);
 		getSupportFragmentManager().beginTransaction()
 		                           .replace(R.id.settings_container, new SettingsFragment())

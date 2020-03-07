@@ -211,7 +211,7 @@ public class MainActivity
 		if (isActive) {
 			tb.getMenu()
 			  .getItem(0)
-			  .setIcon(getDrawable(R.drawable.ic_brightness_7_24dp));
+			  .setIcon(getDrawable(R.drawable.ic_brightness_7));
 			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 			mCurrentNightMode = NIGHT_MODE_LIGHT;
 			getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE).edit()
@@ -220,7 +220,7 @@ public class MainActivity
 		} else {
 			tb.getMenu()
 			  .getItem(0)
-			  .setIcon(getDrawable(R.drawable.ic_brightness_4_24dp));
+			  .setIcon(getDrawable(R.drawable.ic_brightness_4));
 			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 			mCurrentNightMode = NIGHT_MODE_NIGHT;
 			getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE).edit()
