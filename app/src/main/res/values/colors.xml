@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="colorPrimary">#1DE9B6</color>
-	<color name="colorPrimaryDark">#00BFA5</color>
-	<color name="colorSecondary">@color/colorPrimaryDark</color>
-	<color name="colorWhite">#ffffff</color>
-	<color name="colorError">#ff483b</color>
+	<color name="primary">#1DE9B6</color>
+	<color name="primary_dark">#00BFA5</color>
+	<color name="secondary">@color/primary_dark</color>
+	<color name="white">#fff</color>
+	<color name="error">#ff483b</color>
+	<color name="black">#000</color>
 </resources>

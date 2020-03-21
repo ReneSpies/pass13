@@ -23,7 +23,7 @@ public class SettingsActivity
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate: called");
-		setTheme(R.style.AppTheme);
+		setTheme(R.style.Gratify_AppTheme);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
 		Toolbar tb = findViewById(R.id.settings_activity_toolbar);

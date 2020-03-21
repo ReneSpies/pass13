@@ -7,9 +7,9 @@
 	<string name="reminder">Aufschreiben nicht vergessen!</string>
 	<string name="settings">Einstellungen</string>
 	<string name="lower_case">Mit Kleinbuchstaben</string>
-	<string name="numbers">Mit Zahlen</string>
+	<string name="numbers_text">Mit Zahlen</string>
 	<string name="password_length">Passwort länge</string>
-	<string name="special_characters">Mit Sonderzeichen</string>
+	<string name="special_characters_text">Mit Sonderzeichen</string>
 	<string name="upper_case">Mit Großbuchstaben</string>
 	<string name="fileName">generiert am %1s</string>
 </resources>

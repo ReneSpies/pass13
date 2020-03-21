@@ -3,7 +3,7 @@
 	<SwitchPreference
 		android:key="special characters"
 		android:summary="$%=?..."
-		android:title="@string/special_characters"/>
+		android:title="@string/special_characters_text"/>
 	<SwitchPreference
 		android:defaultValue="true"
 		android:enabled="true"
@@ -15,7 +15,7 @@
 		android:title="@string/lower_case"/>
 	<SwitchPreference
 		android:key="numbers"
-		android:title="@string/numbers"/>
+		android:title="@string/numbers_text"/>
 	<SeekBarPreference
 		android:defaultValue="10"
 		android:key="password length"

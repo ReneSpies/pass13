@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -15,8 +14,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,6 +24,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -44,57 +43,43 @@ import java.util.Random;
 
 public class MainActivity
 		extends AppCompatActivity
-		implements SharedPreferences.OnSharedPreferenceChangeListener {
+		implements OnMainFragmentInteractionListener {
 	// TODO: Let user customize which special characters to use.
 	// TODO: Implement Google AdWords.
 	// TODO: Rollout a paid version for $1 USD.
-	static final         String  KEY_PASSWORD_LENGTH    = "password length";
-	private static final int     NIGHT_MODE_LIGHT       = 16;
-	private static final int     NIGHT_MODE_NIGHT       = 32;
-	private static final String  TAG                    = "MainActivity";
-	private static final String  PREFS_NIGHT_MODE       = "night_mode";
-	private static final String  KEY_LOWER_CASE         = "lower case";
+	static final         String        KEY_PASSWORD_LENGTH    = "password length";
+	private static final int           NIGHT_MODE_LIGHT       = 16;
+	private static final int           NIGHT_MODE_NIGHT       = 32;
+	private static final String        TAG                    = "MainActivity";
+	private static final String        PREFS_NIGHT_MODE       = "night_mode";
+	private static final String        KEY_LOWER_CASE         = "lower case";
 	private static final String  KEY_UPPER_CASE         = "upper case";
 	private static final String  KEY_SPECIAL_CHARACTERS = "special characters";
 	private static final String  KEY_NUMBERS            = "numbers";
 	private static final String  PASSWORD_TEXTVIEW_KEY  = "password";
-	private static final String  ALPHABET               = "abcdefghijklmnopqrstuvwxyz";
-	private static final String  SPECIAL_CHARS          = "$%&=?!-_.,;:#*+<>";
-	private static final String  NUMBERS                = "0123456789";
-	private static final String  SHORT_PATH_NAME        = "Documents/generated";
-	private              int     mCurrentNightMode;
-	private              boolean mLowerCase;
-	private              boolean mUpperCase;
-	private              boolean mSpecialCharacters;
-	private              boolean mNumbers;
+	private static final String        ALPHABET               = "abcdefghijklmnopqrstuvwxyz";
+	private static final String        SPECIAL_CHARS          = "$%&=?!-_.,;:#*+<>";
+	private static final String        NUMBERS                = "0123456789";
+	private static final String        SHORT_PATH_NAME        = "Documents/generated";
+	private              int           mCurrentNightMode;
+	private              boolean       mLowerCase;
+	private              boolean       mUpperCase;
+	private              boolean       mSpecialCharacters;
+	private              boolean       mNumbers;
+	private              NavController mNavController;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate: called");
-		setTheme(R.style.AppTheme);
+		setTheme(R.style.Gratify_AppTheme);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		setUpToolbar();
-		setCurrentNightModeFromSharedPrefs();
-		// Register OnSharedPreferencesChangeListener.
-		PreferenceManager.getDefaultSharedPreferences(this)
-		                 .registerOnSharedPreferenceChangeListener(this);
-		setSettingsValuesFromSharedPrefs();
-		// Sets password text to last saved state if activity is recreated.
-		if (savedInstanceState != null) {
-			setPasswordText(Objects.requireNonNull(savedInstanceState.getString(PASSWORD_TEXTVIEW_KEY)));
-		} else {
-			setPasswordText(generateNewPassword());
-		}
+		setUpNavController(findViewById(R.id.nav_host_fragment));
 	}
 	
-	private void setUpToolbar() {
-		Log.d(TAG, "setUpToolbar: called");
-		Toolbar toolbar = findViewById(R.id.main_activity_toolbar);
-		toolbar.setElevation(0);
-		setSupportActionBar(toolbar);
-		Objects.requireNonNull(getSupportActionBar())
-		       .setDisplayShowTitleEnabled(false);
+	private void setUpNavController(View navHostFragment) {
+		Log.d(TAG, "setUpNavController: called");
+		mNavController = Navigation.findNavController(navHostFragment);
 	}
 	
 	private void setCurrentNightModeFromSharedPrefs() {
@@ -120,7 +105,7 @@ public class MainActivity
 	
 	private void setPasswordText(@NonNull String text) {
 		Log.d(TAG, "setPasswordText: called");
-		TextView password = findViewById(R.id.main_activity_password_view);
+		TextView password = findViewById(R.id.password_text_view);
 		password.setText(text);
 	}
 	
@@ -164,50 +149,10 @@ public class MainActivity
 		return newPassword.toString();
 	}
 	
-	@Override
-	public void onConfigurationChanged(@NonNull Configuration newConfig) {
-		Log.d(TAG, "onConfigurationChanged: called");
-		mCurrentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
-		getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE).edit()
-		                                                    .putInt(PREFS_NIGHT_MODE, mCurrentNightMode)
-		                                                    .apply();
-	}
-	
-	@Override
-	protected void onDestroy() {
-		Log.d(TAG, "onDestroy: called");
-		super.onDestroy();
-		// Unregister OnSharedPreferencesChangedListener
-		PreferenceManager.getDefaultSharedPreferences(this)
-		                 .unregisterOnSharedPreferenceChangeListener(this);
-	}
-	
-	@Override
-	protected void onSaveInstanceState(@NonNull Bundle outState) {
-		Log.d(TAG, "onSaveInstanceState: called");
-		super.onSaveInstanceState(outState);
-		// Saves the last text of password text view so it does not get lost upon activity recreation.
-		TextView password = findViewById(R.id.main_activity_password_view);
-		outState.putString(PASSWORD_TEXTVIEW_KEY, password.getText()
-		                                                  .toString());
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		Log.d(TAG, "onCreateOptionsMenu: called");
-		getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-		if (mCurrentNightMode == NIGHT_MODE_LIGHT) {
-			setNightMode(true);
-		} else if (mCurrentNightMode == NIGHT_MODE_NIGHT) {
-			setNightMode(false);
-		}
-		return true;
-	}
-	
 	private void setNightMode(boolean isActive) {
 		Log.d(TAG, "setNightMode: called");
 		Log.d(TAG, "setNightMode: activated = " + isActive);
-		Toolbar tb = findViewById(R.id.main_activity_toolbar);
+		Toolbar tb = findViewById(R.id.toolbar);
 		if (isActive) {
 			tb.getMenu()
 			  .getItem(0)
@@ -229,50 +174,6 @@ public class MainActivity
 		}
 	}
 	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Log.d(TAG, "onOptionsItemSelected: called");
-		Log.d(TAG, "onOptionsItemSelected: item = " + item.toString());
-		switch (item.getItemId()) {
-			case R.id.toolbar_change_theme:
-				Log.d(TAG, "onOptionsItemSelected: current night mode = " + mCurrentNightMode);
-				if (mCurrentNightMode == NIGHT_MODE_LIGHT) {
-					setNightMode(false);
-				} else if (mCurrentNightMode == NIGHT_MODE_NIGHT) {
-					setNightMode(true);
-				}
-				break;
-			case R.id.toolbar_settings:
-				startActivity(new Intent(this, SettingsActivity.class));
-				break;
-		}
-		return true;
-	}
-	
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		Log.d(TAG, "onSharedPreferenceChanged: called");
-		Log.d(TAG, "onSharedPreferenceChanged: key = " + key);
-		switch (key) {
-			case KEY_LOWER_CASE:
-				mLowerCase = sharedPreferences.getBoolean(key, true);
-				Log.d(TAG, "onSharedPreferenceChanged: " + key + " = " + mLowerCase);
-				break;
-			case KEY_UPPER_CASE:
-				mUpperCase = sharedPreferences.getBoolean(key, true);
-				Log.d(TAG, "onSharedPreferenceChanged: " + key + " = " + mUpperCase);
-				break;
-			case KEY_SPECIAL_CHARACTERS:
-				mSpecialCharacters = sharedPreferences.getBoolean(key, false);
-				Log.d(TAG, "onSharedPreferenceChanged: " + key + " = " + mSpecialCharacters);
-				break;
-			case KEY_NUMBERS:
-				mNumbers = sharedPreferences.getBoolean(key, false);
-				Log.d(TAG, "onSharedPreferenceChanged: " + key + " = " + mNumbers);
-				break;
-		}
-	}
-	
 	public void onRefreshClick(View view) {
 		Log.d(TAG, "onRefreshClick: called");
 		setPasswordText(generateNewPassword());
@@ -280,7 +181,7 @@ public class MainActivity
 	
 	public void onCopyClick(View view) {
 		Log.d(TAG, "onCopyClick: called");
-		TextView password = findViewById(R.id.main_activity_password_view);
+		TextView password = findViewById(R.id.password_text_view);
 		ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		ClipData clip = ClipData.newPlainText("generated", password.getText()
 		                                                           .toString()
@@ -295,13 +196,13 @@ public class MainActivity
 		Log.d(TAG, "displaySnackbar: called");
 		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
 		        .setDuration(duration)
-		        .setBackgroundTint(ContextCompat.getColor(this, R.color.colorSecondary))
+		        .setBackgroundTint(ContextCompat.getColor(this, R.color.secondary))
 		        .show();
 	}
 	
 	public void onExportClick(View view) {
 		Log.d(TAG, "onExportClick: called");
-		TextView password = findViewById(R.id.main_activity_password_view);
+		TextView password = findViewById(R.id.password_text_view);
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 13);
 		}
@@ -332,10 +233,10 @@ public class MainActivity
 			osw.write(text);
 			osw.close();
 			String filePath = values.getAsString(MediaStore.MediaColumns.RELATIVE_PATH);
-			displaySnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.exported_message, filePath, fileName), 7000);
+			displaySnackbar(findViewById(R.id.export_button), getString(R.string.exported_message, filePath, fileName), 7000);
 		} catch (IOException e) {
 			Log.e(TAG, "saveFileIfApiGreaterQ: ", e);
-			displayErrorSnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.error_message));
+			displayErrorSnackbar(findViewById(R.id.export_button), getString(R.string.error_message));
 		}
 	}
 	
@@ -347,16 +248,16 @@ public class MainActivity
 				Objects.requireNonNull(file.getParentFile())
 				       .mkdirs();
 				if (!file.createNewFile()) {
-					displayErrorSnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.error_message));
+					displayErrorSnackbar(findViewById(R.id.export_button), getString(R.string.error_message));
 				}
 			}
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
 			writer.write(text);
 			writer.close();
-			displaySnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.exported_message, shortenFilePathName(file.getParent()), file.getName()), 7000);
+			displaySnackbar(findViewById(R.id.export_button), getString(R.string.exported_message, shortenFilePathName(file.getParent()), file.getName()), 7000);
 		} catch (IOException e) {
 			Log.e(TAG, "saveFileIfApiBelowQ: ", e);
-			displayErrorSnackbar(findViewById(R.id.main_activity_export_button), getString(R.string.error_message));
+			displayErrorSnackbar(findViewById(R.id.export_button), getString(R.string.error_message));
 		}
 	}
 	
@@ -369,7 +270,7 @@ public class MainActivity
 	private void displayErrorSnackbar(View snackbarView, String message) {
 		Log.d(TAG, "displayErrorSnackbar: called");
 		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
-		        .setBackgroundTint(ContextCompat.getColor(this, R.color.colorError))
+		        .setBackgroundTint(ContextCompat.getColor(this, R.color.error))
 		        .show();
 	}
 	
@@ -380,5 +281,11 @@ public class MainActivity
 		} else {
 			return pathName;
 		}
+	}
+	
+	@Override
+	public void onSettingsMenuButtonClicked() {
+		Log.d(TAG, "onSettingsMenuButtonClicked: called");
+		mNavController.navigate(R.id.action_mainFragment_to_settingsFragment);
 	}
 }
