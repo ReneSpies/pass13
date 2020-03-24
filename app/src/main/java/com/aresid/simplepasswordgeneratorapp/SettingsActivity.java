@@ -26,10 +26,10 @@ public class SettingsActivity
 		setTheme(R.style.Gratify_AppTheme);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
-		Toolbar tb = findViewById(R.id.settings_activity_toolbar);
-		tb.setTitle(getString(R.string.settings));
-		tb.setNavigationIcon(R.drawable.ic_arrow);
-		setSupportActionBar(tb);
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		toolbar.setTitle(getString(R.string.settings));
+		toolbar.setNavigationIcon(R.drawable.ic_arrow);
+		setSupportActionBar(toolbar);
 		getSupportFragmentManager().beginTransaction()
 		                           .replace(R.id.settings_container, new SettingsFragment())
 		                           .commit();

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".SettingsFragment">
+	
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:padding="@dimen/standard_padding">
+		
+		<Switch
+			android:id="@+id/lower_case_switch"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:checked="true"
+			android:text="@string/lower_case"
+			android:textAppearance="?attr/textAppearanceSubtitle1"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"/>
+		
+		<Switch
+			android:id="@+id/upper_case_switch"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/standard_margin"
+			android:checked="true"
+			android:text="@string/upper_case"
+			android:textAppearance="?attr/textAppearanceSubtitle1"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/lower_case_switch"/>
+		
+		<Switch
+			android:id="@+id/special_characters_switch"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/standard_margin"
+			android:text="@string/special_characters_text"
+			android:textAppearance="?attr/textAppearanceSubtitle1"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/upper_case_switch"/>
+		
+		<Switch
+			android:id="@+id/numbers_switch"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/standard_margin"
+			android:text="@string/numbers_text"
+			android:textAppearance="?attr/textAppearanceSubtitle1"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/special_characters_switch"/>
+		
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/standard_margin"
+			android:orientation="vertical"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/numbers_switch">
+			
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/password_length"
+				android:textAppearance="?attr/textAppearanceSubtitle1"/>
+			
+			<SeekBar
+				android:id="@+id/password_length_seekbar"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:max="64"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/numbers_switch"/>
+		</LinearLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

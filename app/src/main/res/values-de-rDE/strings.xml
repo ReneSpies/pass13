@@ -12,4 +12,7 @@
 	<string name="special_characters_text">Mit Sonderzeichen</string>
 	<string name="upper_case">Mit Großbuchstaben</string>
 	<string name="fileName">generiert am %1s</string>
+	<string name="dark_mode">Dunkel</string>
+	<string name="light_mode">Hell</string>
+	<string name="unlock_features">Features für %1s freischalten</string>
 </resources>

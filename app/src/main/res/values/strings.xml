@@ -24,4 +24,5 @@
 	<string name="special_characters" translatable="false">!$%&amp;></string>
 	<string name="numbers" translatable="false">0123456789</string>
 	<string name="password_length_key" translatable="false">password length</string>
+	<string name="unlock_features">Unlock features for %1s</string>
 </resources>

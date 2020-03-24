@@ -6,30 +6,12 @@
                                                    android:layout_height="match_parent"
                                                    tools:context=".MainFragment">
 	
-	<com.google.android.material.appbar.MaterialToolbar
-		android:id="@+id/toolbar"
-		android:layout_width="match_parent"
-		android:layout_height="?attr/actionBarSize"
-		android:background="@color/primary"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent">
-		
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:fontFamily="@font/comfortaa_medium"
-			android:gravity="center"
-			android:text="@string/app_name"
-			android:textAppearance="?attr/textAppearanceHeadline6"
-			android:textStyle="bold"/>
-	</com.google.android.material.appbar.MaterialToolbar>
-	
 	<androidx.appcompat.widget.AppCompatTextView
 		android:id="@+id/password_text_view"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="32.13dp"
+		android:fontFamily="monospace"
 		android:layout_marginEnd="32.13dp"
 		android:textAlignment="center"
 		android:textAppearance="?attr/textAppearanceBody1"
@@ -40,9 +22,9 @@
 		android:id="@+id/linear_layout"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="@dimen/standard_8dp"
+		android:layout_marginTop="@dimen/eight"
 		android:orientation="horizontal"
-		android:padding="@dimen/standard_8dp"
+		android:padding="@dimen/eight"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/password_text_view">
@@ -51,18 +33,18 @@
 			android:id="@+id/refresh_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginEnd="@dimen/standard_4dp"
+			android:layout_marginEnd="@dimen/four"
 			android:background="?attr/selectableItemBackgroundBorderless"
-			android:padding="@dimen/standard_8dp"
+			android:padding="@dimen/eight"
 			android:src="@drawable/ic_refresh"/>
 		
 		<androidx.appcompat.widget.AppCompatImageButton
 			android:id="@+id/copy_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="@dimen/standard_4dp"
+			android:layout_marginStart="@dimen/four"
 			android:background="?attr/selectableItemBackgroundBorderless"
-			android:padding="@dimen/standard_8dp"
+			android:padding="@dimen/eight"
 			android:src="@drawable/ic_content_copy"/>
 	</LinearLayout>
 	
@@ -70,9 +52,9 @@
 		android:id="@+id/export_button"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/standard_8dp"
+		android:layout_margin="@dimen/eight"
 		android:background="?attr/selectableItemBackgroundBorderless"
-		android:padding="@dimen/standard_8dp"
+		android:padding="@dimen/eight"
 		android:src="@drawable/ic_file_download"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +64,7 @@
 		android:id="@+id/reminder_textd_view"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginBottom="@dimen/standard_8dp"
+		android:layout_marginBottom="@dimen/eight"
 		android:text="@string/reminder"
 		android:textAlignment="center"
 		android:textAppearance="@style/TextAppearance.AppCompat.Small"
