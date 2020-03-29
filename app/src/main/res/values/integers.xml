@@ -3,6 +3,6 @@
 	<integer name="short_animation_duration">150</integer>
 	<integer name="write_external_storage_permission_request_code">1</integer>
 	<integer name="standard_toolbar_elevation">0</integer>
-	<integer name="night_mode_light">16</integer>
-	<integer name="night_mode_dark">32</integer>
+	<integer name="night_mode_dark">16</integer>
+	<integer name="night_mode_light">32</integer>
 </resources>

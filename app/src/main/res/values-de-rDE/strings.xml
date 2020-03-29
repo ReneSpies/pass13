@@ -14,5 +14,8 @@
 	<string name="fileName">generiert am %1s</string>
 	<string name="dark_mode">Dunkel</string>
 	<string name="light_mode">Hell</string>
-	<string name="unlock_features">Features für %1s freischalten</string>
+	<string name="unlock_features">Features freischalten</string>
+	<string name="give_me">Will haben!</string>
+	<string name="cancel">Abbrechen</string>
+	<string name="what_you_ll_get">Das ist drin:</string>
 </resources>

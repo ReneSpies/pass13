@@ -34,7 +34,6 @@ public class MainFragment
 		           SharedPreferences.OnSharedPreferenceChangeListener {
 	private static final String                        TAG = "MainFragment";
 	private              TextView                      mPasswordTextView;
-	private              int                           mCurrentNightMode;
 	private              boolean                       mLowerCaseActivated;
 	private              boolean                       mUpperCaseActivated;
 	private              boolean                       mSpecialCharactersActivated;
@@ -79,12 +78,27 @@ public class MainFragment
 	}
 	
 	@Override
-	public void onSaveInstanceState(@NonNull Bundle outState) {
-		Log.d(TAG, "onSaveInstanceState: called");
-		super.onSaveInstanceState(outState);
-		String password = mPasswordTextView.getText()
-		                                   .toString();
-		outState.putString(getString(R.string.password_textview_key), password);
+	public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
+	                         Bundle savedInstanceState) {
+		Log.d(TAG, "onCreateView: called");
+		mInteractionListener.onMainFragmentViewCreated();
+		// Inflate the layout for this fragment
+		View view = inflater.inflate(R.layout.fragment_main, container, false);
+		// Set onClickListeners
+		view.findViewById(R.id.refresh_button)
+		    .setOnClickListener(this);
+		view.findViewById(R.id.copy_button)
+		    .setOnClickListener(this);
+		view.findViewById(R.id.export_button)
+		    .setOnClickListener(this);
+		mPasswordTextView = view.findViewById(R.id.password_text_view);
+		setSettingsValuesFromSharedPrefs();
+		if (savedInstanceState != null) {
+			setPasswordTextView(savedInstanceState.getString(getString(R.string.password_text_view_key)));
+		} else {
+			setPasswordTextView(getNewPassword());
+		}
+		return view;
 	}
 	
 	@Override
@@ -113,27 +127,12 @@ public class MainFragment
 	}
 	
 	@Override
-	public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
-	                         Bundle savedInstanceState) {
-		Log.d(TAG, "onCreateView: called");
-		mInteractionListener.onMainFragmentViewCreated();
-		// Inflate the layout for this fragment
-		View view = inflater.inflate(R.layout.fragment_main, container, false);
-		// Set onClickListeners
-		view.findViewById(R.id.refresh_button)
-		    .setOnClickListener(this);
-		view.findViewById(R.id.copy_button)
-		    .setOnClickListener(this);
-		view.findViewById(R.id.export_button)
-		    .setOnClickListener(this);
-		mPasswordTextView = view.findViewById(R.id.password_text_view);
-		setSettingsValuesFromSharedPrefs();
-		if (savedInstanceState != null) {
-			setPasswordTextView(savedInstanceState.getString(getString(R.string.password_textview_key)));
-		} else {
-			setPasswordTextView(getNewPassword());
-		}
-		return view;
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		Log.d(TAG, "onSaveInstanceState: called");
+		super.onSaveInstanceState(outState);
+		String password = mPasswordTextView.getText()
+		                                   .toString();
+		outState.putString(getString(R.string.password_text_view_key), password);
 	}
 	
 	private void onCopyButtonClicked(View view) {

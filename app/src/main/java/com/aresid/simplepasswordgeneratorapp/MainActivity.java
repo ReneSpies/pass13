@@ -9,10 +9,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +27,10 @@ import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.BufferedWriter;
@@ -38,31 +45,14 @@ import java.util.Objects;
 public class MainActivity
 		extends AppCompatActivity
 		implements OnFragmentInteractionListener,
-		           SharedPreferences.OnSharedPreferenceChangeListener {
+		           View.OnClickListener {
 	// TODO: Implement Google AdMob and give the option to pay for the app to unlock
 	//  special features.
 	// Features included in the paid version: extra setting for specific export path,
 	// prompt user for path if setting is not activated, remove ads.
-	static final         String        KEY_PASSWORD_LENGTH    = "password length";
-	private static final int           NIGHT_MODE_LIGHT       = 16;
-	private static final int           NIGHT_MODE_NIGHT       = 32;
-	private static final String        TAG                    = "MainActivity";
-	private static final String        PREFS_NIGHT_MODE       = "night_mode";
-	private static final String        KEY_LOWER_CASE         = "lower case";
-	private static final String        KEY_UPPER_CASE         = "upper case";
-	private static final String        KEY_SPECIAL_CHARACTERS = "special characters";
-	private static final String        KEY_NUMBERS            = "numbers";
-	private static final String        PASSWORD_TEXTVIEW_KEY  = "password";
-	private static final String        ALPHABET               =
-			"abcdefghijklmnopqrstuvwxyz";
-	private static final String        SPECIAL_CHARS          = "$%&=?!-_.,;:#*+<>";
-	private static final String        NUMBERS                = "0123456789";
-	private static final String        SHORT_PATH_NAME        = "Documents/generated";
+	private static final String        TAG             = "MainActivity";
+	private static final String        SHORT_PATH_NAME = "Documents/generated";
 	private              int           mCurrentNightMode;
-	private              boolean       mLowerCaseActivated;
-	private              boolean       mUpperCaseActivated;
-	private              boolean       mSpecialCharactersActivated;
-	private              boolean       mNumbersActivated;
 	private              NavController mNavController;
 	private              Toolbar       mToolbar;
 	
@@ -73,9 +63,38 @@ public class MainActivity
 		super.onCreate(savedInstanceState);
 		setCurrentNightModeFromSharedPreferences();
 		setContentView(R.layout.activity_main);
-		registerSharedPreferencesListener();
 		setUpNavController(findViewById(R.id.nav_host_fragment));
 		setUpToolbar();
+		initializeMobileAds();
+		loadAds();
+	}
+	
+	private void setCurrentNightModeFromSharedPreferences() {
+		Log.d(TAG, "setCurrentNightModeFromSharedPreferences: called");
+		String nightModeKey = getString(R.string.night_mode_key);
+		SharedPreferences preferences = getSharedPreferences(nightModeKey,
+		                                                     Context.MODE_PRIVATE);
+		if (preferences != null) {
+			// If preferences not null and contain a night mode int
+			// set the current night mode accordingly
+			mCurrentNightMode = preferences.getInt(nightModeKey,
+			                                       getResources().getConfiguration().uiMode &
+			                                       Configuration.UI_MODE_NIGHT_MASK);
+		} else {
+			mCurrentNightMode = getResources().getConfiguration().uiMode &
+			                    Configuration.UI_MODE_NIGHT_MASK;
+		}
+	}
+	
+	private void setUpToolbar() {
+		Log.d(TAG, "setUpToolbar: called");
+		// Set toolbar member variable here
+		mToolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(mToolbar);
+		mToolbar.setNavigationOnClickListener(this);
+		if (getSupportActionBar() != null) {
+			getSupportActionBar().setDisplayShowTitleEnabled(false);
+		}
 	}
 	
 	private void setUpNavController(View navHostFragment) {
@@ -83,37 +102,24 @@ public class MainActivity
 		mNavController = Navigation.findNavController(navHostFragment);
 	}
 	
-	private void setCurrentNightModeFromSharedPreferences() {
-		Log.d(TAG, "setCurrentNightModeFromSharedPreferences: called");
-		int nightMode;
-		String nightModeKey = getString(R.string.night_mode_key);
-		SharedPreferences preferences = getSharedPreferences(nightModeKey,
-		                                                     Context.MODE_PRIVATE);
-		if (preferences != null && preferences.contains(nightModeKey)) {
-			// If preferences not null and contain a night mode int
-			// set the current night mode accordingly
-			nightMode = preferences.getInt(nightModeKey,
-			                               getResources().getConfiguration().uiMode &
-			                               Configuration.UI_MODE_NIGHT_MASK);
-			mCurrentNightMode = nightMode;
-		} else {
-			nightMode = getResources().getConfiguration().uiMode &
-			            Configuration.UI_MODE_NIGHT_MASK;
-			mCurrentNightMode = nightMode;
-		}
+	private void initializeMobileAds() {
+		Log.d(TAG, "initializeMobileAds: called");
+		MobileAds.initialize(this, initializationStatus -> {
+		});
 	}
 	
-	private void registerSharedPreferencesListener() {
-		Log.d(TAG, "registerSharedPreferencesListener: called");
-		androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
-		                                     .registerOnSharedPreferenceChangeListener(this);
-	}
-	
-	private void setUpToolbar() {
-		Log.d(TAG, "setUpToolbar: called");
-		mToolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(mToolbar);
-		getSupportActionBar().setDisplayShowTitleEnabled(false);
+	private void loadAds() {
+		Log.d(TAG, "loadAds: called");
+		FrameLayout adViewContainer = findViewById(R.id.ad_view_container);
+		AdView adView = new AdView(this);
+		adView.setAdUnitId(getString(R.string.adaptive_banner_ad_unit_id));
+		adViewContainer.addView(adView);
+		AdRequest adRequest =
+				new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+		                                             .build();
+		AdSize adSize = getAdSize();
+		adView.setAdSize(adSize);
+		adView.loadAd(adRequest);
 	}
 	
 	@Override
@@ -126,114 +132,15 @@ public class MainActivity
 		                                                                              .apply();
 	}
 	
-	@Override
-	public void onDestroy() {
-		Log.d(TAG, "onDestroy: called");
-		super.onDestroy();
-		unregisterSharedPreferencesListener();
-	}
-	
-	private void unregisterSharedPreferencesListener() {
-		Log.d(TAG, "unregisterSharedPreferencesListener: called");
-		androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
-		                                     .unregisterOnSharedPreferenceChangeListener(this);
-	}
-	
-	private void setPasswordText(@NonNull String text) {
-		Log.d(TAG, "setPasswordText: called");
-		TextView password = findViewById(R.id.password_text_view);
-		password.setText(text);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		Log.d(TAG, "onCreateOptionsMenu: called");
-		getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-		if (mCurrentNightMode == getResources().getInteger(R.integer.night_mode_light)) {
-			renameToolbarMenuNightMode(true);
-		} else if (mCurrentNightMode ==
-		           getResources().getInteger(R.integer.night_mode_dark)) {
-			renameToolbarMenuNightMode(false);
-		}
-		return true;
-	}
-	
-	private void renameToolbarMenuNightMode(boolean rename) {
-		Log.d(TAG, "renameToolbarMenuNightMode: called");
-		Menu menu = mToolbar.getMenu();
-		if (rename) {
-			menu.getItem(0)
-			    .setTitle(getString(R.string.light_mode));
-			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-			mCurrentNightMode = getResources().getInteger(R.integer.night_mode_light);
-			getSharedPreferences(getString(R.string.night_mode_key),
-			                     Context.MODE_PRIVATE).edit()
-			                                                                              .putInt(getString(R.string.night_mode_key), mCurrentNightMode)
-			                                                                              .apply();
-		} else {
-			menu.getItem(0)
-			    .setTitle(getString(R.string.dark_mode));
-			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-			mCurrentNightMode = getResources().getInteger(R.integer.night_mode_dark);
-			getSharedPreferences(getString(R.string.night_mode_key),
-			                     Context.MODE_PRIVATE).edit()
-			                                                                              .putInt(getString(R.string.night_mode_key), mCurrentNightMode)
-			                                                                              .apply();
-		}
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.settings:
-				onMenuSettingsClicked();
-				break;
-		}
-		return true;
-	}
-	
-	private void onMenuSettingsClicked() {
-		Log.d(TAG, "onMenuSettingsClicked: called");
-		mNavController.navigate(R.id.action_mainFragment_to_settingsFragment);
-	}
-	
-	private void setNightMode(boolean isActive) {
-		Log.d(TAG, "setNightMode: called");
-		Log.d(TAG, "setNightMode: activated = " + isActive);
-		if (isActive) {
-			mToolbar.getMenu()
-			        .getItem(0)
-			        .setIcon(getDrawable(R.drawable.ic_brightness_7));
-			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-			mCurrentNightMode = NIGHT_MODE_LIGHT;
-			getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE).edit()
-			                                                    .putInt(PREFS_NIGHT_MODE, mCurrentNightMode)
-			                                                    .apply();
-		} else {
-			mToolbar.getMenu()
-			        .getItem(0)
-			        .setIcon(getDrawable(R.drawable.ic_brightness_4));
-			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-			mCurrentNightMode = NIGHT_MODE_NIGHT;
-			getSharedPreferences(PREFS_NIGHT_MODE, MODE_PRIVATE).edit()
-			                                                    .putInt(PREFS_NIGHT_MODE
-					                                                    ,
-					                                                    mCurrentNightMode)
-			                                                    .apply();
-		}
-	}
-	
-	private String generateFileName() {
-		Log.d(TAG, "getFileName: called");
-		return getString(R.string.fileName, SimpleDateFormat.getDateTimeInstance()
-		                                                    .format(new Date()));
-	}
-	
-	private void displayErrorSnackbar(View snackbarView, String message) {
-		Log.d(TAG, "displayErrorSnackbar: called");
-		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
-		        .setBackgroundTint(ContextCompat.getColor(this, R.color.error))
-		        .show();
+	private AdSize getAdSize() {
+		Log.d(TAG, "getAdSize: called");
+		Display display = getWindowManager().getDefaultDisplay();
+		DisplayMetrics outMetrics = new DisplayMetrics();
+		display.getMetrics(outMetrics);
+		float widthPixels = outMetrics.widthPixels;
+		float density = outMetrics.density;
+		int adWidth = (int) (widthPixels / density);
+		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth);
 	}
 	
 	@RequiresApi (api = Build.VERSION_CODES.Q)
@@ -255,7 +162,8 @@ public class MainActivity
 			String filePath = values.getAsString(MediaStore.MediaColumns.RELATIVE_PATH);
 		} catch (IOException e) {
 			Log.e(TAG, "saveFileIfApiGreaterQ: ", e);
-			displayErrorSnackbar(findViewById(R.id.export_button), getString(R.string.error_message));
+			displayErrorSnackbar(findViewById(R.id.export_button),
+			                     getString(R.string.error_message));
 		}
 	}
 	
@@ -277,8 +185,85 @@ public class MainActivity
 			writer.close();
 		} catch (IOException e) {
 			Log.e(TAG, "saveFileIfApiBelowQ: ", e);
-			displayErrorSnackbar(findViewById(R.id.export_button), getString(R.string.error_message));
+			displayErrorSnackbar(findViewById(R.id.export_button),
+			                     getString(R.string.error_message));
 		}
+	}
+	
+	@Override
+	public void onMainFragmentViewCreated() {
+		Log.d(TAG, "onMainFragmentViewCreated: called");
+		mToolbar.setTitle(null);
+		mToolbar.inflateMenu(R.menu.toolbar_menu);
+		showPass13ToolbarTitle(true);
+		setToolbarNavigationIcon(false);
+	}
+	
+	private void setToolbarNavigationIcon(boolean set) {
+		Log.d(TAG, "setToolbarNavigationIcon: called");
+		if (set) {
+			mToolbar.setNavigationIcon(R.drawable.ic_done);
+		} else {
+			mToolbar.setNavigationIcon(null);
+		}
+	}
+	
+	private void onMenuSettingsClicked() {
+		Log.d(TAG, "onMenuSettingsClicked: called");
+		mNavController.navigate(R.id.action_mainFragment_to_settingsFragment);
+	}
+	
+	@Override
+	public void onSettingsFragmentViewCreated() {
+		Log.d(TAG, "onSettingsFragmentViewCreated: called");
+		mToolbar.setTitle(getString(R.string.settings));
+		showPass13ToolbarTitle(false);
+		enableToolbarMenu(false);
+		setToolbarNavigationIcon(true);
+	}
+	
+	private String generateFileName() {
+		Log.d(TAG, "getFileName: called");
+		return getString(R.string.fileName, SimpleDateFormat.getDateTimeInstance()
+		                                                    .format(new Date()));
+	}
+	
+	private void displayErrorSnackbar(View snackbarView, String message) {
+		Log.d(TAG, "displayErrorSnackbar: called");
+		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
+		        .setBackgroundTint(ContextCompat.getColor(this, R.color.error))
+		        .show();
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.d(TAG, "onCreateOptionsMenu: called");
+		getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+		if (mCurrentNightMode == getResources().getInteger(R.integer.night_mode_dark)) {
+			// Default state of toolbar menu item is "Light Mode" so change it if dark
+			// mode is activated from shared preferences
+			activateNightMode(true);
+		} else if (mCurrentNightMode ==
+		           getResources().getInteger(R.integer.night_mode_light)) {
+			activateNightMode(false);
+		}
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.change_theme:
+				onMenuChangeThemeClicked();
+				break;
+			case R.id.settings:
+				onMenuSettingsClicked();
+				break;
+			case R.id.unlock_features:
+				onMenuUnlockFeaturesClicked();
+				break;
+		}
+		return true;
 	}
 	
 	private String shortenFilePathName(String pathName) {
@@ -290,13 +275,14 @@ public class MainActivity
 		}
 	}
 	
-	@Override
-	public void onMainFragmentViewCreated() {
-		Log.d(TAG, "onMainFragmentViewCreated: called");
-		mToolbar.setTitle(null);
-		mToolbar.inflateMenu(R.menu.toolbar_menu);
-		showPass13ToolbarTitle(true);
-		enableToolbarMenu(true);
+	private void onMenuChangeThemeClicked() {
+		Log.d(TAG, "onMenuChangeThemeClicked: called");
+		if (mCurrentNightMode == getResources().getInteger(R.integer.night_mode_dark)) {
+			activateNightMode(false);
+		} else if (mCurrentNightMode ==
+		           getResources().getInteger(R.integer.night_mode_light)) {
+			activateNightMode(true);
+		}
 	}
 	
 	private void showPass13ToolbarTitle(boolean show) {
@@ -309,6 +295,13 @@ public class MainActivity
 		}
 	}
 	
+	private void onMenuUnlockFeaturesClicked() {
+		Log.d(TAG, "onMenuUnlockFeaturesClicked: called");
+		// TODO: Show AlertDialog displaying all included features and then start the
+		//  purchase flow on button click
+		new UnlockFeaturesDialog().show(getSupportFragmentManager(), "Doot");
+	}
+	
 	private void enableToolbarMenu(boolean enable) {
 		Log.d(TAG, "enableToolbarMenu: called");
 		if (enable) {
@@ -319,30 +312,52 @@ public class MainActivity
 		}
 	}
 	
-	@Override
-	public void onSettingsFragmentViewCreated() {
-		Log.d(TAG, "onSettingsFragmentViewCreated: called");
-		mToolbar.setTitle(getString(R.string.settings));
-		showPass13ToolbarTitle(false);
-		enableToolbarMenu(false);
+	private void activateNightMode(boolean activate) {
+		Log.d(TAG, "activateNightMode: called");
+		String nightModeKey = getString(R.string.night_mode_key);
+		if (activate) {
+			// Activate dark mode
+			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+			// Set current night mode variable accordingly
+			mCurrentNightMode = getResources().getInteger(R.integer.night_mode_dark);
+			// Save current night mode state in shared preferences
+			getSharedPreferences(nightModeKey, MODE_PRIVATE).edit()
+			                                                .putInt(nightModeKey,
+			                                                        mCurrentNightMode)
+			                                                .apply();
+			renameToolbarMenuNightMode(true);
+		} else {
+			// Activate light mode
+			AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+			// Set current night mode variable accordingly
+			mCurrentNightMode = getResources().getInteger(R.integer.night_mode_light);
+			// Save current night mode state in shared preferences
+			getSharedPreferences(nightModeKey, MODE_PRIVATE).edit()
+			                                                .putInt(nightModeKey,
+			                                                        mCurrentNightMode)
+			                                                .apply();
+			renameToolbarMenuNightMode(false);
+		}
+	}
+	
+	private void renameToolbarMenuNightMode(boolean rename) {
+		Log.d(TAG, "renameToolbarMenuNightMode: called");
+		Menu menu = mToolbar.getMenu();
+		if (rename) {
+			menu.getItem(0)
+			    .setTitle(getString(R.string.light_mode));
+		} else {
+			menu.getItem(0)
+			    .setTitle(getString(R.string.dark_mode));
+		}
 	}
 	
 	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-	                                      String key) {
-		Log.d(TAG, "onSharedPreferenceChanged: called");
-		String lowerCaseKey = getString(R.string.lower_case_key);
-		String upperCaseKey = getString(R.string.upper_case_key);
-		String specialCharactersKey = getString(R.string.special_characters_key);
-		String numbersKey = getString(R.string.numbers_key);
-		if (key.equals(lowerCaseKey)) {
-			mLowerCaseActivated = sharedPreferences.getBoolean(key, true);
-		} else if (key.equals(upperCaseKey)) {
-			mUpperCaseActivated = sharedPreferences.getBoolean(key, true);
-		} else if (key.equals(specialCharactersKey)) {
-			mSpecialCharactersActivated = sharedPreferences.getBoolean(key, false);
-		} else if (key.equals(numbersKey)) {
-			mNumbersActivated = sharedPreferences.getBoolean(key, true);
+	public void onClick(View v) {
+		Log.d(TAG, "onClick: called");
+		if (v.getId() == -1) {
+			// This is the navigation icon
+			onBackPressed();
 		}
 	}
 }
