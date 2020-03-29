@@ -1,6 +1,7 @@
 package com.aresid.simplepasswordgeneratorapp;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,19 +40,18 @@ public class UnlockFeaturesDialog
 		RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 		recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 		ArrayList<Feature> featureArrayList = new ArrayList<>();
-		Feature feature = new Feature(
-				"Texts automatically exported and merged into one " + "excel file");
-		Feature feature1 = new Feature("Removed ads");
-		Feature feature2 = new Feature("Customize export path statically or " +
-		                               "dynamically");
-		featureArrayList.add(feature);
-		featureArrayList.add(feature1);
-		featureArrayList.add(feature2);
+		Feature featureExcelFile = new Feature(getString(R.string.feature_excel_file));
+		Feature featureRemoveAds = new Feature(getString(R.string.feature_remove_ads));
+		Feature featureCustomPath = new Feature(getString(R.string.feature_custom_path));
+		featureArrayList.add(featureExcelFile);
+		featureArrayList.add(featureRemoveAds);
+		featureArrayList.add(featureCustomPath);
 		FeaturesAdapter adapter = new FeaturesAdapter(requireContext(),
 		                                              featureArrayList);
 		recyclerView.setAdapter(adapter);
 		builder.setView(view);
-		builder.setPositiveButton(R.string.give_me, (dialog, which) -> {});
+		builder.setPositiveButton(R.string.give_me,
+		                          this :: onDialogPositiveButtonClicked);
 		builder.setNegativeButton(R.string.cancel, (dialog, which) -> {});
 		AlertDialog dialog = builder.create();
 		dialog.setOnShowListener(dialog1 -> {
@@ -61,5 +61,10 @@ public class UnlockFeaturesDialog
 			      .setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
 		});
 		return dialog;
+	}
+	
+	private void onDialogPositiveButtonClicked(DialogInterface dialog, int which) {
+		Log.d(TAG, "onDialogPositiveButtonClicked: called");
+		// TODO: Google in app billing
 	}
 }

@@ -29,4 +29,7 @@
 	<string name="give_me">Give me!</string>
 	<string name="cancel">Cancel</string>
 	<string name="what_you_ll_get">What you\'ll get:</string>
+	<string name="feature_excel_file">Passwords automatically exported and merged into single password secure excel file</string>
+	<string name="feature_remove_ads">Remove ads</string>
+	<string name="feature_custom_path">Customize export path statically or dynamically</string>
 </resources>

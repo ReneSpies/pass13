@@ -18,4 +18,7 @@
 	<string name="give_me">Will haben!</string>
 	<string name="cancel">Abbrechen</string>
 	<string name="what_you_ll_get">Das ist drin:</string>
+	<string name="feature_excel_file">Passwörter werden automatisch in eine einzige Excel-Datei eingepflegt</string>
+	<string name="feature_remove_ads">Keine Werbung</string>
+	<string name="feature_custom_path">Benutzerdefinierten Exportier-Pfad angeben</string>
 </resources>
