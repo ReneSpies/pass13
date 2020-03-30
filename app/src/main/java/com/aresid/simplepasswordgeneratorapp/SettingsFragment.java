@@ -18,7 +18,8 @@ import androidx.fragment.app.Fragment;
  */
 public class SettingsFragment
 		extends Fragment {
-	private static final String                        TAG                          = "SettingsFragment";
+	private static final String                        TAG                          =
+			"SettingsFragment";
 	private static final int                           SEEK_BAR_PREF_MAX_LENGTH     = 64;
 	private static final int                           SEEK_BAR_PREF_MIN_LENGTH     = 6;
 	private static final int                           SEEK_BAR_PREF_DEFAULT_LENGTH = 10;
@@ -36,8 +37,8 @@ public class SettingsFragment
 		if (requireContext() instanceof OnFragmentInteractionListener) {
 			mInteractionListener = (OnFragmentInteractionListener) requireContext();
 		} else {
-			throw new RuntimeException(requireContext().toString() +
-			                           " must implement OnFragmentInteractionListener");
+			throw new RuntimeException(requireContext().toString() + " must implement " +
+			                           "OnFragmentInteractionListener");
 		}
 	}
 	

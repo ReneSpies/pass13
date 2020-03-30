@@ -36,8 +36,7 @@ public class FeaturesAdapter
 	public FeaturesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		Log.d(TAG, "onCreateViewHolder: called");
 		View view = LayoutInflater.from(mContext)
-		                          .inflate(R.layout.item_unlock_features_recycler_view,
-		                                   parent, false);
+		                          .inflate(R.layout.item_unlock_features_recycler_view, parent, false);
 		return new FeaturesHolder(view);
 	}
 	

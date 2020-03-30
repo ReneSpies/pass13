@@ -66,6 +66,20 @@ public class MainFragment
 		setPasswordTextView(getNewPassword());
 	}
 	
+	private void onCopyButtonClicked(View view) {
+		Log.d(TAG, "onCopyButtonClicked: called");
+		// Copies current password to clipboard
+		String password = mPasswordTextView.getText()
+		                                   .toString()
+		                                   .trim();
+		ClipboardManager clipboardManager =
+				(ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+		ClipData clip = ClipData.newPlainText(getString(R.string.app_name), password);
+		assert clipboardManager != null;
+		clipboardManager.setPrimaryClip(clip);
+		showSnackbar(view, getString(R.string.copied));
+	}
+	
 	private void onExportButtonClicked() {
 		Log.d(TAG, "onExportButtonClicked: called");
 		// TODO: Merge current password into a excel file and save it on the storage or
@@ -74,6 +88,39 @@ public class MainFragment
 		if (!isWriteExternalStoragePermissionGranted()) {
 			requestWriteExternalStoragePermission();
 			return;
+		}
+	}
+	
+	private void showSnackbar(View view, String message) {
+		Log.d(TAG, "showSnackbar: called");
+		Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
+		        .setBackgroundTint(getResources().getColor(R.color.secondary))
+		        .show();
+	}
+	
+	private boolean isWriteExternalStoragePermissionGranted() {
+		Log.d(TAG, "isWriteExternalStoragePermissionGranted: called");
+		return ContextCompat.checkSelfPermission(requireContext(),
+		                                         Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+		       PackageManager.PERMISSION_GRANTED;
+	}
+	
+	private void requestWriteExternalStoragePermission() {
+		Log.d(TAG, "requestWriteExternalStoragePermission: called");
+		ActivityCompat.requestPermissions(requireActivity(), new String[] {
+				Manifest.permission.WRITE_EXTERNAL_STORAGE
+		}, getResources().getInteger(R.integer.write_external_storage_permission_request_code));
+	}
+	
+	@Override
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		Log.d(TAG, "onCreate: called");
+		super.onCreate(savedInstanceState);
+		if (requireContext() instanceof OnFragmentInteractionListener) {
+			mInteractionListener = (OnFragmentInteractionListener) requireContext();
+		} else {
+			throw new RuntimeException(requireContext().toString() + " must implement " +
+			                           "OnFragmentInteractionListener");
 		}
 	}
 	
@@ -101,93 +148,9 @@ public class MainFragment
 		return view;
 	}
 	
-	@Override
-	public void onDestroy() {
-		Log.d(TAG, "onDestroy: called");
-		super.onDestroy();
-		unregisterSharedPreferencesListener();
-	}
-	
-	private void unregisterSharedPreferencesListener() {
-		Log.d(TAG, "unregisterSharedPreferencesListener: called");
-		PreferenceManager.getDefaultSharedPreferences(requireContext())
-		                 .unregisterOnSharedPreferenceChangeListener(this);
-	}
-	
-	@Override
-	public void onCreate(@Nullable Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate: called");
-		super.onCreate(savedInstanceState);
-		if (requireContext() instanceof OnFragmentInteractionListener) {
-			mInteractionListener = (OnFragmentInteractionListener) requireContext();
-		} else {
-			throw new RuntimeException(requireContext().toString() + " must implement " +
-			                           "OnFragmentInteractionListener");
-		}
-	}
-	
-	@Override
-	public void onSaveInstanceState(@NonNull Bundle outState) {
-		Log.d(TAG, "onSaveInstanceState: called");
-		super.onSaveInstanceState(outState);
-		String password = mPasswordTextView.getText()
-		                                   .toString();
-		outState.putString(getString(R.string.password_text_view_key), password);
-	}
-	
-	private void onCopyButtonClicked(View view) {
-		Log.d(TAG, "onCopyButtonClicked: called");
-		// Copies current password to clipboard
-		String password = mPasswordTextView.getText()
-		                                   .toString()
-		                                   .trim();
-		ClipboardManager clipboardManager =
-				(ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-		ClipData clip = ClipData.newPlainText(getString(R.string.app_name), password);
-		assert clipboardManager != null;
-		clipboardManager.setPrimaryClip(clip);
-		showSnackbar(view, getString(R.string.copied));
-	}
-	
-	private void setSettingsValuesFromSharedPrefs() {
-		Log.d(TAG, "setSettingsValuesFromSharedPrefs: called");
-		SharedPreferences preferences =
-				androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext());
-		mLowerCaseActivated = preferences.getBoolean(getString(R.string.lower_case_key),
-		                                             true);
-		mUpperCaseActivated = preferences.getBoolean(getString(R.string.upper_case_key),
-		                                             true);
-		mSpecialCharactersActivated =
-				preferences.getBoolean(getString(R.string.special_characters_key),
-				                       false);
-		mNumbersActivated = preferences.getBoolean(getString(R.string.numbers_key),
-		                                           true);
-	}
-	
 	private void setPasswordTextView(String text) {
 		Log.d(TAG, "setPasswordTextView: called");
 		mPasswordTextView.setText(text);
-	}
-	
-	private void showSnackbar(View view, String message) {
-		Log.d(TAG, "showSnackbar: called");
-		Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
-		        .setBackgroundTint(getResources().getColor(R.color.secondary))
-		        .show();
-	}
-	
-	private boolean isWriteExternalStoragePermissionGranted() {
-		Log.d(TAG, "isWriteExternalStoragePermissionGranted: called");
-		return ContextCompat.checkSelfPermission(requireContext(),
-		                                         Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-		       PackageManager.PERMISSION_GRANTED;
-	}
-	
-	private void requestWriteExternalStoragePermission() {
-		Log.d(TAG, "requestWriteExternalStoragePermission: called");
-		ActivityCompat.requestPermissions(requireActivity(), new String[] {
-				Manifest.permission.WRITE_EXTERNAL_STORAGE
-		}, getResources().getInteger(R.integer.write_external_storage_permission_request_code));
 	}
 	
 	private String getNewPassword() {
@@ -233,6 +196,43 @@ public class MainFragment
 			newPassword.append(chars[random.nextInt(chars.length)]);
 		}
 		return newPassword.toString();
+	}
+	
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		Log.d(TAG, "onSaveInstanceState: called");
+		super.onSaveInstanceState(outState);
+		String password = mPasswordTextView.getText()
+		                                   .toString();
+		outState.putString(getString(R.string.password_text_view_key), password);
+	}
+	
+	@Override
+	public void onDestroy() {
+		Log.d(TAG, "onDestroy: called");
+		super.onDestroy();
+		unregisterSharedPreferencesListener();
+	}
+	
+	private void unregisterSharedPreferencesListener() {
+		Log.d(TAG, "unregisterSharedPreferencesListener: called");
+		PreferenceManager.getDefaultSharedPreferences(requireContext())
+		                 .unregisterOnSharedPreferenceChangeListener(this);
+	}
+	
+	private void setSettingsValuesFromSharedPrefs() {
+		Log.d(TAG, "setSettingsValuesFromSharedPrefs: called");
+		SharedPreferences preferences =
+				androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext());
+		mLowerCaseActivated = preferences.getBoolean(getString(R.string.lower_case_key),
+		                                             true);
+		mUpperCaseActivated = preferences.getBoolean(getString(R.string.upper_case_key),
+		                                             true);
+		mSpecialCharactersActivated =
+				preferences.getBoolean(getString(R.string.special_characters_key),
+				                       false);
+		mNumbersActivated = preferences.getBoolean(getString(R.string.numbers_key),
+		                                           true);
 	}
 	
 	@Override

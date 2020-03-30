@@ -31,7 +31,8 @@ public class SettingsActivity
 		toolbar.setNavigationIcon(R.drawable.ic_arrow);
 		setSupportActionBar(toolbar);
 		getSupportFragmentManager().beginTransaction()
-		                           .replace(R.id.settings_container, new SettingsFragment())
+		                           .replace(R.id.settings_container,
+		                                    new SettingsFragment())
 		                           .commit();
 	}
 	

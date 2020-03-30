@@ -1,7 +1,6 @@
 package com.aresid.simplepasswordgeneratorapp;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,7 +26,20 @@ import java.util.ArrayList;
  */
 public class UnlockFeaturesDialog
 		extends DialogFragment {
-	private static final String TAG = "UnlockFeaturesDialog";
+	private static final String                      TAG = "UnlockFeaturesDialog";
+	private              OnDialogInteractionListener mListener;
+	
+	@Override
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		Log.d(TAG, "onCreate: called");
+		super.onCreate(savedInstanceState);
+		if (requireContext() instanceof OnDialogInteractionListener) {
+			mListener = (OnDialogInteractionListener) requireContext();
+		} else {
+			throw new RuntimeException(requireContext().toString() + " must implement " +
+			                           "OnDialogInteractionListener");
+		}
+	}
 	
 	@NonNull
 	@Override
@@ -35,23 +47,23 @@ public class UnlockFeaturesDialog
 		Log.d(TAG, "onCreateDialog: called");
 		AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
 		View view = requireActivity().getLayoutInflater()
-		                             .inflate(R.layout.view_unlock_features_dialog,
-		                                      null);
+		                             .inflate(R.layout.view_unlock_features_dialog, null);
 		RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 		recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 		ArrayList<Feature> featureArrayList = new ArrayList<>();
 		Feature featureExcelFile = new Feature(getString(R.string.feature_excel_file));
 		Feature featureRemoveAds = new Feature(getString(R.string.feature_remove_ads));
 		Feature featureCustomPath = new Feature(getString(R.string.feature_custom_path));
+		Feature featureHeart = new Feature(getString(R.string.feature_heart));
 		featureArrayList.add(featureExcelFile);
 		featureArrayList.add(featureRemoveAds);
 		featureArrayList.add(featureCustomPath);
+		featureArrayList.add(featureHeart);
 		FeaturesAdapter adapter = new FeaturesAdapter(requireContext(),
 		                                              featureArrayList);
 		recyclerView.setAdapter(adapter);
 		builder.setView(view);
-		builder.setPositiveButton(R.string.give_me,
-		                          this :: onDialogPositiveButtonClicked);
+		builder.setPositiveButton(R.string.give_me, (dialog, which) -> mListener.onDialogPositiveButtonClicked());
 		builder.setNegativeButton(R.string.cancel, (dialog, which) -> {});
 		AlertDialog dialog = builder.create();
 		dialog.setOnShowListener(dialog1 -> {
@@ -63,8 +75,4 @@ public class UnlockFeaturesDialog
 		return dialog;
 	}
 	
-	private void onDialogPositiveButtonClicked(DialogInterface dialog, int which) {
-		Log.d(TAG, "onDialogPositiveButtonClicked: called");
-		// TODO: Google in app billing
-	}
 }

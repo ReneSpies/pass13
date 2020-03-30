@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -27,6 +28,20 @@ import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.ConsumeResponseListener;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchaseHistoryRecord;
+import com.android.billingclient.api.PurchaseHistoryResponseListener;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -39,22 +54,33 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity
 		extends AppCompatActivity
 		implements OnFragmentInteractionListener,
-		           View.OnClickListener {
+		           View.OnClickListener,
+		           OnDialogInteractionListener,
+		           PurchasesUpdatedListener,
+		           BillingClientStateListener,
+		           SkuDetailsResponseListener,
+		           AcknowledgePurchaseResponseListener,
+		           PurchaseHistoryResponseListener,
+		           ConsumeResponseListener {
 	// TODO: Implement Google AdMob and give the option to pay for the app to unlock
 	//  special features.
 	// Features included in the paid version: extra setting for specific export path,
 	// prompt user for path if setting is not activated, remove ads.
-	private static final String        TAG             = "MainActivity";
-	private static final String        SHORT_PATH_NAME = "Documents/generated";
-	private              int           mCurrentNightMode;
-	private              NavController mNavController;
-	private              Toolbar       mToolbar;
+	private static final String           TAG             = "MainActivity";
+	private static final String           SHORT_PATH_NAME = "Documents/generated";
+	private              int              mCurrentNightMode;
+	private              NavController    mNavController;
+	private              Toolbar          mToolbar;
+	private              BillingClient    mBillingClient;
+	private              List<SkuDetails> mSkuDetailsList = new ArrayList<>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +91,8 @@ public class MainActivity
 		setContentView(R.layout.activity_main);
 		setUpNavController(findViewById(R.id.nav_host_fragment));
 		setUpToolbar();
+		setUpBillingClient();
+		mBillingClient.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP, this);
 		initializeMobileAds();
 		loadAds();
 	}
@@ -86,6 +114,11 @@ public class MainActivity
 		}
 	}
 	
+	private void setUpNavController(View navHostFragment) {
+		Log.d(TAG, "setUpNavController: called");
+		mNavController = Navigation.findNavController(navHostFragment);
+	}
+	
 	private void setUpToolbar() {
 		Log.d(TAG, "setUpToolbar: called");
 		// Set toolbar member variable here
@@ -97,9 +130,14 @@ public class MainActivity
 		}
 	}
 	
-	private void setUpNavController(View navHostFragment) {
-		Log.d(TAG, "setUpNavController: called");
-		mNavController = Navigation.findNavController(navHostFragment);
+	private void setUpBillingClient() {
+		Log.d(TAG, "setUpBillingClient: called");
+		mBillingClient = BillingClient.newBuilder(this)
+		                              .setListener(this)
+		                              .enablePendingPurchases()
+		                              .build();
+		mBillingClient.startConnection(this /* onBillingSetupFinished or
+		onBillingServiceDisconnected */);
 	}
 	
 	private void initializeMobileAds() {
@@ -122,16 +160,6 @@ public class MainActivity
 		adView.loadAd(adRequest);
 	}
 	
-	@Override
-	public void onConfigurationChanged(@NonNull Configuration newConfig) {
-		Log.d(TAG, "onConfigurationChanged: called");
-		super.onConfigurationChanged(newConfig);
-		mCurrentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
-		getSharedPreferences(getString(R.string.night_mode_key), Context.MODE_PRIVATE).edit()
-		                                                                              .putInt(getString(R.string.night_mode_key), mCurrentNightMode)
-		                                                                              .apply();
-	}
-	
 	private AdSize getAdSize() {
 		Log.d(TAG, "getAdSize: called");
 		Display display = getWindowManager().getDefaultDisplay();
@@ -141,6 +169,16 @@ public class MainActivity
 		float density = outMetrics.density;
 		int adWidth = (int) (widthPixels / density);
 		return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth);
+	}
+	
+	@Override
+	public void onConfigurationChanged(@NonNull Configuration newConfig) {
+		Log.d(TAG, "onConfigurationChanged: called");
+		super.onConfigurationChanged(newConfig);
+		mCurrentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+		getSharedPreferences(getString(R.string.night_mode_key), Context.MODE_PRIVATE).edit()
+		                                                                              .putInt(getString(R.string.night_mode_key), mCurrentNightMode)
+		                                                                              .apply();
 	}
 	
 	@RequiresApi (api = Build.VERSION_CODES.Q)
@@ -165,6 +203,19 @@ public class MainActivity
 			displayErrorSnackbar(findViewById(R.id.export_button),
 			                     getString(R.string.error_message));
 		}
+	}
+	
+	private String generateFileName() {
+		Log.d(TAG, "getFileName: called");
+		return getString(R.string.fileName, SimpleDateFormat.getDateTimeInstance()
+		                                                    .format(new Date()));
+	}
+	
+	private void displayErrorSnackbar(View snackbarView, String message) {
+		Log.d(TAG, "displayErrorSnackbar: called");
+		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
+		        .setBackgroundTint(ContextCompat.getColor(this, R.color.error))
+		        .show();
 	}
 	
 	private void saveFileIfApiBelowQ(String text) {
@@ -199,20 +250,6 @@ public class MainActivity
 		setToolbarNavigationIcon(false);
 	}
 	
-	private void setToolbarNavigationIcon(boolean set) {
-		Log.d(TAG, "setToolbarNavigationIcon: called");
-		if (set) {
-			mToolbar.setNavigationIcon(R.drawable.ic_done);
-		} else {
-			mToolbar.setNavigationIcon(null);
-		}
-	}
-	
-	private void onMenuSettingsClicked() {
-		Log.d(TAG, "onMenuSettingsClicked: called");
-		mNavController.navigate(R.id.action_mainFragment_to_settingsFragment);
-	}
-	
 	@Override
 	public void onSettingsFragmentViewCreated() {
 		Log.d(TAG, "onSettingsFragmentViewCreated: called");
@@ -222,17 +259,33 @@ public class MainActivity
 		setToolbarNavigationIcon(true);
 	}
 	
-	private String generateFileName() {
-		Log.d(TAG, "getFileName: called");
-		return getString(R.string.fileName, SimpleDateFormat.getDateTimeInstance()
-		                                                    .format(new Date()));
+	private void enableToolbarMenu(boolean enable) {
+		Log.d(TAG, "enableToolbarMenu: called");
+		if (enable) {
+			mToolbar.inflateMenu(R.menu.toolbar_menu);
+		} else {
+			mToolbar.getMenu()
+			        .clear();
+		}
 	}
 	
-	private void displayErrorSnackbar(View snackbarView, String message) {
-		Log.d(TAG, "displayErrorSnackbar: called");
-		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
-		        .setBackgroundTint(ContextCompat.getColor(this, R.color.error))
-		        .show();
+	private void showPass13ToolbarTitle(boolean show) {
+		Log.d(TAG, "showPass13ToolbarTitle: called");
+		TextView pass13Title = findViewById(R.id.toolbar_title);
+		if (show) {
+			pass13Title.setVisibility(View.VISIBLE);
+		} else {
+			pass13Title.setVisibility(View.GONE);
+		}
+	}
+	
+	private void setToolbarNavigationIcon(boolean set) {
+		Log.d(TAG, "setToolbarNavigationIcon: called");
+		if (set) {
+			mToolbar.setNavigationIcon(R.drawable.ic_done);
+		} else {
+			mToolbar.setNavigationIcon(null);
+		}
 	}
 	
 	@Override
@@ -266,15 +319,6 @@ public class MainActivity
 		return true;
 	}
 	
-	private String shortenFilePathName(String pathName) {
-		Log.d(TAG, "shortenFilePathName: called");
-		if (pathName != null && pathName.contains(SHORT_PATH_NAME)) {
-			return SHORT_PATH_NAME;
-		} else {
-			return pathName;
-		}
-	}
-	
 	private void onMenuChangeThemeClicked() {
 		Log.d(TAG, "onMenuChangeThemeClicked: called");
 		if (mCurrentNightMode == getResources().getInteger(R.integer.night_mode_dark)) {
@@ -285,31 +329,15 @@ public class MainActivity
 		}
 	}
 	
-	private void showPass13ToolbarTitle(boolean show) {
-		Log.d(TAG, "showPass13ToolbarTitle: called");
-		TextView pass13Title = findViewById(R.id.toolbar_title);
-		if (show) {
-			pass13Title.setVisibility(View.VISIBLE);
-		} else {
-			pass13Title.setVisibility(View.GONE);
-		}
+	private void onMenuSettingsClicked() {
+		Log.d(TAG, "onMenuSettingsClicked: called");
+		mNavController.navigate(R.id.action_mainFragment_to_settingsFragment);
 	}
 	
 	private void onMenuUnlockFeaturesClicked() {
 		Log.d(TAG, "onMenuUnlockFeaturesClicked: called");
-		// TODO: Show AlertDialog displaying all included features and then start the
-		//  purchase flow on button click
-		new UnlockFeaturesDialog().show(getSupportFragmentManager(), "Doot");
-	}
-	
-	private void enableToolbarMenu(boolean enable) {
-		Log.d(TAG, "enableToolbarMenu: called");
-		if (enable) {
-			mToolbar.inflateMenu(R.menu.toolbar_menu);
-		} else {
-			mToolbar.getMenu()
-			        .clear();
-		}
+		new UnlockFeaturesDialog().show(getSupportFragmentManager(),
+		                                "UnlockFeaturesDialog");
 	}
 	
 	private void activateNightMode(boolean activate) {
@@ -352,12 +380,140 @@ public class MainActivity
 		}
 	}
 	
+	private String shortenFilePathName(String pathName) {
+		Log.d(TAG, "shortenFilePathName: called");
+		if (pathName != null && pathName.contains(SHORT_PATH_NAME)) {
+			return SHORT_PATH_NAME;
+		} else {
+			return pathName;
+		}
+	}
+	
 	@Override
 	public void onClick(View v) {
 		Log.d(TAG, "onClick: called");
 		if (v.getId() == -1) {
 			// This is the navigation icon
 			onBackPressed();
+		}
+	}
+	
+	@Override
+	public void onDialogPositiveButtonClicked() {
+		Log.d(TAG, "onDialogPositiveButtonClicked: called");
+		// TODO: Google play billing one time product
+		BillingFlowParams params = BillingFlowParams.newBuilder()
+		                                            .setSkuDetails(mSkuDetailsList.get(0) /* TODO: mSkuDetailsList == null error */)
+		                                            .build();
+		mBillingClient.launchBillingFlow(this, params); // Continues with
+		// onPurchasesUpdated
+	}
+	
+	@Override
+	public void onPurchasesUpdated(BillingResult result, @Nullable List<Purchase> list) {
+		Log.d(TAG, "onPurchasesUpdated: called");
+		if (result.getResponseCode() == BillingClient.BillingResponseCode.OK &&
+		    list != null) {
+			for (Purchase purchase : list) {
+				handlePurchase(purchase);
+			}
+		} else if (result.getResponseCode() ==
+		           BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
+			Log.d(TAG, "onPurchasesUpdated: already owned");
+			if (list != null) {
+				for (Purchase purchase : list) {
+					Log.d(TAG,
+					      "onPurchasesUpdated: got a purchase = " + purchase.toString());
+					ConsumeParams params = ConsumeParams.newBuilder()
+					                                    .setPurchaseToken(purchase.getPurchaseToken())
+					                                    .build();
+					mBillingClient.consumeAsync(params, this /* onConsumeResponse */);
+				}
+			}
+		}
+	}
+	
+	private void handlePurchase(Purchase purchase) {
+		Log.d(TAG, "handlePurchase: called");
+		if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+			// Grant entitlement to user
+//			if (!purchase.isAcknowledged()) {
+//				AcknowledgePurchaseParams params =
+//						AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase
+//						.getPurchaseToken()).build();
+//				mBillingClient.acknowledgePurchase(params, this /*
+//				onAcknowledgePurchaseResponse */);
+//			}
+			ConsumeParams params = ConsumeParams.newBuilder()
+			                                    .setPurchaseToken(purchase.getPurchaseToken())
+			                                    .build();
+			mBillingClient.consumeAsync(params, this /* onConsumeResponse */);
+		} else if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
+			// Here you can confirm to the user that they've started the pending
+			// purchase, and to complete it, they should follow instructions that
+			// are given to them. You can also choose to remind the user in the
+			// future to complete the purchase if you detect that it is still
+			// pending.
+		}
+	}
+	
+	@Override
+	public void onBillingSetupFinished(BillingResult result) {
+		Log.d(TAG, "onBillingSetupFinished: called");
+		SkuDetailsParams.Builder paramsBuilder = SkuDetailsParams.newBuilder();
+		paramsBuilder.setSkusList(getSkuList())
+		             .setType(BillingClient.SkuType.INAPP);
+		mBillingClient.querySkuDetailsAsync(paramsBuilder.build(), this /*
+		onSkuDetailsResponse */);
+	}
+	
+	private List<String> getSkuList() {
+		Log.d(TAG, "getSkuList: called");
+		List<String> skuList = new ArrayList<>();
+		skuList.add("product.pass13.unlock_features");
+		return skuList;
+	}
+	
+	@Override
+	public void onBillingServiceDisconnected() {
+		Log.d(TAG, "onBillingServiceDisconnected: called");
+		// TODO: Implement own error handling
+	}
+	
+	@Override
+	public void onSkuDetailsResponse(BillingResult result, List<SkuDetails> list) {
+		Log.d(TAG, "onSkuDetailsResponse: called");
+		// TODO: mSkuDetailsList == null error when bad connection
+		if (result.getResponseCode() == BillingClient.BillingResponseCode.OK &&
+		    list != null) {
+			mSkuDetailsList.addAll(list);
+		}
+	}
+	
+	@Override
+	public void onAcknowledgePurchaseResponse(BillingResult result) {
+		Log.d(TAG, "onAcknowledgePurchaseResponse: called");
+		// TODO
+	}
+	
+	@Override
+	public void onPurchaseHistoryResponse(BillingResult result,
+	                                      List<PurchaseHistoryRecord> list) {
+		Log.d(TAG, "onPurchaseHistoryResponse: called");
+		if (result.getResponseCode() == BillingClient.BillingResponseCode.OK &&
+		    list != null) {
+			for (PurchaseHistoryRecord purchaseHistoryRecord : list) {
+				Log.d(TAG, "onPurchaseHistoryResponse: bought = " +
+				           purchaseHistoryRecord.getSku());
+			}
+		}
+	}
+	
+	@Override
+	public void onConsumeResponse(BillingResult result, String s) {
+		Log.d(TAG, "onConsumeResponse: called");
+		if (result.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+			Log.d(TAG, "onConsumeResponse: response = " + s);
 		}
 	}
 }
