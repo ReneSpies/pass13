@@ -24,6 +24,17 @@
 			android:text="@string/app_name"
 			android:textAppearance="?attr/textAppearanceHeadline6"
 			android:textStyle="bold"/>
+		
+		<TextView
+			android:id="@+id/toolbar_title_exclusive"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:fontFamily="@font/comfortaa_medium"
+			android:text="@string/space_exclusive"
+			android:textAppearance="?attr/textAppearanceHeadline6"
+			android:textColor="@color/gold"
+			android:textStyle="bold"
+			android:visibility="gone"/>
 	</com.google.android.material.appbar.MaterialToolbar>
 	
 	<fragment

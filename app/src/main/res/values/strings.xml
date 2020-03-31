@@ -33,4 +33,8 @@
 	<string name="feature_remove_ads">Remove ads</string>
 	<string name="feature_custom_path">Customize export path statically or dynamically</string>
 	<string name="feature_heart">A special place in our hearts</string>
+	<string name="pass13_exclusive_id" translatable="false">pass13.products.unlock_features</string>
+	<string name="space_exclusive" translatable="false">" exclusive"</string>
+	<string name="feature_exclusive_title">\'exclusive\' title extension in gold color</string>
+	<string name="pass13_exclusive_preferences_key" translatable="false">@string/pass13_exclusive_id</string>
 </resources>

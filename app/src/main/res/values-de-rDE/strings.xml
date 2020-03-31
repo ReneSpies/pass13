@@ -19,7 +19,8 @@
 	<string name="cancel">Abbrechen</string>
 	<string name="what_you_ll_get">Das ist drin:</string>
 	<string name="feature_excel_file">Passwörter werden automatisch in eine einzige Excel-Datei eingepflegt</string>
-	<string name="feature_remove_ads">Keine Werbung</string>
+	<string name="feature_remove_ads">Entfernt Werbung</string>
 	<string name="feature_custom_path">Benutzerdefinierten Exportier-Pfad angeben</string>
 	<string name="feature_heart">Ein besonderen Platz in unseren Herzen</string>
+	<string name="feature_exclusive_title">\'exclusive\' Titel-Erweiterung in goldener Farbe</string>
 </resources>

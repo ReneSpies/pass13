@@ -39,6 +39,7 @@ public class MainFragment
 	private              boolean                       mSpecialCharactersActivated;
 	private              boolean                       mNumbersActivated;
 	private              OnFragmentInteractionListener mInteractionListener;
+	private              String                        mGeneratedPassword;
 	
 	public MainFragment() {
 		Log.d(TAG, "MainFragment: called");
@@ -63,7 +64,8 @@ public class MainFragment
 	
 	private void onRefreshButtonClicked() {
 		Log.d(TAG, "onRefreshButtonClicked: called");
-		setPasswordTextView(getNewPassword());
+		mGeneratedPassword = getNewPassword();
+		setPasswordTextView(mGeneratedPassword);
 	}
 	
 	private void onCopyButtonClicked(View view) {
@@ -122,6 +124,8 @@ public class MainFragment
 			throw new RuntimeException(requireContext().toString() + " must implement " +
 			                           "OnFragmentInteractionListener");
 		}
+		setSettingsValuesFromSharedPrefs();
+		mGeneratedPassword = getNewPassword();
 	}
 	
 	@Override
@@ -139,9 +143,13 @@ public class MainFragment
 		view.findViewById(R.id.export_button)
 		    .setOnClickListener(this);
 		mPasswordTextView = view.findViewById(R.id.password_text_view);
-		setSettingsValuesFromSharedPrefs();
-		if (savedInstanceState != null) {
-			setPasswordTextView(savedInstanceState.getString(getString(R.string.password_text_view_key)));
+//		if (savedInstanceState != null) {
+//			Log.d(TAG, "onCreateView: instance state != null");
+//			setPasswordTextView(savedInstanceState.getString(getString(R.string
+//			.password_text_view_key)));
+//		} else
+		if (mGeneratedPassword != null) {
+			setPasswordTextView(mGeneratedPassword);
 		} else {
 			setPasswordTextView(getNewPassword());
 		}

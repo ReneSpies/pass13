@@ -22,7 +22,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="32.13dp"
 			android:layout_marginEnd="32.13dp"
-			android:fontFamily="monospace"
+			android:fontFamily="@font/source_code_pro_regular"
 			android:textAlignment="center"
 			android:textAppearance="?attr/textAppearanceBody1"/>
 		

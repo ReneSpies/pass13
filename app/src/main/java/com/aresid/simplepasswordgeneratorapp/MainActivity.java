@@ -28,16 +28,14 @@ import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchaseHistoryRecord;
-import com.android.billingclient.api.PurchaseHistoryResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
@@ -68,8 +66,8 @@ public class MainActivity
 		           BillingClientStateListener,
 		           SkuDetailsResponseListener,
 		           AcknowledgePurchaseResponseListener,
-		           PurchaseHistoryResponseListener,
-		           ConsumeResponseListener {
+		           ConsumeResponseListener,
+		           SharedPreferences.OnSharedPreferenceChangeListener {
 	// TODO: Implement Google AdMob and give the option to pay for the app to unlock
 	//  special features.
 	// Features included in the paid version: extra setting for specific export path,
@@ -81,6 +79,7 @@ public class MainActivity
 	private              Toolbar          mToolbar;
 	private              BillingClient    mBillingClient;
 	private              List<SkuDetails> mSkuDetailsList = new ArrayList<>();
+	private              boolean          mAppIsExclusive;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,12 +88,34 @@ public class MainActivity
 		super.onCreate(savedInstanceState);
 		setCurrentNightModeFromSharedPreferences();
 		setContentView(R.layout.activity_main);
+		registerOnSharedPreferencesChangeListener();
 		setUpNavController(findViewById(R.id.nav_host_fragment));
 		setUpToolbar();
 		setUpBillingClient();
-		mBillingClient.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP, this);
 		initializeMobileAds();
-		loadAds();
+		handlePass13ExclusiveState();
+	}
+	
+	private void registerOnSharedPreferencesChangeListener() {
+		Log.d(TAG, "registerOnSharedPreferencesChangeListener: called");
+		getSharedPreferences(getString(R.string.pass13_exclusive_preferences_key),
+		                     MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this /* onSharedPreferenceChanged */);
+	}
+	
+	private void handlePass13ExclusiveState() {
+		Log.d(TAG, "handlePass13ExclusiveState: called");
+		String key = getString(R.string.pass13_exclusive_preferences_key);
+		boolean isPurchased = getSharedPreferences(key, MODE_PRIVATE).getBoolean(key,
+		                                                                         false);
+		if (isPurchased) {
+			mAppIsExclusive = true;
+			// TODO: Extra setting, excel file
+			toggleShowToolbarTitleExclusive(true);
+			disableUnlockFeaturesAction();
+		} else {
+			mAppIsExclusive = false;
+			loadAds();
+		}
 	}
 	
 	private void setCurrentNightModeFromSharedPreferences() {
@@ -241,11 +262,29 @@ public class MainActivity
 		}
 	}
 	
+	private void toggleShowToolbarTitleExclusive(boolean show) {
+		Log.d(TAG, "enableToolbarTitleExclusive: called");
+		TextView exclusiveTitle = findViewById(R.id.toolbar_title_exclusive);
+		if (show) {
+			exclusiveTitle.setVisibility(View.VISIBLE);
+		} else {
+			exclusiveTitle.setVisibility(View.GONE);
+		}
+	}
+	
+	private void disableUnlockFeaturesAction() {
+		Log.d(TAG, "disableUnlockFeaturesAction: called");
+		Log.d(TAG, "disableUnlockFeaturesAction: toolbar menu size = " +
+		           mToolbar.getMenu()
+		                   .size());
+		invalidateOptionsMenu();
+	}
+	
 	@Override
 	public void onMainFragmentViewCreated() {
 		Log.d(TAG, "onMainFragmentViewCreated: called");
+		invalidateOptionsMenu();
 		mToolbar.setTitle(null);
-		mToolbar.inflateMenu(R.menu.toolbar_menu);
 		showPass13ToolbarTitle(true);
 		setToolbarNavigationIcon(false);
 	}
@@ -255,28 +294,8 @@ public class MainActivity
 		Log.d(TAG, "onSettingsFragmentViewCreated: called");
 		mToolbar.setTitle(getString(R.string.settings));
 		showPass13ToolbarTitle(false);
-		enableToolbarMenu(false);
+		disableToolbarMenu();
 		setToolbarNavigationIcon(true);
-	}
-	
-	private void enableToolbarMenu(boolean enable) {
-		Log.d(TAG, "enableToolbarMenu: called");
-		if (enable) {
-			mToolbar.inflateMenu(R.menu.toolbar_menu);
-		} else {
-			mToolbar.getMenu()
-			        .clear();
-		}
-	}
-	
-	private void showPass13ToolbarTitle(boolean show) {
-		Log.d(TAG, "showPass13ToolbarTitle: called");
-		TextView pass13Title = findViewById(R.id.toolbar_title);
-		if (show) {
-			pass13Title.setVisibility(View.VISIBLE);
-		} else {
-			pass13Title.setVisibility(View.GONE);
-		}
 	}
 	
 	private void setToolbarNavigationIcon(boolean set) {
@@ -288,35 +307,26 @@ public class MainActivity
 		}
 	}
 	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		Log.d(TAG, "onCreateOptionsMenu: called");
-		getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-		if (mCurrentNightMode == getResources().getInteger(R.integer.night_mode_dark)) {
-			// Default state of toolbar menu item is "Light Mode" so change it if dark
-			// mode is activated from shared preferences
-			activateNightMode(true);
-		} else if (mCurrentNightMode ==
-		           getResources().getInteger(R.integer.night_mode_light)) {
-			activateNightMode(false);
-		}
-		return super.onCreateOptionsMenu(menu);
+	private void disableToolbarMenu() {
+		Log.d(TAG, "disableToolbarMenu: called");
+		mToolbar.getMenu()
+		        .clear();
 	}
 	
-	@Override
-	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.change_theme:
-				onMenuChangeThemeClicked();
-				break;
-			case R.id.settings:
-				onMenuSettingsClicked();
-				break;
-			case R.id.unlock_features:
-				onMenuUnlockFeaturesClicked();
-				break;
+	private void showPass13ToolbarTitle(boolean show) {
+		Log.d(TAG, "showPass13ToolbarTitle: called");
+		TextView pass13Title = findViewById(R.id.toolbar_title);
+		if (show) {
+			pass13Title.setVisibility(View.VISIBLE);
+			if (mAppIsExclusive) {
+				toggleShowToolbarTitleExclusive(true);
+			}
+		} else {
+			pass13Title.setVisibility(View.GONE);
+			if (mAppIsExclusive) {
+				toggleShowToolbarTitleExclusive(false);
+			}
 		}
-		return true;
 	}
 	
 	private void onMenuChangeThemeClicked() {
@@ -420,34 +430,54 @@ public class MainActivity
 		} else if (result.getResponseCode() ==
 		           BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
 			Log.d(TAG, "onPurchasesUpdated: already owned");
-			if (list != null) {
-				for (Purchase purchase : list) {
-					Log.d(TAG,
-					      "onPurchasesUpdated: got a purchase = " + purchase.toString());
-					ConsumeParams params = ConsumeParams.newBuilder()
-					                                    .setPurchaseToken(purchase.getPurchaseToken())
-					                                    .build();
-					mBillingClient.consumeAsync(params, this /* onConsumeResponse */);
-				}
-			}
 		}
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.d(TAG, "onCreateOptionsMenu: called");
+		getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+		if (mCurrentNightMode == getResources().getInteger(R.integer.night_mode_dark)) {
+			// Default state of toolbar menu item is "Light Mode" so change it if dark
+			// mode is activated from shared preferences
+			activateNightMode(true);
+		} else if (mCurrentNightMode ==
+		           getResources().getInteger(R.integer.night_mode_light)) {
+			activateNightMode(false);
+		}
+		if (mAppIsExclusive) {
+			menu.removeItem(R.id.action_unlock_features);
+		}
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.action_change_theme:
+				onMenuChangeThemeClicked();
+				break;
+			case R.id.action_settings:
+				onMenuSettingsClicked();
+				break;
+			case R.id.action_unlock_features:
+				onMenuUnlockFeaturesClicked();
+				break;
+		}
+		return true;
 	}
 	
 	private void handlePurchase(Purchase purchase) {
 		Log.d(TAG, "handlePurchase: called");
 		if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
 			// Grant entitlement to user
-//			if (!purchase.isAcknowledged()) {
-//				AcknowledgePurchaseParams params =
-//						AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase
-//						.getPurchaseToken()).build();
-//				mBillingClient.acknowledgePurchase(params, this /*
-//				onAcknowledgePurchaseResponse */);
-//			}
-			ConsumeParams params = ConsumeParams.newBuilder()
-			                                    .setPurchaseToken(purchase.getPurchaseToken())
-			                                    .build();
-			mBillingClient.consumeAsync(params, this /* onConsumeResponse */);
+			if (!purchase.isAcknowledged()) {
+				AcknowledgePurchaseParams params = AcknowledgePurchaseParams.newBuilder()
+				                                                            .setPurchaseToken(purchase.getPurchaseToken())
+				                                                            .build();
+				mBillingClient.acknowledgePurchase(params, this /*
+				onAcknowledgePurchaseResponse */);
+			}
 		} else if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
 			// Here you can confirm to the user that they've started the pending
 			// purchase, and to complete it, they should follow instructions that
@@ -465,13 +495,33 @@ public class MainActivity
 		             .setType(BillingClient.SkuType.INAPP);
 		mBillingClient.querySkuDetailsAsync(paramsBuilder.build(), this /*
 		onSkuDetailsResponse */);
+		handleAlreadyPurchased();
 	}
 	
 	private List<String> getSkuList() {
 		Log.d(TAG, "getSkuList: called");
 		List<String> skuList = new ArrayList<>();
-		skuList.add("product.pass13.unlock_features");
+		skuList.add(getString(R.string.pass13_exclusive_id));
 		return skuList;
+	}
+	
+	private void handleAlreadyPurchased() {
+		Log.d(TAG, "handleAlreadyPurchased: called");
+		Purchase.PurchasesResult purchasesResult =
+				mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
+		if (purchasesResult.getResponseCode() == BillingClient.BillingResponseCode.OK &&
+		    purchasesResult.getPurchasesList() != null) {
+			for (Purchase purchase : purchasesResult.getPurchasesList()) {
+				if (purchase.getSku()
+				            .equals(getString(R.string.pass13_exclusive_id))) {
+					Log.d(TAG, "onBillingSetupFinished: sku = " + purchase.getSku());
+					String key = getString(R.string.pass13_exclusive_preferences_key);
+					SharedPreferences.Editor editor = getSharedPreferences(key, MODE_PRIVATE).edit();
+					editor.putBoolean(key, true);
+					editor.apply();
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -497,23 +547,29 @@ public class MainActivity
 	}
 	
 	@Override
-	public void onPurchaseHistoryResponse(BillingResult result,
-	                                      List<PurchaseHistoryRecord> list) {
-		Log.d(TAG, "onPurchaseHistoryResponse: called");
-		if (result.getResponseCode() == BillingClient.BillingResponseCode.OK &&
-		    list != null) {
-			for (PurchaseHistoryRecord purchaseHistoryRecord : list) {
-				Log.d(TAG, "onPurchaseHistoryResponse: bought = " +
-				           purchaseHistoryRecord.getSku());
-			}
-		}
-	}
-	
-	@Override
 	public void onConsumeResponse(BillingResult result, String s) {
 		Log.d(TAG, "onConsumeResponse: called");
 		if (result.getResponseCode() == BillingClient.BillingResponseCode.OK) {
 			Log.d(TAG, "onConsumeResponse: response = " + s);
+		}
+	}
+	
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+	                                      String key) {
+		Log.d(TAG, "onSharedPreferenceChanged: called");
+		// TODO: check if the exclusive preferences have changed and do stuff accordingly
+		Log.d(TAG, "onSharedPreferenceChanged: key = " + key);
+		if (key.equals(getString(R.string.pass13_exclusive_preferences_key))) {
+			if (sharedPreferences.getBoolean(key, false)) {
+				// TODO: Extra setting, excel file
+				mAppIsExclusive = true;
+				toggleShowToolbarTitleExclusive(true);
+				disableUnlockFeaturesAction();
+			} else {
+				mAppIsExclusive = false;
+				loadAds();
+			}
 		}
 	}
 }
