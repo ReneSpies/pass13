@@ -79,7 +79,6 @@ public class MainActivity
 	private              Toolbar          mToolbar;
 	private              BillingClient    mBillingClient;
 	private              List<SkuDetails> mSkuDetailsList = new ArrayList<>();
-	private              boolean          mAppIsExclusive;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,19 +101,19 @@ public class MainActivity
 		                     MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this /* onSharedPreferenceChanged */);
 	}
 	
-	private void handlePass13ExclusiveState() {
-		Log.d(TAG, "handlePass13ExclusiveState: called");
-		String key = getString(R.string.pass13_exclusive_preferences_key);
-		boolean isPurchased = getSharedPreferences(key, MODE_PRIVATE).getBoolean(key,
-		                                                                         false);
-		if (isPurchased) {
-			mAppIsExclusive = true;
-			// TODO: Extra setting, excel file
-			toggleShowToolbarTitleExclusive(true);
-			disableUnlockFeaturesAction();
+	private void showPass13ToolbarTitle(boolean show) {
+		Log.d(TAG, "showPass13ToolbarTitle: called");
+		TextView pass13Title = findViewById(R.id.toolbar_title);
+		if (show) {
+			pass13Title.setVisibility(View.VISIBLE);
+			if (appIsExclusive()) {
+				toggleShowToolbarTitleExclusive(true);
+			}
 		} else {
-			mAppIsExclusive = false;
-			loadAds();
+			pass13Title.setVisibility(View.GONE);
+			if (appIsExclusive()) {
+				toggleShowToolbarTitleExclusive(false);
+			}
 		}
 	}
 	
@@ -313,20 +312,11 @@ public class MainActivity
 		        .clear();
 	}
 	
-	private void showPass13ToolbarTitle(boolean show) {
-		Log.d(TAG, "showPass13ToolbarTitle: called");
-		TextView pass13Title = findViewById(R.id.toolbar_title);
-		if (show) {
-			pass13Title.setVisibility(View.VISIBLE);
-			if (mAppIsExclusive) {
-				toggleShowToolbarTitleExclusive(true);
-			}
-		} else {
-			pass13Title.setVisibility(View.GONE);
-			if (mAppIsExclusive) {
-				toggleShowToolbarTitleExclusive(false);
-			}
-		}
+	private boolean appIsExclusive() {
+		Log.d(TAG, "appIsExclusive: called");
+		String key = getString(R.string.pass13_exclusive_preferences_key);
+		SharedPreferences preferences = getSharedPreferences(key, MODE_PRIVATE);
+		return preferences.getBoolean(key, false);
 	}
 	
 	private void onMenuChangeThemeClicked() {
@@ -337,6 +327,24 @@ public class MainActivity
 		           getResources().getInteger(R.integer.night_mode_light)) {
 			activateNightMode(true);
 		}
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.d(TAG, "onCreateOptionsMenu: called");
+		getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+		if (mCurrentNightMode == getResources().getInteger(R.integer.night_mode_dark)) {
+			// Default state of toolbar menu item is "Light Mode" so change it if dark
+			// mode is activated from shared preferences
+			activateNightMode(true);
+		} else if (mCurrentNightMode ==
+		           getResources().getInteger(R.integer.night_mode_light)) {
+			activateNightMode(false);
+		}
+		if (appIsExclusive()) {
+			menu.removeItem(R.id.action_unlock_features);
+		}
+		return super.onCreateOptionsMenu(menu);
 	}
 	
 	private void onMenuSettingsClicked() {
@@ -434,21 +442,10 @@ public class MainActivity
 	}
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		Log.d(TAG, "onCreateOptionsMenu: called");
-		getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-		if (mCurrentNightMode == getResources().getInteger(R.integer.night_mode_dark)) {
-			// Default state of toolbar menu item is "Light Mode" so change it if dark
-			// mode is activated from shared preferences
-			activateNightMode(true);
-		} else if (mCurrentNightMode ==
-		           getResources().getInteger(R.integer.night_mode_light)) {
-			activateNightMode(false);
-		}
-		if (mAppIsExclusive) {
-			menu.removeItem(R.id.action_unlock_features);
-		}
-		return super.onCreateOptionsMenu(menu);
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+	                                      String key) {
+		Log.d(TAG, "onSharedPreferenceChanged: called");
+		handlePass13ExclusiveState();
 	}
 	
 	@Override
@@ -554,22 +551,14 @@ public class MainActivity
 		}
 	}
 	
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-	                                      String key) {
-		Log.d(TAG, "onSharedPreferenceChanged: called");
-		// TODO: check if the exclusive preferences have changed and do stuff accordingly
-		Log.d(TAG, "onSharedPreferenceChanged: key = " + key);
-		if (key.equals(getString(R.string.pass13_exclusive_preferences_key))) {
-			if (sharedPreferences.getBoolean(key, false)) {
-				// TODO: Extra setting, excel file
-				mAppIsExclusive = true;
-				toggleShowToolbarTitleExclusive(true);
-				disableUnlockFeaturesAction();
-			} else {
-				mAppIsExclusive = false;
-				loadAds();
-			}
+	private void handlePass13ExclusiveState() {
+		Log.d(TAG, "handlePass13ExclusiveState: called");
+		if (appIsExclusive()) {
+			// TODO: Extra setting, excel file
+			toggleShowToolbarTitleExclusive(true);
+			disableUnlockFeaturesAction();
+		} else {
+			loadAds();
 		}
 	}
 }

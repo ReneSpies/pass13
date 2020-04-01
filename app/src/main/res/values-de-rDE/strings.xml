@@ -23,4 +23,6 @@
 	<string name="feature_custom_path">Benutzerdefinierten Exportier-Pfad angeben</string>
 	<string name="feature_heart">Ein besonderen Platz in unseren Herzen</string>
 	<string name="feature_exclusive_title">\'exclusive\' Titel-Erweiterung in goldener Farbe</string>
+	<string name="static_export_path">Benutzerdefinierter, dauerhafter Export-Pfad</string>
+	<string name="export_path_hint">\"Pfad\"</string>
 </resources>

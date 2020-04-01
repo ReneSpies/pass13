@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+	<string-array name="fun_facts">
+		<item>North Korea and Cuba are the only places you cannot buy Coca-Cola.</item>
+		<item>The entire world\'s population could fit inside Los Angeles.</item>
+		<item>There are more twins now than ever before.</item>
+		<item>The hottest chili pepper in the world is so hot it could kill you.</item>
+		<item>More people visit France than any other country.</item>
+		<item>The world\'s most densely populated island is the size of two soccer fields.</item>
+		<item>The Canary Islands are named after dogs, not birds.</item>
+		<item>Indonesia is home to some of the shortest people in the world.</item>
+		<item>The Paris Agreement on climate change was signed by the largest number of countries ever in one day.</item>
+		<item>The world\'s quietest room is located at Microsoft\'s headquarters in Washington state.</item>
+		<item>There are only three countries in the world that don\'t use the metric system.</item>
+		<item>The longest place name on the planet is 85 letters long.</item>
+		<item>Four babies are born every second.</item>
+		<item>The coldest temperature ever recorded was -144 degrees Fahrenheit.</item>
+		<item>The Earth\'s ozone layer will make a full recovery in 50 years.</item>
+		<item>Japan is the world\'s most earthquake-prone country.</item>
+		<item tools:ignore="Typos">There are around 4 quadrillion quadrillion bacteria on Earth.</item>
+		<item>People who are currently alive represent about 7 percent of the total number of people who have ever lived.</item>
+		<item>Muhammad is thought to be the most popular name in the world.</item>
+		<item>Only two countries use purple in their national flags.</item>
+		<item>Africa and Asia are home to nearly 90 percent of the world\'s rural population.</item>
+		<item>The most expensive coin in the world was sold for more than $7 million.</item>
+		<item>The world\'s largest man-made oyster reef was created in Maryland.</item>
+		<item>A record-breaking 92 countries competed in the 2018 Winter Olympics.</item>
+		<item>South Sudan is the youngest country in the world.</item>
+		<item>More than 52 percent of the world\'s population is under 30 years old.</item>
+		<item>People 60 years and older make up 12.3 percent of the global population.</item>
+		<item>There are more than 24 time zones around the world.</item>
+		<item>Nearly half of the world\'s population watched both the 2010 and 2014 FIFA World Cup games.</item>
+		<item>It\'s estimated that Sweden has more islands than any other country.</item>
+		<item>There are 43 countries that still have a royal family.</item>
+		<item>California is home to the "Artichoke Capital of the World."</item>
+		<item>All giant pandas in zoos around the world are on loan from China.</item>
+		<item>Canada has nine percent of the world\'s forests.</item>
+		<item>The red-billed quelea is the most common bird on Earth.</item>
+		<item>There\'s a website that tracks the world\'s population in real time.</item>
+		<item>More people speak Mandarin Chinese than any other language.</item>
+		<item>Around one in every 200 men are direct descendants of Genghis Khan.</item>
+		<item>Copenhagen is the most bike-friendly city in the world.</item>
+		<item>There are 41 countries that recognize sign language as an official language.</item>
+		<item>The global adult literacy rate is around 86 percent.</item>
+		<item>Facebook has more users than the population of the U.S., China, and Brazil combined.</item>
+		<item>There are only two countries with names that begin with "The."</item>
+		<item>All the ants on Earth weigh about as much as all the humans.</item>
+		<item>The oceans contain almost 200,000 different kinds of viruses.</item>
+		<item>New Zealanders have more pets per household than any other country.</item>
+		<item>Tokyo is the world\'s largest city with 37 million inhabitants.</item>
+		<item>Interpol began in 1914 when legal professionals from 24 countries got together to discuss catching fugitives.</item>
+		<item>Nearly two people die each second.</item>
+	</string-array>
+</resources>

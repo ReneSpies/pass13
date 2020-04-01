@@ -15,15 +15,16 @@
 	<string name="password_length">Password length</string>
 	<string name="fileName">generated on %1s.txt</string>
 	<string name="night_mode_key" translatable="false">night_mode</string>
-	<string name="lower_case_key" translatable="false">lower case</string>
-	<string name="upper_case_key" translatable="false">upper case</string>
-	<string name="special_characters_key" translatable="false">special characters</string>
-	<string name="numbers_key" translatable="false">numbers</string>
+	<string name="static_export_path_key" translatable="false">pass13.shared_preferences.keys.static_export_path</string>
+	<string name="lower_case_key" translatable="false">pass13.shared_preferences.keys.lower_case</string>
+	<string name="upper_case_key" translatable="false">pass13.shared_preferences.keys.upper_case</string>
+	<string name="special_characters_key" translatable="false">pass13.shared_preferences.keys.special_characters</string>
+	<string name="numbers_key" translatable="false">pass13.shared_preferences.keys.numbers</string>
 	<string name="password_text_view_key" translatable="false">password</string>
 	<string name="alphabet" translatable="false">abcdefghijklmnopqrstuvwxyz</string>
 	<string name="special_characters" translatable="false">!$%&amp;></string>
 	<string name="numbers" translatable="false">0123456789</string>
-	<string name="password_length_key" translatable="false">password length</string>
+	<string name="password_length_key" translatable="false">pass13.shared_preferences.keys.password_length</string>
 	<string name="unlock_features">Unlock features</string>
 	<string name="adaptive_banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
 	<string name="give_me">Give me!</string>
@@ -37,4 +38,9 @@
 	<string name="space_exclusive" translatable="false">" exclusive"</string>
 	<string name="feature_exclusive_title">\'exclusive\' title extension in gold color</string>
 	<string name="pass13_exclusive_preferences_key" translatable="false">@string/pass13_exclusive_id</string>
+	<string name="static_export_path">Static export path</string>
+	<string name="export_path_hint">\"path\"</string>
+	<string name="fun_fact_text" translatable="false">"Fun Fact: "</string>
+	<string name="file_name">pass13.generations</string>
+	<string name="xlsx_mime_type">application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</string>
 </resources>

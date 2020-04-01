@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+	<string-array name="fun_facts">
+		<item>Nord Korea und Cuba sind die einzigen Länder, in welchen man kein Coca-Cola kaufen kann.</item>
+		<item>Die gesamte Weltbevölkerung passt in Los Angeles.</item>
+		<item>Heutzutage existieren mehr Zwillinge als jemals zuvor.</item>
+		<item>Die schärfste Chilli ist so scharf, dass sie dich töten könnte.</item>
+		<item>Frankreich ist das meistbesucheste Land der Welt.</item>
+		<item>Die weltweit am dichesten besiedelte Insel ist so groß wie zwei Fußballfelder.</item>
+		<item>Die Kanarischen Inseln sind nicht nach dem Vogel sondern dem Hund benannt.</item>
+		<item>In Indonesien leben die kleinsten Menschen.</item>
+		<item>Das Pariser Klimaabkommen wurde an einem Tag von den meisten Ländern unterschrieben.</item>
+		<item>Der ruhigste Raum der Welt ist in dem Microsoft Hauptquartier im Staat Washington.</item>
+		<item>Nur drei Länder benutzen nicht das Metrische System.</item>
+		<item>Der weltweit längste Ortsname ist 85 Zeichen lang.</item>
+		<item>Jede Sekunde werden vier Babys geboren</item>
+		<item>Die kälteste jemals gemessene Temperatur waren -98° C</item>
+		<item>Die Ozonschicht wird sich in 50 Jahren vollständig wiederhergestellt haben.</item>
+		<item>In Japan passieren die meisten Erdbeben.</item>
+		<item tools:ignore="Typos">Es existieren ungefähr vier Billiarden Billiarden Bakterien.</item>
+		<item>Die heutige Weltbevölkerung representiert ungefähr 7 Prozent aller jemals gelebten Menschen.</item>
+		<item>Muhammad ist der geschätz am weitesten vergebene Name.</item>
+		<item>Nur zwei Länder haben Lila in ihrer Flagge.</item>
+		<item>90 Prozent der ländlichen Bevölkerung leben in Africa und Asien.</item>
+		<item>Die teuerste Münze wurde für ca. $7 Millionen verkauft.</item>
+		<item>Das größte, vom Menschen gebaute Korallenriff ist in Maryland.</item>
+		<item>Rekordbrechende 92 Länder nahmen an den 2018 Winter-Olympics teil.</item>
+		<item>Süd-Sudan ist das jüngste Land der Welt.</item>
+		<item>Mehr als 52 Prozent der Weltbevölkerung ist U30.</item>
+		<item>Menschen Ü60 machen ungefähr 12,3 Prozent der Weltbevölkerung aus.</item>
+		<item>Es gibt mehr als 24 Zeitzonen.</item>
+		<item>Fast die halbe Weltbevölkerung haben jeweils bei der Fußball WM 2010 und 2014 zugeschaut.</item>
+		<item>Es wird geschätzt, dass Schweden mehr Inseln hat als jedes andere Land.</item>
+		<item>43 Länder besitzen immer noch eine Königsfamilie.</item>
+		<item>In Kalifornien thront die "Artischockenwelthauptstadt".</item>
+		<item>Alle Riesenpandas in Zoos sind von China ausgeliehen.</item>
+		<item>Kanada besitzt 9 Prozent aller Wälder.</item>
+		<item>Der weitverbreiteste Vogel ist der Rotschnabelquelea.</item>
+		<item>Es gibt eine Website, welche die Weltbevölkerung in Echtzeit anzeigt.</item>
+		<item>Mandarin ist die am meisten gesprochene Sprache.</item>
+		<item>Jeder zweihunderste Mann ist direkter Nachfahre von Genghis Khan.</item>
+		<item>Kopenhagen ist die fahrradfreundlichste Stadt der Welt.</item>
+		<item>41 Länder akzeptieren Zeichensprache als offizielle Sprache.</item>
+		<item>86 Prozent aller Erwachsenen sind keine Analphabeten.</item>
+		<item>Facebook hat mehr Benutzer als die Bevölkerung der USA, China und Brasilien zusammen.</item>
+		<item>Nur zwei Ländernamen beginnen mit einem Artikel.</item>
+		<item>Alle Ameisen wiegen ungefähr so viel wie alle Menschen.</item>
+		<item>In den Ozeanen gibt es ca. 200.000 unterschiedliche Virusarten.</item>
+		<item>Neu Seeländer besitzen die meisten Haustiere pro Haushalt.</item>
+		<item>Tokyo hat mit 37 Millionen die meisten Einwohner.</item>
+		<item>Interpol wurde gegründet, als sich 1914 24 internationale Juristen zusammensetzten und das Einfangen von Flüchtigen besprachen.</item>
+		<item>Fast zwei Menschen sterben pro Sekunde.</item>
+	</string-array>
+</resources>
