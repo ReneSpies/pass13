@@ -37,6 +37,7 @@ public class ThumbProgressSeekBar
 		super(context, attrs, defStyleAttr);
 		mThumbSize = getResources().getDimensionPixelSize(R.dimen.thumb_size);
 		mTextPaint = new TextPaint();
+		mTextPaint.setAntiAlias(true);
 		mTextPaint.setColor(Color.BLACK);
 		mTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.thumb_text_size));
 		mTextPaint.setTypeface(Typeface.DEFAULT_BOLD);

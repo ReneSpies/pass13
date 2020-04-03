@@ -15,11 +15,11 @@
 	<string name="password_length">Password length</string>
 	<string name="fileName">generated on %1s.txt</string>
 	<string name="night_mode_key" translatable="false">night_mode</string>
-	<string name="static_export_path_key" translatable="false">pass13.shared_preferences.keys.static_export_path</string>
-	<string name="lower_case_key" translatable="false">pass13.shared_preferences.keys.lower_case</string>
-	<string name="upper_case_key" translatable="false">pass13.shared_preferences.keys.upper_case</string>
-	<string name="special_characters_key" translatable="false">pass13.shared_preferences.keys.special_characters</string>
-	<string name="numbers_key" translatable="false">pass13.shared_preferences.keys.numbers</string>
+	<string name="static_export_path_activated_key" translatable="false">pass13.shared_preferences.keys.static_export_path_activated</string>
+	<string name="lower_case_activated_key" translatable="false">pass13.shared_preferences.keys.lower_case_activated</string>
+	<string name="upper_case_activated_key" translatable="false">pass13.shared_preferences.keys.upper_case_activated</string>
+	<string name="special_characters_activated_key" translatable="false">pass13.shared_preferences.keys.special_characters_activated</string>
+	<string name="numbers_activated_key" translatable="false">pass13.shared_preferences.keys.numbers_activated</string>
 	<string name="password_text_view_key" translatable="false">password</string>
 	<string name="alphabet" translatable="false">abcdefghijklmnopqrstuvwxyz</string>
 	<string name="special_characters" translatable="false">!$%&amp;></string>
@@ -43,4 +43,13 @@
 	<string name="fun_fact_text" translatable="false">"Fun Fact: "</string>
 	<string name="file_name">pass13.generations</string>
 	<string name="xlsx_mime_type">application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</string>
+	<string name="static_export_path_key">pass13.shared_preferences.keys.static_export_path</string>
+	<string name="new_path_questionmark">New path?</string>
+	<string name="ask_if_new_path_dialog_message">You have chosen a path before, do you want to use a new one?</string>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+	<string name="path">path</string>
+	<string name="short_path_name" translatable="false">Documents/generated</string>
+	<string name="no_password_detected">No password detected</string>
+	<string name="fun" translatable="false">Fun</string>
 </resources>

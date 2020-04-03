@@ -1,6 +1,7 @@
 package com.aresid.simplepasswordgeneratorapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,12 +10,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
@@ -29,12 +33,10 @@ import org.jetbrains.annotations.NotNull;
 public class SettingsFragment
 		extends Fragment
 		implements View.OnClickListener,
-		           SeekBar.OnSeekBarChangeListener {
+		           SeekBar.OnSeekBarChangeListener,
+		           CompoundButton.OnCheckedChangeListener {
 	private static final String                        TAG                          =
 			"SettingsFragment";
-	private static final int                           SEEK_BAR_PREF_MAX_LENGTH     = 64;
-	private static final int                           SEEK_BAR_PREF_MIN_LENGTH     = 6;
-	private static final int                           SEEK_BAR_PREF_DEFAULT_LENGTH = 10;
 	private              OnFragmentInteractionListener mInteractionListener;
 	private              TextView                      mStaticExportPathTextView;
 	
@@ -69,113 +71,6 @@ public class SettingsFragment
 		      .apply();
 	}
 	
-	private boolean isLowerCaseActivated() {
-		Log.d(TAG, "isLowerCaseActivated: called");
-		String key = getString(R.string.lower_case_key);
-		return getBoolean(key, true);
-	}
-	
-	private boolean isUpperCaseActivated() {
-		Log.d(TAG, "isUpperCaseActivated: called");
-		String key = getString(R.string.upper_case_key);
-		return getBoolean(key, true);
-	}
-	
-	private boolean isSpecialCharactersActivated() {
-		Log.d(TAG, "isSpecialCharactersActivated: called");
-		String key = getString(R.string.special_characters_key);
-		return getBoolean(key, false);
-	}
-	
-	private boolean isNumbersActivated() {
-		Log.d(TAG, "isNumbersActivated: called");
-		String key = getString(R.string.numbers_key);
-		return getBoolean(key, false);
-	}
-	
-	private boolean isStaticExportPathActivated() {
-		Log.d(TAG, "isStaticExportPathActivated: called");
-		String key = getString(R.string.static_export_path_key);
-		return getBoolean(key, false);
-	}
-	
-	private boolean getBoolean(String key, boolean defaultValue) {
-		Log.d(TAG, "getBoolean: called");
-		return getDefaultSharedPreferences().getBoolean(key, defaultValue);
-	}
-	
-	private boolean appIsExclusive() {
-		Log.d(TAG, "appIsExclusive: called");
-		String key = getString(R.string.pass13_exclusive_preferences_key);
-		SharedPreferences preferences = requireActivity().getSharedPreferences(key,
-		                                                                       Context.MODE_PRIVATE);
-		return preferences.getBoolean(key, false);
-	}
-	
-	private void showStaticExportPathSwitchIfAppropriate(Switch staticExportPathSwitch) {
-		Log.d(TAG, "showStaticExportPathSwitchIfAppropriate: called");
-		if (appIsExclusive()) {
-			staticExportPathSwitch.setVisibility(View.VISIBLE);
-		}
-	}
-	
-	@Override
-	public void onClick(@NotNull View v) {
-		Log.d(TAG, "onClick: called");
-		switch (v.getId()) {
-			case R.id.lower_case_switch:
-				onLowerCaseSwitchClicked((Switch) v);
-				break;
-			case R.id.upper_case_switch:
-				onUpperCaseSwitchClicked((Switch) v);
-				break;
-			case R.id.special_characters_switch:
-				onSpecialCharactersSwitchClicked((Switch) v);
-				break;
-			case R.id.numbers_switch:
-				onNumbersSwitchClicked((Switch) v);
-				break;
-			case R.id.static_export_path_switch:
-				onExportPathSwitchClicked((Switch) v);
-				break;
-			case R.id.password_length_seek_bar:
-				onPasswordLengthSeekBarClicked((SeekBar) v);
-				break;
-		}
-	}
-	
-	private void onPasswordLengthSeekBarClicked(SeekBar seekBar) {
-		Log.d(TAG, "onPasswordLengthSeekBarClicked: called");
-		setPasswordLength(seekBar.getProgress());
-	}
-	
-	private void saveStateToSharedPreferences(String key, boolean state) {
-		Log.d(TAG, "saveStateToSharedPreferences: called");
-		getDefaultSharedPreferences().edit()
-		                             .putBoolean(key, state)
-		                             .apply();
-	}
-	
-	private void handleStaticExportPathSwitchSharedPreferences(boolean isChecked) {
-		Log.d(TAG, "handleStaticExportPathSwitchSharedPreferences: called");
-		String key = getString(R.string.static_export_path_key);
-		saveStateToSharedPreferences(key, isChecked);
-	}
-	
-	private void onExportPathSwitchClicked(@NotNull Switch v) {
-		Log.d(TAG, "onExportPathSwitchClicked: called");
-		handleStaticExportPathSwitchSharedPreferences(v.isChecked());
-		if (v.isChecked()) {
-			// File chooser
-			Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-			intent.addCategory(Intent.CATEGORY_OPENABLE);
-			intent.setType(getString(R.string.xlsx_mime_type));
-			intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.file_name));
-			startActivityForResult(intent,
-			                       getResources().getInteger(R.integer.static_export_path_request_code));
-		}
-	}
-	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode,
 	                             @Nullable Intent data) {
@@ -183,10 +78,25 @@ public class SettingsFragment
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode ==
 		    getResources().getInteger(R.integer.static_export_path_request_code) &&
-		    resultCode == Activity.RESULT_OK && data != null) {
-			// TODO: Parse path and save to shared preferences
-			mStaticExportPathTextView.setText(data.getDataString());
+		    resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+			saveStaticExportPathToSharedPreferences(data.getData()
+			                                            .getPath());
+			mStaticExportPathTextView.setText(getStaticExportPath());
 		}
+	}
+	
+	private void saveStaticExportPathToSharedPreferences(String path) {
+		Log.d(TAG, "saveStaticExportPathToSharedPreferences: called");
+		String key = getString(R.string.static_export_path_key);
+		getDefaultSharedPreferences().edit()
+		                             .putString(key, path)
+		                             .apply();
+	}
+	
+	private String getStaticExportPath() {
+		Log.d(TAG, "getStaticExportPath: called");
+		String key = getString(R.string.static_export_path_key);
+		return getDefaultSharedPreferences().getString(key, "\"path\"");
 	}
 	
 	@Nullable
@@ -212,7 +122,6 @@ public class SettingsFragment
 		upperCaseSwitch.setOnClickListener(this);
 		specialCharactersSwitch.setOnClickListener(this);
 		numbersSwitch.setOnClickListener(this);
-		staticExportPathSwitch.setOnClickListener(this);
 		passwordLengthSeekBar.setOnSeekBarChangeListener(this /* onProgressChanged,
 		onStartTrackingTouch, onStopTrackingTouch */);
 		// Set state of switches from SharedPreferences
@@ -223,32 +132,158 @@ public class SettingsFragment
 		staticExportPathSwitch.setChecked(isStaticExportPathActivated());
 		// Set SeekBar value from shared preferences
 		passwordLengthSeekBar.setProgress(getPasswordLength());
-		showStaticExportPathSwitchIfAppropriate(view.findViewById(R.id.static_export_path_switch));
+		// Set static export path text view from shared preferences
+		mStaticExportPathTextView.setText(getStaticExportPath());
+		// Set this listener down here so it does not get triggered when
+		// I change the checked state of the switch programmatically from above
+		staticExportPathSwitch.setOnCheckedChangeListener(this);
+		showStaticExportPathSettingIfAppropriate(view.findViewById(R.id.static_export_setting_layout));
 		return view;
+	}
+	
+	private boolean isLowerCaseActivated() {
+		Log.d(TAG, "isLowerCaseActivated: called");
+		String key = getString(R.string.lower_case_activated_key);
+		return getBoolean(key, true);
+	}
+	
+	private boolean getBoolean(String key, boolean defaultValue) {
+		Log.d(TAG, "getBoolean: called");
+		return getDefaultSharedPreferences().getBoolean(key, defaultValue);
+	}
+	
+	private boolean appIsExclusive() {
+		Log.d(TAG, "appIsExclusive: called");
+		String key = getString(R.string.pass13_exclusive_preferences_key);
+		SharedPreferences preferences = requireActivity().getSharedPreferences(key, Context.MODE_PRIVATE);
+		return preferences.getBoolean(key, false);
+	}
+	
+	private boolean isUpperCaseActivated() {
+		Log.d(TAG, "isUpperCaseActivated: called");
+		String key = getString(R.string.upper_case_activated_key);
+		return getBoolean(key, true);
+	}
+	
+	@Override
+	public void onClick(@NotNull View v) {
+		Log.d(TAG, "onClick: called");
+		switch (v.getId()) {
+			case R.id.lower_case_switch:
+				onLowerCaseSwitchClicked((Switch) v);
+				break;
+			case R.id.upper_case_switch:
+				onUpperCaseSwitchClicked((Switch) v);
+				break;
+			case R.id.special_characters_switch:
+				onSpecialCharactersSwitchClicked((Switch) v);
+				break;
+			case R.id.numbers_switch:
+				onNumbersSwitchClicked((Switch) v);
+				break;
+			case R.id.password_length_seek_bar:
+				onPasswordLengthSeekBarClicked((SeekBar) v);
+				break;
+		}
+	}
+	
+	private void onPasswordLengthSeekBarClicked(SeekBar seekBar) {
+		Log.d(TAG, "onPasswordLengthSeekBarClicked: called");
+		setPasswordLength(seekBar.getProgress());
+	}
+	
+	private boolean isSpecialCharactersActivated() {
+		Log.d(TAG, "isSpecialCharactersActivated: called");
+		String key = getString(R.string.special_characters_activated_key);
+		return getBoolean(key, false);
+	}
+	
+	private boolean isNumbersActivated() {
+		Log.d(TAG, "isNumbersActivated: called");
+		String key = getString(R.string.numbers_activated_key);
+		return getBoolean(key, false);
+	}
+	
+	private boolean isStaticExportPathActivated() {
+		Log.d(TAG, "isStaticExportPathActivated: called");
+		String key = getString(R.string.static_export_path_activated_key);
+		return getBoolean(key, false);
+	}
+	
+	private void showStaticExportPathSettingIfAppropriate(ConstraintLayout staticExportSettingLayout) {
+		Log.d(TAG, "showStaticExportPathSettingIfAppropriate: called");
+		if (appIsExclusive()) {
+			staticExportSettingLayout.setVisibility(View.VISIBLE);
+		} else {
+			staticExportSettingLayout.setVisibility(View.GONE);
+		}
 	}
 	
 	private void onNumbersSwitchClicked(@NotNull Switch v) {
 		Log.d(TAG, "onNumbersSwitchClicked: called");
-		String key = getString(R.string.numbers_key);
-		saveStateToSharedPreferences(key, v.isChecked());
+		String key = getString(R.string.numbers_activated_key);
+		saveBooleanToSharedPreferences(key, v.isChecked());
+	}
+	
+	private void saveBooleanToSharedPreferences(String key, boolean state) {
+		Log.d(TAG, "saveBooleanToSharedPreferences: called");
+		getDefaultSharedPreferences().edit()
+		                             .putBoolean(key, state)
+		                             .apply();
 	}
 	
 	private void onSpecialCharactersSwitchClicked(@NotNull Switch v) {
 		Log.d(TAG, "onSpecialCharactersSwitchClicked: called");
-		String key = getString(R.string.special_characters_key);
-		saveStateToSharedPreferences(key, v.isChecked());
+		String key = getString(R.string.special_characters_activated_key);
+		saveBooleanToSharedPreferences(key, v.isChecked());
 	}
 	
 	private void onUpperCaseSwitchClicked(@NotNull Switch v) {
 		Log.d(TAG, "onUpperCaseSwitchClicked: called");
-		String key = getString(R.string.upper_case_key);
-		saveStateToSharedPreferences(key, v.isChecked());
+		String key = getString(R.string.upper_case_activated_key);
+		saveBooleanToSharedPreferences(key, v.isChecked());
 	}
 	
 	private void onLowerCaseSwitchClicked(@NotNull Switch v) {
 		Log.d(TAG, "onLowerCaseSwitchClicked: called");
-		String key = getString(R.string.lower_case_key);
-		saveStateToSharedPreferences(key, v.isChecked());
+		String key = getString(R.string.lower_case_activated_key);
+		saveBooleanToSharedPreferences(key, v.isChecked());
+	}
+	
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		if (buttonView.getId() == R.id.static_export_path_switch) {
+			onStaticExportPathSwitchClicked((Switch) buttonView);
+		}
+	}
+	
+	private void onStaticExportPathSwitchClicked(@NotNull Switch v) {
+		Log.d(TAG, "onStaticExportPathSwitchClicked: called");
+		saveStaticExportPathSwitchStateToSharedPreferences(v.isChecked());
+		if (v.isChecked()) {
+			if (getStaticExportPath().equals(getString(R.string.path))) {
+				startFileChooser();
+			} else {
+				// Already provided an export path before
+				// Ask if user wants to provide a new path
+				askIfNewPath();
+			}
+		}
+	}
+	
+	private void saveStaticExportPathSwitchStateToSharedPreferences(boolean isChecked) {
+		Log.d(TAG, "saveStaticExportPathSwitchStateToSharedPreferences: called");
+		String key = getString(R.string.static_export_path_activated_key);
+		saveBooleanToSharedPreferences(key, isChecked);
+	}
+	
+	private void startFileChooser() {
+		Log.d(TAG, "startFileChooser: called");
+		Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.setType(getString(R.string.xlsx_mime_type));
+		intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.file_name));
+		startActivityForResult(intent, getResources().getInteger(R.integer.static_export_path_request_code));
 	}
 	
 	@Override
@@ -270,5 +305,25 @@ public class SettingsFragment
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
 		Log.d(TAG, "onStopTrackingTouch: called");
+	}
+	
+	private void askIfNewPath() {
+		Log.d(TAG, "askIfNewPath: called");
+		AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+		builder.setTitle(R.string.new_path_questionmark);
+		builder.setMessage(R.string.ask_if_new_path_dialog_message);
+		builder.setPositiveButton(R.string.yes, (dialog, which) -> startFileChooser());
+		builder.setNegativeButton(R.string.no, (dialog, which) -> {});
+		// Creates a new AlertDialog
+		AlertDialog alertDialog = builder.create();
+		// Sets the buttons text color
+		alertDialog.setOnShowListener(dialog -> {
+			alertDialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE)
+			           .setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
+			alertDialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
+			           .setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
+		});
+		// Shows the AlertDialog
+		alertDialog.show();
 	}
 }

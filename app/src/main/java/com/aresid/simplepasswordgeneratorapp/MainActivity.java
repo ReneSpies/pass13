@@ -68,12 +68,9 @@ public class MainActivity
 		           AcknowledgePurchaseResponseListener,
 		           ConsumeResponseListener,
 		           SharedPreferences.OnSharedPreferenceChangeListener {
-	// TODO: Implement Google AdMob and give the option to pay for the app to unlock
-	//  special features.
 	// Features included in the paid version: extra setting for specific export path,
 	// prompt user for path if setting is not activated, remove ads.
 	private static final String           TAG             = "MainActivity";
-	private static final String           SHORT_PATH_NAME = "Documents/generated";
 	private              int              mCurrentNightMode;
 	private              NavController    mNavController;
 	private              Toolbar          mToolbar;
@@ -211,7 +208,7 @@ public class MainActivity
 			Uri collectionUri = Uri.parse(collection);
 			ContentValues values = new ContentValues();
 			values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
-			values.put(MediaStore.MediaColumns.RELATIVE_PATH, SHORT_PATH_NAME);
+			values.put(MediaStore.MediaColumns.RELATIVE_PATH, getString(R.string.short_path_name));
 			Uri fileUri = getContentResolver().insert(collectionUri, values);
 			OutputStreamWriter osw =
 					new OutputStreamWriter(Objects.requireNonNull(getContentResolver().openOutputStream(Objects.requireNonNull(fileUri))));
@@ -400,8 +397,9 @@ public class MainActivity
 	
 	private String shortenFilePathName(String pathName) {
 		Log.d(TAG, "shortenFilePathName: called");
-		if (pathName != null && pathName.contains(SHORT_PATH_NAME)) {
-			return SHORT_PATH_NAME;
+		String shortPathName = getString(R.string.short_path_name);
+		if (pathName != null && pathName.contains(shortPathName)) {
+			return shortPathName;
 		} else {
 			return pathName;
 		}
@@ -419,7 +417,6 @@ public class MainActivity
 	@Override
 	public void onDialogPositiveButtonClicked() {
 		Log.d(TAG, "onDialogPositiveButtonClicked: called");
-		// TODO: Google play billing one time product
 		BillingFlowParams params = BillingFlowParams.newBuilder()
 		                                            .setSkuDetails(mSkuDetailsList.get(0) /* TODO: mSkuDetailsList == null error */)
 		                                            .build();
@@ -554,7 +551,7 @@ public class MainActivity
 	private void handlePass13ExclusiveState() {
 		Log.d(TAG, "handlePass13ExclusiveState: called");
 		if (appIsExclusive()) {
-			// TODO: Extra setting, excel file
+			// TODO: excel file
 			toggleShowToolbarTitleExclusive(true);
 			disableUnlockFeaturesAction();
 		} else {
