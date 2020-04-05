@@ -39,6 +39,7 @@ public class SettingsFragment
 			"SettingsFragment";
 	private              OnFragmentInteractionListener mInteractionListener;
 	private              TextView                      mStaticExportPathTextView;
+	private              Switch                        mStaticExportPathSwitch;
 	
 	public SettingsFragment() {
 		Log.d(TAG, "SettingsFragment: called");
@@ -76,6 +77,10 @@ public class SettingsFragment
 	                             @Nullable Intent data) {
 		Log.d(TAG, "onActivityResult: called");
 		super.onActivityResult(requestCode, resultCode, data);
+		// If user cancels, reset the switch
+		if (resultCode == Activity.RESULT_CANCELED) {
+			mStaticExportPathSwitch.setChecked(false);
+		}
 		if (requestCode ==
 		    getResources().getInteger(R.integer.static_export_path_request_code) &&
 		    resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
@@ -96,7 +101,7 @@ public class SettingsFragment
 	private String getStaticExportPath() {
 		Log.d(TAG, "getStaticExportPath: called");
 		String key = getString(R.string.static_export_path_key);
-		return getDefaultSharedPreferences().getString(key, "\"path\"");
+		return getDefaultSharedPreferences().getString(key, getString(R.string.path));
 	}
 	
 	@Nullable
@@ -113,7 +118,7 @@ public class SettingsFragment
 		Switch specialCharactersSwitch =
 				view.findViewById(R.id.special_characters_switch);
 		Switch numbersSwitch = view.findViewById(R.id.numbers_switch);
-		Switch staticExportPathSwitch =
+		mStaticExportPathSwitch =
 				view.findViewById(R.id.static_export_path_switch);
 		SeekBar passwordLengthSeekBar = view.findViewById(R.id.password_length_seek_bar);
 		mStaticExportPathTextView = view.findViewById(R.id.static_export_path_text_view);
@@ -129,14 +134,14 @@ public class SettingsFragment
 		upperCaseSwitch.setChecked(isUpperCaseActivated());
 		specialCharactersSwitch.setChecked(isSpecialCharactersActivated());
 		numbersSwitch.setChecked(isNumbersActivated());
-		staticExportPathSwitch.setChecked(isStaticExportPathActivated());
+		mStaticExportPathSwitch.setChecked(isStaticExportPathActivated());
 		// Set SeekBar value from shared preferences
 		passwordLengthSeekBar.setProgress(getPasswordLength());
 		// Set static export path text view from shared preferences
 		mStaticExportPathTextView.setText(getStaticExportPath());
 		// Set this listener down here so it does not get triggered when
 		// I change the checked state of the switch programmatically from above
-		staticExportPathSwitch.setOnCheckedChangeListener(this);
+		mStaticExportPathSwitch.setOnCheckedChangeListener(this);
 		showStaticExportPathSettingIfAppropriate(view.findViewById(R.id.static_export_setting_layout));
 		return view;
 	}

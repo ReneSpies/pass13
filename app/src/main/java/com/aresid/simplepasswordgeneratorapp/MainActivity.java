@@ -61,7 +61,7 @@ public class MainActivity
 		extends AppCompatActivity
 		implements OnFragmentInteractionListener,
 		           View.OnClickListener,
-		           OnDialogInteractionListener,
+		           OnUnlockFeaturesDialogInteractionListener,
 		           PurchasesUpdatedListener,
 		           BillingClientStateListener,
 		           SkuDetailsResponseListener,
@@ -415,16 +415,6 @@ public class MainActivity
 	}
 	
 	@Override
-	public void onDialogPositiveButtonClicked() {
-		Log.d(TAG, "onDialogPositiveButtonClicked: called");
-		BillingFlowParams params = BillingFlowParams.newBuilder()
-		                                            .setSkuDetails(mSkuDetailsList.get(0) /* TODO: mSkuDetailsList == null error */)
-		                                            .build();
-		mBillingClient.launchBillingFlow(this, params); // Continues with
-		// onPurchasesUpdated
-	}
-	
-	@Override
 	public void onPurchasesUpdated(BillingResult result, @Nullable List<Purchase> list) {
 		Log.d(TAG, "onPurchasesUpdated: called");
 		if (result.getResponseCode() == BillingClient.BillingResponseCode.OK &&
@@ -557,5 +547,16 @@ public class MainActivity
 		} else {
 			loadAds();
 		}
+	}
+	
+	@Override
+	public void onUnlockFeaturesDialogPositiveButtonClicked() {
+		Log.d(TAG, "onUnlockFeaturesDialogPositiveButtonClicked: called");
+		BillingFlowParams params = BillingFlowParams.newBuilder()
+		                                            .setSkuDetails(mSkuDetailsList.get(0) /* TODO:
+		                                            mSkuDetailsList == null error */)
+		                                            .build();
+		mBillingClient.launchBillingFlow(this, params); // Continues with
+		// onPurchasesUpdated
 	}
 }

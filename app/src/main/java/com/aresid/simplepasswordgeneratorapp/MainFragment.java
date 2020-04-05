@@ -46,7 +46,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class MainFragment
 		extends Fragment
 		implements View.OnClickListener,
-		           SharedPreferences.OnSharedPreferenceChangeListener {
+		           SharedPreferences.OnSharedPreferenceChangeListener,
+		           OnLabelPasswordDialogInteractionListener {
 	private static final String                        TAG = "MainFragment";
 	private              TextView                      mPasswordTextView;
 	private              OnFragmentInteractionListener mInteractionListener;
@@ -67,6 +68,20 @@ public class MainFragment
 		Log.d(TAG, "isLowerCaseActivated: called");
 		String key = getString(R.string.lower_case_activated_key);
 		return getBoolean(key, true);
+	}
+	
+	private void onExportButtonClicked() {
+		Log.d(TAG, "onExportButtonClicked: called");
+		// TODO: Merge current password into an excel file and save it on the storage or
+		//  just save it on the storage as a .txt file if user has not paid for the app
+		//  usage
+		if (getPasswordLength() == 0 && mPasswordTextView.getText()
+		                                                 .toString()
+		                                                 .startsWith(getString(R.string.fun))) {
+			showSnackbar(mPasswordTextView, getString(R.string.no_password_detected));
+			return;
+		}
+		requestWriteExternalStoragePermission();
 	}
 	
 	private boolean getBoolean(String key, boolean defaultValue) {
@@ -92,18 +107,12 @@ public class MainFragment
 		return getBoolean(key, false);
 	}
 	
-	private void onExportButtonClicked() {
-		Log.d(TAG, "onExportButtonClicked: called");
-		// TODO: Merge current password into a excel file and save it on the storage or
-		//  just save it on the storage as a .txt file if user has not paid for the app
-		//  usage
-		if (getPasswordLength() == 0 && mPasswordTextView.getText()
-		                                                 .toString()
-		                                                 .startsWith(getString(R.string.fun))) {
-			showSnackbar(mPasswordTextView, getString(R.string.no_password_detected));
-			return;
-		}
-		requestWriteExternalStoragePermission(); // Continue with onRequestPermissionResult
+	private void requestWriteExternalStoragePermission() {
+		Log.d(TAG, "requestWriteExternalStoragePermission: called");
+		requestPermissions(new String[] {
+				Manifest.permission.WRITE_EXTERNAL_STORAGE
+		}, getResources().getInteger(R.integer.write_external_storage_permission_request_code)); //
+		// Continues with onRequestPermissionResult
 	}
 	
 	@Override
@@ -137,23 +146,12 @@ public class MainFragment
 		ClipboardManager clipboardManager =
 				(ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
 		ClipData clip = ClipData.newPlainText(getString(R.string.app_name), password);
-		assert clipboardManager != null;
-		clipboardManager.setPrimaryClip(clip);
+		if (clipboardManager != null) {
+			clipboardManager.setPrimaryClip(clip);
+		} else {
+			displayErrorSnackbar(view, getString(R.string.error_message));
+		}
 		showSnackbar(view, getString(R.string.copied));
-	}
-	
-	private void requestWriteExternalStoragePermission() {
-		Log.d(TAG, "requestWriteExternalStoragePermission: called");
-		requestPermissions(new String[] {
-				Manifest.permission.WRITE_EXTERNAL_STORAGE
-		}, getResources().getInteger(R.integer.write_external_storage_permission_request_code));
-	}
-	
-	private void showSnackbar(View view, String message) {
-		Log.d(TAG, "showSnackbar: called");
-		Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
-		        .setBackgroundTint(getResources().getColor(R.color.secondary))
-		        .show();
 	}
 	
 	@Override
@@ -166,6 +164,15 @@ public class MainFragment
 			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 				if (appIsExclusive()) {
 					// TODO: Do exclusive export stuff
+					// TODO: Check if static export path is checked and provided
+					if (!getStaticExportPath().equals(getString(R.string.path)) &&
+					    isStaticExportPathActivated()) {
+						// Static export path is provided and activated
+						// Ask for password label and save it to the file
+					} else {
+						// TODO: Show Dialog and ask for password label, then start file chooser and export
+						//  single .txt file
+					}
 				} else {
 					String password = mPasswordTextView.getText()
 					                                   .toString();
@@ -177,6 +184,25 @@ public class MainFragment
 				}
 			}
 		}
+	}
+	
+	private void showSnackbar(View view, String message) {
+		Log.d(TAG, "showSnackbar: called");
+		Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
+		        .setBackgroundTint(getResources().getColor(R.color.secondary))
+		        .show();
+	}
+	
+	private String getStaticExportPath() {
+		Log.d(TAG, "getStaticExportPath: called");
+		String key = getString(R.string.static_export_path_key);
+		return getDefaultSharedPreferences().getString(key, getString(R.string.path));
+	}
+	
+	private boolean isStaticExportPathActivated() {
+		Log.d(TAG, "isStaticExportPathActivated: called");
+		String key = getString(R.string.static_export_path_key);
+		return getBoolean(key, false);
 	}
 	
 	@Override
@@ -395,5 +421,11 @@ public class MainFragment
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		Log.d(TAG, "onSharedPreferenceChanged: called");
+	}
+	
+	@Override
+	public void onLabelPasswordDialogPositiveButtonClicked(String passwordLabel) {
+		Log.d(TAG, "onNamePasswordDialogPositiveButtonClicked: called");
+		// TODO: Label the password and either export it as a .txt file or merge it into the excel file
 	}
 }

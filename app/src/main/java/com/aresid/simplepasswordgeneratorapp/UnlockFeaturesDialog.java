@@ -18,6 +18,10 @@ import com.aresid.simplepasswordgeneratorapp.feature.FeaturesAdapter;
 
 import java.util.ArrayList;
 
+interface OnUnlockFeaturesDialogInteractionListener {
+	void onUnlockFeaturesDialogPositiveButtonClicked();
+}
+
 /**
  * Created on: 28/03/2020
  * For Project: pass13
@@ -26,18 +30,18 @@ import java.util.ArrayList;
  */
 public class UnlockFeaturesDialog
 		extends DialogFragment {
-	private static final String                      TAG = "UnlockFeaturesDialog";
-	private              OnDialogInteractionListener mListener;
+	private static final String                                    TAG = "UnlockFeaturesDialog";
+	private              OnUnlockFeaturesDialogInteractionListener mListener;
 	
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate: called");
 		super.onCreate(savedInstanceState);
-		if (requireContext() instanceof OnDialogInteractionListener) {
-			mListener = (OnDialogInteractionListener) requireContext();
+		if (requireContext() instanceof OnUnlockFeaturesDialogInteractionListener) {
+			mListener = (OnUnlockFeaturesDialogInteractionListener) requireContext();
 		} else {
 			throw new RuntimeException(requireContext().toString() + " must implement " +
-			                           "OnDialogInteractionListener");
+			                           "OnUnlockFeaturesDialogInteractionListener");
 		}
 	}
 	
@@ -67,8 +71,7 @@ public class UnlockFeaturesDialog
 		                                              featureArrayList);
 		recyclerView.setAdapter(adapter);
 		builder.setView(view);
-		builder.setPositiveButton(R.string.give_me,
-		                          (dialog, which) -> mListener.onDialogPositiveButtonClicked());
+		builder.setPositiveButton(R.string.give_me, (dialog, which) -> mListener.onUnlockFeaturesDialogPositiveButtonClicked());
 		builder.setNegativeButton(R.string.cancel, (dialog, which) -> {});
 		AlertDialog dialog = builder.create();
 		dialog.setOnShowListener(dialog1 -> {

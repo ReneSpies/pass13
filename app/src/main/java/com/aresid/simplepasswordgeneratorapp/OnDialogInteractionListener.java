@@ -7,5 +7,6 @@ package com.aresid.simplepasswordgeneratorapp;
  * Copyright: © 2020 Ares ID
  */
 public interface OnDialogInteractionListener {
-	void onDialogPositiveButtonClicked();
+	void onUnlockFeaturesDialogPositiveButtonClicked();
+	void onNamePasswordDialogPositiveButtonClicked();
 }
