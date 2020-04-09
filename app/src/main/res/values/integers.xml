@@ -5,5 +5,5 @@
 	<integer name="standard_toolbar_elevation">0</integer>
 	<integer name="night_mode_dark">16</integer>
 	<integer name="night_mode_light">32</integer>
-	<integer name="static_export_path_request_code">2</integer>
+	<integer name="excel_file_path_request_code">2</integer>
 </resources>

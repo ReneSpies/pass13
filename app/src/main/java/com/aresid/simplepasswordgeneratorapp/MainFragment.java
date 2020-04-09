@@ -3,6 +3,7 @@ package com.aresid.simplepasswordgeneratorapp;
 import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -22,15 +23,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -149,9 +162,23 @@ public class MainFragment
 		if (clipboardManager != null) {
 			clipboardManager.setPrimaryClip(clip);
 		} else {
-			displayErrorSnackbar(view, getString(R.string.error_message));
+			showErrorSnackbar(view, getString(R.string.error_message));
 		}
 		showSnackbar(view, getString(R.string.copied));
+	}
+	
+	private void showErrorSnackbar(View snackbarView, String message) {
+		Log.d(TAG, "showErrorSnackbar: called");
+		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
+		        .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.error))
+		        .show();
+	}
+	
+	private void showSnackbar(View view, String message) {
+		Log.d(TAG, "showSnackbar: called");
+		Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+		        .setBackgroundTint(getResources().getColor(R.color.secondary))
+		        .show();
 	}
 	
 	@Override
@@ -165,10 +192,13 @@ public class MainFragment
 				if (appIsExclusive()) {
 					// TODO: Do exclusive export stuff
 					// TODO: Check if static export path is checked and provided
-					if (!getStaticExportPath().equals(getString(R.string.path)) &&
-					    isStaticExportPathActivated()) {
+					if (!getExcelFilePath().equals(getString(R.string.path)) &&
+					    isUseSingleExcelFileActivated()) {
 						// Static export path is provided and activated
 						// Ask for password label and save it to the file
+						new LabelPasswordDialog(this).show(getParentFragmentManager(),
+						                                   "LabelPasswordManager");
+						// Continues with onLabelPasswordDialogPositiveButtonClicked
 					} else {
 						// TODO: Show Dialog and ask for password label, then start file chooser and export
 						//  single .txt file
@@ -186,23 +216,10 @@ public class MainFragment
 		}
 	}
 	
-	private void showSnackbar(View view, String message) {
-		Log.d(TAG, "showSnackbar: called");
-		Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
-		        .setBackgroundTint(getResources().getColor(R.color.secondary))
-		        .show();
-	}
-	
-	private String getStaticExportPath() {
-		Log.d(TAG, "getStaticExportPath: called");
-		String key = getString(R.string.static_export_path_key);
+	private String getExcelFilePath() {
+		Log.d(TAG, "getExcelFilePath: called");
+		String key = getString(R.string.excel_file_path_key);
 		return getDefaultSharedPreferences().getString(key, getString(R.string.path));
-	}
-	
-	private boolean isStaticExportPathActivated() {
-		Log.d(TAG, "isStaticExportPathActivated: called");
-		String key = getString(R.string.static_export_path_key);
-		return getBoolean(key, false);
 	}
 	
 	@Override
@@ -224,6 +241,12 @@ public class MainFragment
 		String key = getString(R.string.pass13_exclusive_preferences_key);
 		SharedPreferences preferences = requireActivity().getSharedPreferences(key, MODE_PRIVATE);
 		return preferences.getBoolean(key, false);
+	}
+	
+	private boolean isUseSingleExcelFileActivated() {
+		Log.d(TAG, "isUseSingleExcelFileActivated: called");
+		String key = getString(R.string.static_export_path_activated_key);
+		return getBoolean(key, false);
 	}
 	
 	@RequiresApi (api = Build.VERSION_CODES.Q)
@@ -249,31 +272,7 @@ public class MainFragment
 			showSnackbar(mPasswordTextView, getString(R.string.exported_message, filePath, fileName));
 		} catch (IOException e) {
 			Log.e(TAG, "saveFileIfApiGreaterQ: ", e);
-			displayErrorSnackbar(mPasswordTextView, getString(R.string.error_message));
-		}
-	}
-	
-	private void saveFileIfApiBelowQ(String text) {
-		Log.d(TAG, "saveFileIfApiBelowQ: called");
-		// TODO: Refactor
-		try {
-			File file = new File(Environment.getExternalStoragePublicDirectory(
-					Environment.DIRECTORY_DOCUMENTS + "/generated"), generateFileName());
-			if (!file.exists()) {
-				Objects.requireNonNull(file.getParentFile())
-				       .mkdirs();
-				if (!file.createNewFile()) {
-					displayErrorSnackbar(mPasswordTextView, getString(R.string.error_message));
-				}
-			}
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
-			writer.write(text);
-			writer.close();
-			showSnackbar(mPasswordTextView, getString(R.string.exported_message, Uri.parse(file.getParent())
-					, file.getName()));
-		} catch (IOException e) {
-			Log.e(TAG, "saveFileIfApiBelowQ: ", e);
-			displayErrorSnackbar(mPasswordTextView, getString(R.string.error_message));
+			showErrorSnackbar(mPasswordTextView, getString(R.string.error_message));
 		}
 	}
 	
@@ -283,11 +282,30 @@ public class MainFragment
 		                                                    .format(new Date()));
 	}
 	
-	private void displayErrorSnackbar(View snackbarView, String message) {
-		Log.d(TAG, "displayErrorSnackbar: called");
-		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
-		        .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.error))
-		        .show();
+	private void saveFileIfApiBelowQ(String text) {
+		Log.d(TAG, "saveFileIfApiBelowQ: called");
+		// TODO: Refactor
+		try {
+			File file = new File(Environment.getExternalStoragePublicDirectory(
+					Environment.DIRECTORY_DOCUMENTS + "/generated"), generateFileName());
+			if (!file.exists() && file.getParentFile() != null) {
+				file.getParentFile()
+				    .mkdirs();
+				if (!file.createNewFile()) {
+					throw new IOException();
+				}
+			} else {
+				throw new IOException();
+			}
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
+			writer.write(text);
+			writer.close();
+			showSnackbar(mPasswordTextView, getString(R.string.exported_message, Uri.parse(file.getParent())
+					, file.getName()));
+		} catch (IOException e) {
+			Log.e(TAG, "saveFileIfApiBelowQ: ", e);
+			showErrorSnackbar(mPasswordTextView, getString(R.string.error_message));
+		}
 	}
 	
 	@Override
@@ -424,8 +442,120 @@ public class MainFragment
 	}
 	
 	@Override
-	public void onLabelPasswordDialogPositiveButtonClicked(String passwordLabel) {
+	public void onLabelPasswordDialogPositiveButtonClicked(String passwordLabel, File path) {
 		Log.d(TAG, "onNamePasswordDialogPositiveButtonClicked: called");
 		// TODO: Label the password and either export it as a .txt file or merge it into the excel file
+		//  if file path == null, its excel file with static path. In this case, use path from shared
+		//  preferences and create excel file
+		if (isUseSingleExcelFileActivated() && !getExcelFilePath().equals(getString(R.string.path))) {
+			Log.d(TAG, "onLabelPasswordDialogPositiveButtonClicked: path = " + getExcelFilePath());
+			DocumentFile documentFile = DocumentFile.fromTreeUri(requireContext(),
+			                                                     Uri.parse(getExcelFilePath()));
+			if (documentFile != null) {
+				if (documentFile.findFile("pass13.generations.xlsx") != null) {
+					DocumentFile documentFileAlreadyCreated = documentFile.findFile(
+							"pass13.generations" + ".xlsx");
+					if (documentFileAlreadyCreated != null) {
+						long fileSize = documentFileAlreadyCreated.length();
+						updateExcelFile(passwordLabel, Uri.parse(getExcelFilePath()), fileSize);
+					}
+				} else {
+					showSnackbar(mPasswordTextView, getString(R.string.file_moved_message));
+					// TODO: Create a new excel file
+				}
+			}
+			// Merge password with label into existing excel file
+			// TODO: Enable support for already created excel files
+		} else if (isUseSingleExcelFileActivated() && getExcelFilePath().equals(getString(R.string.path))) {
+			// This scenario is an error. Let the user choose a new path via FileChooser
+		} else if (!isUseSingleExcelFileActivated()) {
+			// The user wants the password in a .txt file. Put the current password + label name into this
+			// file
+		}
+	}
+	
+	private void updateExcelFile(String passwordLabel, Uri fileUri, long fileSize) {
+		Log.d(TAG, "updateExcelFile: called");
+		Log.d(TAG, "updateExcelFile: uri = " + fileUri);
+		if (fileSize <= 0) {
+			populateExcelFileForFirstTime(passwordLabel, fileUri);
+		} else {
+			ContentResolver contentResolver = requireActivity().getContentResolver();
+			if (contentResolver == null) {
+				showErrorSnackbar(mPasswordTextView, getString(R.string.error_message));
+				return;
+			}
+			try {
+				FileInputStream fileInputStream = (FileInputStream) contentResolver.openInputStream(fileUri);
+				if (fileInputStream == null) {
+					showErrorSnackbar(mPasswordTextView, getString(R.string.error_message));
+					return;
+				}
+				POIFSFileSystem fileSystem = new POIFSFileSystem(fileInputStream);
+				HSSFWorkbook workbook = new HSSFWorkbook(fileSystem);
+				HSSFSheet sheet = workbook.getSheet(getString(R.string.app_name));
+				Log.d(TAG, "updateExcelFile: sheet = " + sheet);
+				Log.d(TAG, "updateExcelFile: sheet name = " + sheet.getSheetName());
+				HSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
+				HSSFCell cell = row.createCell(0);
+				cell.setCellValue("on " + new Date().toString());
+				cell = row.createCell(1);
+				cell.setCellValue(passwordLabel);
+				cell = row.createCell(2);
+				cell.setCellValue(mPasswordTextView.getText()
+				                                   .toString()
+				                                   .trim());
+				FileOutputStream fileOutputStream =
+						(FileOutputStream) contentResolver.openOutputStream(fileUri);
+				if (fileOutputStream == null) {
+					showErrorSnackbar(mPasswordTextView, getString(R.string.error_message));
+					return;
+				}
+				workbook.write(fileOutputStream);
+				fileOutputStream.close();
+				fileInputStream.close();
+			} catch (Exception e) {
+				Log.e(TAG, "updateExcelFile: ", e);
+			}
+		}
+	}
+	
+	private void populateExcelFileForFirstTime(String passwordLabel, Uri fileUri) {
+		Log.d(TAG, "populateExcelFileForFirstTime: called");
+		Workbook workbook = new HSSFWorkbook();
+		Cell cell;
+		Sheet sheet;
+		sheet = workbook.createSheet(getString(R.string.app_name));
+		Row row = sheet.createRow(0);
+		cell = row.createCell(0);
+		cell.setCellValue("Time");
+		cell = row.createCell(1);
+		cell.setCellValue("Label");
+		cell = row.createCell(2);
+		cell.setCellValue("Value");
+		row = sheet.createRow(1);
+		cell = row.createCell(0);
+		cell.setCellValue("on " + new Date().toString());
+		cell = row.createCell(1);
+		cell.setCellValue(passwordLabel);
+		cell = row.createCell(2);
+		cell.setCellValue(mPasswordTextView.getText()
+		                                   .toString());
+		sheet.setColumnWidth(0, (10 * 200));
+		sheet.setColumnWidth(1, (10 * 200));
+		FileOutputStream fileOutputStream;
+		ContentResolver contentResolver = requireActivity().getContentResolver();
+		try {
+			Log.d(TAG, "createNewExcelFile: uri = " + fileUri);
+			fileOutputStream = (FileOutputStream) contentResolver.openOutputStream(fileUri);
+			workbook.write(fileOutputStream);
+			fileOutputStream.close();
+		} catch (IOException e) {
+			Log.e(TAG, "createNewExcelFile: ", e);
+		}
+	}
+	
+	private void createNewExcelFile(String label, Uri fileUri) {
+		Log.d(TAG, "createNewExcelFile: called");
 	}
 }

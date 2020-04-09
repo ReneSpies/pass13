@@ -43,9 +43,9 @@
 	<string name="fun_fact_text" translatable="false">"Fun Fact: "</string>
 	<string name="file_name" translatable="false">pass13.generations</string>
 	<string name="xlsx_mime_type" translatable="false">application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</string>
-	<string name="static_export_path_key" translatable="false">pass13.shared_preferences.keys.static_export_path</string>
-	<string name="new_path_questionmark">New path?</string>
-	<string name="ask_if_new_path_dialog_message">You have chosen a path before, do you want to use a new one?</string>
+	<string name="excel_file_path_key" translatable="false">pass13.shared_preferences.keys.excel_file_path</string>
+	<string name="new_file_questionmark">New file?</string>
+	<string name="ask_if_new_file_dialog_message">You have chosen a file before, do you want to use a new one?</string>
 	<string name="yes">Yes</string>
 	<string name="no">No</string>
 	<string name="path" translatable="false">path</string>
@@ -54,4 +54,6 @@
 	<string name="fun" translatable="false">Fun</string>
 	<string name="password_label">Password label</string>
 	<string name="ok">Ok</string>
+	<string name="password_usage">What do you use this password for?</string>
+	<string name="file_moved_message">The file is not in it\'s place anymore. I created a new one for you.</string>
 </resources>

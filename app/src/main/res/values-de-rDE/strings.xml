@@ -26,8 +26,8 @@
 	<string name="static_export_path">Excel-Datei benutzen</string>
 	<string name="export_path_hint">\"Pfad\"</string>
 	<string name="no_password_detected">Kein Passwort entdeckt</string>
-	<string name="new_path_questionmark">Neuen Pfad benutzen?</string>
-	<string name="ask_if_new_path_dialog_message">Du hast schon einen Pfad hinterlegt. Neuen Pfad hinterlegen?</string>
+	<string name="new_file_questionmark">Neuen Pfad benutzen?</string>
+	<string name="ask_if_new_file_dialog_message">Du hast schon einen Pfad hinterlegt. Neuen Pfad hinterlegen?</string>
 	<string name="yes">Ja</string>
 	<string name="no">Nein</string>
 </resources>

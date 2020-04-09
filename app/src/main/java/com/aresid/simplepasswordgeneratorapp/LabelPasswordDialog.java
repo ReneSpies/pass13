@@ -10,11 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
+
 interface OnLabelPasswordDialogInteractionListener {
-	void onLabelPasswordDialogPositiveButtonClicked(String passwordLabel);
+	void onLabelPasswordDialogPositiveButtonClicked(String passwordLabel, File path);
 }
 
 /**
@@ -27,6 +30,12 @@ public class LabelPasswordDialog
 		extends DialogFragment {
 	private static final String                                   TAG = "LabelPasswordDialog";
 	private              OnLabelPasswordDialogInteractionListener mListener;
+	private              Fragment                                 mContext;
+	
+	LabelPasswordDialog(Fragment context) {
+		Log.d(TAG, "LabelPasswordDialog: called");
+		mContext = context;
+	}
 	
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,12 +43,11 @@ public class LabelPasswordDialog
 		super.onCreate(savedInstanceState);
 		// Defines mListener and throws RuntimeException if Context does not implement
 		// OnLabelPasswordDialogInteractionListener
-		if (requireContext() instanceof OnLabelPasswordDialogInteractionListener) {
-			mListener = (OnLabelPasswordDialogInteractionListener) requireContext();
+		if (mContext instanceof OnLabelPasswordDialogInteractionListener) {
+			mListener = (OnLabelPasswordDialogInteractionListener) mContext;
 		} else {
-			throw new RuntimeException(
-					requireContext().toString() + " must implement " +
-					"OnLabelPasswordDialogInteractionListener");
+			throw new RuntimeException(mContext.toString() + " must implement " +
+			                           "OnLabelPasswordDialogInteractionListener");
 		}
 	}
 	
@@ -52,9 +60,10 @@ public class LabelPasswordDialog
 		                             .inflate(R.layout.view_label_password_dialog, null);
 		TextInputEditText passwordLabelField = view.findViewById(R.id.password_label_field);
 		builder.setView(view);
+		builder.setMessage(R.string.password_usage);
 		builder.setPositiveButton(getString(R.string.ok),
 		                          (dialog, which) -> mListener.onLabelPasswordDialogPositiveButtonClicked(passwordLabelField.getText()
-		                                                                                                                                            .toString()));
+		                                                                                                                    .toString(), null));
 		builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> {});
 		AlertDialog alertDialog = builder.create();
 		alertDialog.setOnShowListener(dialog -> {

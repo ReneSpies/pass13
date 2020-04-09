@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,8 +20,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,11 +39,10 @@ public class SettingsFragment
 		implements View.OnClickListener,
 		           SeekBar.OnSeekBarChangeListener,
 		           CompoundButton.OnCheckedChangeListener {
-	private static final String                        TAG                          =
-			"SettingsFragment";
+	private static final String                        TAG = "SettingsFragment";
 	private              OnFragmentInteractionListener mInteractionListener;
-	private              TextView                      mStaticExportPathTextView;
-	private              Switch                        mStaticExportPathSwitch;
+	private              TextView                      mSingleExcelFilePathTextView;
+	private              Switch                        mSingleExcelFileSwitch;
 	
 	public SettingsFragment() {
 		Log.d(TAG, "SettingsFragment: called");
@@ -47,14 +50,48 @@ public class SettingsFragment
 	}
 	
 	@Override
-	public void onCreate(@Nullable Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate: called");
-		super.onCreate(savedInstanceState);
-		if (requireContext() instanceof OnFragmentInteractionListener) {
-			mInteractionListener = (OnFragmentInteractionListener) requireContext();
-		} else {
-			throw new RuntimeException(requireContext().toString() + " must implement " +
-			                           "OnFragmentInteractionListener");
+	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		Log.d(TAG, "onActivityResult: called");
+		super.onActivityResult(requestCode, resultCode, data);
+		// If user cancels, reset the switch
+		if (requestCode == getResources().getInteger(R.integer.excel_file_path_request_code)) {
+			if (resultCode == Activity.RESULT_CANCELED) {
+				// User cancelled
+				// Reset switch
+				mSingleExcelFileSwitch.setChecked(!mSingleExcelFileSwitch.isChecked());
+			} else if (resultCode == Activity.RESULT_OK) {
+				if (data != null) {
+					Uri treeUri = data.getData();
+					if (treeUri != null) {
+						// Create a DocumentFile object from the tree uri
+						DocumentFile documentFile = DocumentFile.fromTreeUri(requireActivity(), treeUri);
+						if (documentFile != null) {
+							// Create the file
+							DocumentFile createdFile =
+									documentFile.createFile(getString(R.string.xlsx_mime_type),
+									                        getString(R.string.file_name));
+							if (createdFile != null) {
+								if (createdFile.exists()) {
+									saveExcelFileUriAsStringToSharedPreferences(createdFile.getUri());
+									// Short the Uri and set the text view
+									mSingleExcelFilePathTextView.setText(getShortFilePath(getExcelFilePath()));
+								} else {
+									Log.w(TAG, "onActivityResult: created file does not exist");
+								}
+							} else {
+								Log.w(TAG, "onActivityResult: created file is null");
+							}
+						} else {
+							Log.w(TAG, "onActivityResult: document file is null");
+						}
+					} else {
+						Log.w(TAG, "onActivityResult: tree uri is null");
+					}
+				} else {
+					Log.w(TAG, "onActivityResult: data is null");
+					showErrorSnackbar(mSingleExcelFileSwitch, getString(R.string.error_message));
+				}
+			}
 		}
 	}
 	
@@ -73,41 +110,20 @@ public class SettingsFragment
 	}
 	
 	@Override
-	public void onActivityResult(int requestCode, int resultCode,
-	                             @Nullable Intent data) {
-		Log.d(TAG, "onActivityResult: called");
-		super.onActivityResult(requestCode, resultCode, data);
-		// If user cancels, reset the switch
-		if (resultCode == Activity.RESULT_CANCELED) {
-			mStaticExportPathSwitch.setChecked(false);
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		Log.d(TAG, "onCreate: called");
+		super.onCreate(savedInstanceState);
+		if (requireContext() instanceof OnFragmentInteractionListener) {
+			mInteractionListener = (OnFragmentInteractionListener) requireContext();
+		} else {
+			throw new RuntimeException(
+					requireContext().toString() + " must implement " + "OnFragmentInteractionListener");
 		}
-		if (requestCode ==
-		    getResources().getInteger(R.integer.static_export_path_request_code) &&
-		    resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-			saveStaticExportPathToSharedPreferences(data.getData()
-			                                            .getPath());
-			mStaticExportPathTextView.setText(getStaticExportPath());
-		}
-	}
-	
-	private void saveStaticExportPathToSharedPreferences(String path) {
-		Log.d(TAG, "saveStaticExportPathToSharedPreferences: called");
-		String key = getString(R.string.static_export_path_key);
-		getDefaultSharedPreferences().edit()
-		                             .putString(key, path)
-		                             .apply();
-	}
-	
-	private String getStaticExportPath() {
-		Log.d(TAG, "getStaticExportPath: called");
-		String key = getString(R.string.static_export_path_key);
-		return getDefaultSharedPreferences().getString(key, getString(R.string.path));
 	}
 	
 	@Nullable
 	@Override
-	public View onCreateView(@NonNull LayoutInflater inflater,
-	                         @Nullable ViewGroup container,
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
 	                         @Nullable Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView: called");
 		mInteractionListener.onSettingsFragmentViewCreated();
@@ -115,13 +131,11 @@ public class SettingsFragment
 		// Define needed views
 		Switch lowerCaseSwitch = view.findViewById(R.id.lower_case_switch);
 		Switch upperCaseSwitch = view.findViewById(R.id.upper_case_switch);
-		Switch specialCharactersSwitch =
-				view.findViewById(R.id.special_characters_switch);
+		Switch specialCharactersSwitch = view.findViewById(R.id.special_characters_switch);
 		Switch numbersSwitch = view.findViewById(R.id.numbers_switch);
-		mStaticExportPathSwitch =
-				view.findViewById(R.id.static_export_path_switch);
+		mSingleExcelFileSwitch = view.findViewById(R.id.static_export_path_switch);
 		SeekBar passwordLengthSeekBar = view.findViewById(R.id.password_length_seek_bar);
-		mStaticExportPathTextView = view.findViewById(R.id.static_export_path_text_view);
+		mSingleExcelFilePathTextView = view.findViewById(R.id.static_export_path_text_view);
 		// Set onClick listeners
 		lowerCaseSwitch.setOnClickListener(this);
 		upperCaseSwitch.setOnClickListener(this);
@@ -134,16 +148,43 @@ public class SettingsFragment
 		upperCaseSwitch.setChecked(isUpperCaseActivated());
 		specialCharactersSwitch.setChecked(isSpecialCharactersActivated());
 		numbersSwitch.setChecked(isNumbersActivated());
-		mStaticExportPathSwitch.setChecked(isStaticExportPathActivated());
+		mSingleExcelFileSwitch.setChecked(isStaticExportPathActivated());
 		// Set SeekBar value from shared preferences
 		passwordLengthSeekBar.setProgress(getPasswordLength());
 		// Set static export path text view from shared preferences
-		mStaticExportPathTextView.setText(getStaticExportPath());
+		mSingleExcelFilePathTextView.setText(getShortFilePath(getExcelFilePath()));
 		// Set this listener down here so it does not get triggered when
 		// I change the checked state of the switch programmatically from above
-		mStaticExportPathSwitch.setOnCheckedChangeListener(this);
+		mSingleExcelFileSwitch.setOnCheckedChangeListener(this);
 		showStaticExportPathSettingIfAppropriate(view.findViewById(R.id.static_export_setting_layout));
 		return view;
+	}
+	
+	private void saveExcelFileUriAsStringToSharedPreferences(Uri path) {
+		Log.d(TAG, "saveExcelFileUriAsStringToSharedPreferences: called");
+		String key = getString(R.string.excel_file_path_key);
+		getDefaultSharedPreferences().edit()
+		                             .putString(key, path.toString())
+		                             .apply();
+	}
+	
+	private String getShortFilePath(String filePath) {
+		Log.d(TAG, "getShortFilePath: called");
+		Uri fileUri = Uri.parse(filePath);
+		return fileUri.getPath();
+	}
+	
+	private String getExcelFilePath() {
+		Log.d(TAG, "getExcelFilePath: called");
+		String key = getString(R.string.excel_file_path_key);
+		return getDefaultSharedPreferences().getString(key, getString(R.string.path));
+	}
+	
+	private void showErrorSnackbar(View snackbarView, String message) {
+		Log.d(TAG, "showErrorSnackbar: called");
+		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
+		        .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.error))
+		        .show();
 	}
 	
 	private boolean isLowerCaseActivated() {
@@ -266,7 +307,7 @@ public class SettingsFragment
 		Log.d(TAG, "onStaticExportPathSwitchClicked: called");
 		saveStaticExportPathSwitchStateToSharedPreferences(v.isChecked());
 		if (v.isChecked()) {
-			if (getStaticExportPath().equals(getString(R.string.path))) {
+			if (getExcelFilePath().equals(getString(R.string.path))) {
 				startFileChooser();
 			} else {
 				// Already provided an export path before
@@ -284,11 +325,15 @@ public class SettingsFragment
 	
 	private void startFileChooser() {
 		Log.d(TAG, "startFileChooser: called");
-		Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-		intent.addCategory(Intent.CATEGORY_OPENABLE);
-		intent.setType(getString(R.string.xlsx_mime_type));
-		intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.file_name));
-		startActivityForResult(intent, getResources().getInteger(R.integer.static_export_path_request_code));
+		Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+		intent.addCategory(Intent.CATEGORY_DEFAULT);
+		if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+			startActivityForResult(intent,
+			                       getResources().getInteger(R.integer.excel_file_path_request_code));
+		} else {
+			Log.d(TAG, "startFileChooser: no");
+			// TODO: Error when activity cannot be resolved
+		}
 	}
 	
 	@Override
@@ -315,8 +360,8 @@ public class SettingsFragment
 	private void askIfNewPath() {
 		Log.d(TAG, "askIfNewPath: called");
 		AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-		builder.setTitle(R.string.new_path_questionmark);
-		builder.setMessage(R.string.ask_if_new_path_dialog_message);
+		builder.setTitle(R.string.new_file_questionmark);
+		builder.setMessage(R.string.ask_if_new_file_dialog_message);
 		builder.setPositiveButton(R.string.yes, (dialog, which) -> startFileChooser());
 		builder.setNegativeButton(R.string.no, (dialog, which) -> {});
 		// Creates a new AlertDialog
