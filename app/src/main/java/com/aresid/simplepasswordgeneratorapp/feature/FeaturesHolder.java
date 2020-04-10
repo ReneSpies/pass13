@@ -18,7 +18,7 @@ import com.aresid.simplepasswordgeneratorapp.R;
 class FeaturesHolder
 		extends RecyclerView.ViewHolder {
 	private static final String   TAG = "FeaturesHolder";
-	private              TextView mFeatureTitleTextView;
+	private final        TextView mFeatureTitleTextView;
 	
 	FeaturesHolder(@NonNull View itemView) {
 		super(itemView);

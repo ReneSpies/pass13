@@ -26,13 +26,13 @@
 	<string name="numbers" translatable="false">0123456789</string>
 	<string name="password_length_key" translatable="false">pass13.shared_preferences.keys.password_length</string>
 	<string name="unlock_features">Unlock features</string>
-	<string name="adaptive_banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+	<string name="adaptive_banner_ad_unit_id" translatable="false">ca-app-pub-8653245564899173/8002689232</string>
 	<string name="give_me">Give me!</string>
 	<string name="cancel">Cancel</string>
 	<string name="what_you_ll_get">What you\'ll get:</string>
-	<string name="feature_excel_file">Passwords automatically exported and merged into single password secure excel file</string>
+	<string name="feature_excel_file">Option to automatically merge passwords into single excel file</string>
 	<string name="feature_remove_ads">Remove ads</string>
-	<string name="feature_custom_path">Customize export path statically or dynamically</string>
+	<string name="feature_custom_path">Custom export path</string>
 	<string name="feature_heart">A special place in our hearts</string>
 	<string name="pass13_exclusive_id" translatable="false">pass13.products.unlock_features</string>
 	<string name="space_exclusive" translatable="false">" exclusive"</string>
@@ -44,6 +44,7 @@
 	<string name="file_name" translatable="false">pass13.generations</string>
 	<string name="xlsx_mime_type" translatable="false">application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</string>
 	<string name="excel_file_path_key" translatable="false">pass13.shared_preferences.keys.excel_file_path</string>
+	<string name="excel_file_directory_key" translatable="false">pass13.shared_preferences.keys.excel_file_directory</string>
 	<string name="new_file_questionmark">New file?</string>
 	<string name="ask_if_new_file_dialog_message">You have chosen a file before, do you want to use a new one?</string>
 	<string name="yes">Yes</string>
@@ -53,7 +54,16 @@
 	<string name="no_password_detected">No password detected</string>
 	<string name="fun" translatable="false">Fun</string>
 	<string name="password_label">Password label</string>
-	<string name="ok">Ok</string>
+	<string name="ok" translatable="false">OK</string>
 	<string name="password_usage">What do you use this password for?</string>
-	<string name="file_moved_message">The file is not in it\'s place anymore. I created a new one for you.</string>
+	<string name="file_missing_message">The file is not in it\'s place anymore. I created a new one for you.</string>
+	<string name="xlsx_extension" translatable="false">.xlsx</string>
+	<string name="txt_extension" translatable="false">.txt</string>
+	<string name="time">Time</string>
+	<string name="label" translatable="false">Label</string>
+	<string name="value">Value</string>
+	<string name="on">"on "</string>
+	<string name="feature_name_passwords">Option to name the passwords</string>
+	<string name="pending_purchase">Purchase is pending</string>
+	<string name="bad_connection">Bad connection. Try again in a minute</string>
 </resources>

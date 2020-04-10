@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
  * Author: René Spies
  * Copyright: © 2019 ARES ID
  */
-public class SettingsFragment
+class SettingsFragment
 		extends Fragment
 		implements View.OnClickListener,
 		           SeekBar.OnSeekBarChangeListener,
@@ -72,7 +72,8 @@ public class SettingsFragment
 									                        getString(R.string.file_name));
 							if (createdFile != null) {
 								if (createdFile.exists()) {
-									saveExcelFileUriAsStringToSharedPreferences(createdFile.getUri());
+									saveExcelFilePathToSharedPreferences(createdFile.getUri());
+									saveExcelFileDirectoryToSharedPreferences(treeUri);
 									// Short the Uri and set the text view
 									mSingleExcelFilePathTextView.setText(getShortFilePath(getExcelFilePath()));
 								} else {
@@ -93,20 +94,6 @@ public class SettingsFragment
 				}
 			}
 		}
-	}
-	
-	private int getPasswordLength() {
-		Log.d(TAG, "getPasswordLength: called");
-		String key = getString(R.string.password_length_key);
-		return getDefaultSharedPreferences().getInt(key, 8);
-	}
-	
-	private void setPasswordLength(int length) {
-		Log.d(TAG, "setPasswordLength: called");
-		String key = getString(R.string.password_length_key);
-		SharedPreferences.Editor editor = getDefaultSharedPreferences().edit();
-		editor.putInt(key, length)
-		      .apply();
 	}
 	
 	@Override
@@ -160,11 +147,19 @@ public class SettingsFragment
 		return view;
 	}
 	
-	private void saveExcelFileUriAsStringToSharedPreferences(Uri path) {
-		Log.d(TAG, "saveExcelFileUriAsStringToSharedPreferences: called");
+	private void saveExcelFilePathToSharedPreferences(Uri pathUri) {
+		Log.d(TAG, "saveExcelFilePathToSharedPreferences: called");
 		String key = getString(R.string.excel_file_path_key);
 		getDefaultSharedPreferences().edit()
-		                             .putString(key, path.toString())
+		                             .putString(key, pathUri.toString())
+		                             .apply();
+	}
+	
+	private void saveExcelFileDirectoryToSharedPreferences(Uri directoryUri) {
+		Log.d(TAG, "saveExcelFileDirectoryToSharedPreferences: called");
+		String key = getString(R.string.excel_file_directory_key);
+		getDefaultSharedPreferences().edit()
+		                             .putString(key, directoryUri.toString())
 		                             .apply();
 	}
 	
@@ -185,6 +180,25 @@ public class SettingsFragment
 		Snackbar.make(snackbarView, message, Snackbar.LENGTH_LONG)
 		        .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.error))
 		        .show();
+	}
+	
+	private SharedPreferences getDefaultSharedPreferences() {
+		Log.d(TAG, "getDefaultSharedPreferences: called");
+		return PreferenceManager.getDefaultSharedPreferences(requireContext());
+	}
+	
+	private int getPasswordLength() {
+		Log.d(TAG, "getPasswordLength: called");
+		String key = getString(R.string.password_length_key);
+		return getDefaultSharedPreferences().getInt(key, 8);
+	}
+	
+	private void setPasswordLength(int length) {
+		Log.d(TAG, "setPasswordLength: called");
+		String key = getString(R.string.password_length_key);
+		SharedPreferences.Editor editor = getDefaultSharedPreferences().edit();
+		editor.putInt(key, length)
+		      .apply();
 	}
 	
 	private boolean isLowerCaseActivated() {
@@ -271,13 +285,6 @@ public class SettingsFragment
 		saveBooleanToSharedPreferences(key, v.isChecked());
 	}
 	
-	private void saveBooleanToSharedPreferences(String key, boolean state) {
-		Log.d(TAG, "saveBooleanToSharedPreferences: called");
-		getDefaultSharedPreferences().edit()
-		                             .putBoolean(key, state)
-		                             .apply();
-	}
-	
 	private void onSpecialCharactersSwitchClicked(@NotNull Switch v) {
 		Log.d(TAG, "onSpecialCharactersSwitchClicked: called");
 		String key = getString(R.string.special_characters_activated_key);
@@ -336,27 +343,6 @@ public class SettingsFragment
 		}
 	}
 	
-	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-		Log.d(TAG, "onProgressChanged: called");
-		setPasswordLength(progress);
-	}
-	
-	private SharedPreferences getDefaultSharedPreferences() {
-		Log.d(TAG, "getDefaultSharedPreferences: called");
-		return PreferenceManager.getDefaultSharedPreferences(requireContext());
-	}
-	
-	@Override
-	public void onStartTrackingTouch(SeekBar seekBar) {
-		Log.d(TAG, "onStartTrackingTouch: called");
-	}
-	
-	@Override
-	public void onStopTrackingTouch(SeekBar seekBar) {
-		Log.d(TAG, "onStopTrackingTouch: called");
-	}
-	
 	private void askIfNewPath() {
 		Log.d(TAG, "askIfNewPath: called");
 		AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -375,5 +361,28 @@ public class SettingsFragment
 		});
 		// Shows the AlertDialog
 		alertDialog.show();
+	}
+	
+	private void saveBooleanToSharedPreferences(String key, boolean state) {
+		Log.d(TAG, "saveBooleanToSharedPreferences: called");
+		getDefaultSharedPreferences().edit()
+		                             .putBoolean(key, state)
+		                             .apply();
+	}
+	
+	@Override
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+		Log.d(TAG, "onProgressChanged: called");
+		setPasswordLength(progress);
+	}
+	
+	@Override
+	public void onStartTrackingTouch(SeekBar seekBar) {
+		Log.d(TAG, "onStartTrackingTouch: called");
+	}
+	
+	@Override
+	public void onStopTrackingTouch(SeekBar seekBar) {
+		Log.d(TAG, "onStopTrackingTouch: called");
 	}
 }

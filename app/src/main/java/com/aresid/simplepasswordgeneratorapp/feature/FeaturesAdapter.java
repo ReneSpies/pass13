@@ -22,8 +22,8 @@ import java.util.ArrayList;
 public class FeaturesAdapter
 		extends RecyclerView.Adapter<FeaturesHolder> {
 	private static final String             TAG = "FeaturesAdapter";
-	private              Context            mContext;
-	private              ArrayList<Feature> mFeatures;
+	private final        Context            mContext;
+	private final        ArrayList<Feature> mFeatures;
 	
 	public FeaturesAdapter(Context context, ArrayList<Feature> features) {
 		Log.d(TAG, "FeaturesAdapter: called");

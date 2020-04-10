@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".SettingsFragment">
+	
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:padding="@dimen/standard_padding">
+		
+		<Switch
+			android:id="@+id/lower_case_switch"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:checked="true"
+			android:text="@string/lower_case"
+			android:textAppearance="?attr/textAppearanceSubtitle1"
+			android:textSize="22sp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"/>
+		
+		<Switch
+			android:id="@+id/upper_case_switch"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/standard_margin"
+			android:checked="true"
+			android:text="@string/upper_case"
+			android:textAppearance="?attr/textAppearanceSubtitle1"
+			android:textSize="22sp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/lower_case_switch"/>
+		
+		<Switch
+			android:id="@+id/special_characters_switch"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/standard_margin"
+			android:text="@string/special_characters_text"
+			android:textAppearance="?attr/textAppearanceSubtitle1"
+			android:textSize="22sp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/upper_case_switch"/>
+		
+		<Switch
+			android:id="@+id/numbers_switch"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/standard_margin"
+			android:text="@string/numbers_text"
+			android:textAppearance="?attr/textAppearanceSubtitle1"
+			android:textSize="22sp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/special_characters_switch"/>
+		
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:id="@+id/static_export_setting_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/standard_margin"
+			android:visibility="gone"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/numbers_switch">
+			
+			<TextView
+				android:id="@+id/static_export_path_title_text_view"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginEnd="@dimen/static_export_setting_margin_end"
+				android:text="@string/static_export_path"
+				android:textAppearance="?attr/textAppearanceSubtitle1"
+				android:textSize="22sp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"/>
+			
+			<TextView
+				android:id="@+id/static_export_path_text_view"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginEnd="@dimen/static_export_setting_margin_end"
+				android:fontFamily="monospace"
+				android:text="@string/export_path_hint"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/static_export_path_title_text_view"/>
+			
+			<Switch
+				android:id="@+id/static_export_path_switch"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="end"
+				app:layout_constraintBottom_toBottomOf="@id/static_export_path_text_view"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="@id/static_export_path_title_text_view"/>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+		
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/standard_margin"
+			android:orientation="vertical"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/static_export_setting_layout">
+			
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/password_length"
+				android:textAppearance="?attr/textAppearanceSubtitle1"
+				android:textSize="22sp"/>
+			
+			<com.aresid.simplepasswordgeneratorapp.thumbprogressseekbar.ThumbProgressSeekBar
+				android:id="@+id/password_length_seek_bar"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:max="64"
+				android:progress="8"
+				android:thumb="@drawable/shape_thumb_progress_seek_bar"
+				android:thumbOffset="4dp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/numbers_switch"
+				tools:targetApi="o"/>
+		</LinearLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

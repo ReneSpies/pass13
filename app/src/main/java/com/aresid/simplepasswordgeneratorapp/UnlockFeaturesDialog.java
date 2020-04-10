@@ -26,9 +26,9 @@ interface OnUnlockFeaturesDialogInteractionListener {
  * Created on: 28/03/2020
  * For Project: pass13
  * Author: René Spies
- * Copyright: © 2020 Ares ID
+ * Copyright: © 2020 ARES ID
  */
-public class UnlockFeaturesDialog
+class UnlockFeaturesDialog
 		extends DialogFragment {
 	private static final String                                    TAG = "UnlockFeaturesDialog";
 	private              OnUnlockFeaturesDialogInteractionListener mListener;
@@ -50,28 +50,27 @@ public class UnlockFeaturesDialog
 	public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateDialog: called");
 		AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-		View view = requireActivity().getLayoutInflater()
-		                             .inflate(R.layout.view_unlock_features_dialog,
-		                                      null);
+		View view = View.inflate(requireContext(), R.layout.view_unlock_features_dialog, null);
 		RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 		recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 		ArrayList<Feature> featureArrayList = new ArrayList<>();
+		Feature featureNamePasswords = new Feature(getString(R.string.feature_name_passwords));
 		Feature featureExcelFile = new Feature(getString(R.string.feature_excel_file));
 		Feature featureRemoveAds = new Feature(getString(R.string.feature_remove_ads));
 		Feature featureCustomPath = new Feature(getString(R.string.feature_custom_path));
-		Feature featureExclusiveTitle =
-				new Feature(getString(R.string.feature_exclusive_title));
+		Feature featureExclusiveTitle = new Feature(getString(R.string.feature_exclusive_title));
 		Feature featureHeart = new Feature(getString(R.string.feature_heart));
+		featureArrayList.add(featureNamePasswords);
 		featureArrayList.add(featureExcelFile);
 		featureArrayList.add(featureRemoveAds);
 		featureArrayList.add(featureCustomPath);
 		featureArrayList.add(featureExclusiveTitle);
 		featureArrayList.add(featureHeart);
-		FeaturesAdapter adapter = new FeaturesAdapter(requireContext(),
-		                                              featureArrayList);
+		FeaturesAdapter adapter = new FeaturesAdapter(requireContext(), featureArrayList);
 		recyclerView.setAdapter(adapter);
 		builder.setView(view);
-		builder.setPositiveButton(R.string.give_me, (dialog, which) -> mListener.onUnlockFeaturesDialogPositiveButtonClicked());
+		builder.setPositiveButton(R.string.give_me,
+		                          (dialog, which) -> mListener.onUnlockFeaturesDialogPositiveButtonClicked());
 		builder.setNegativeButton(R.string.cancel, (dialog, which) -> {});
 		AlertDialog dialog = builder.create();
 		dialog.setOnShowListener(dialog1 -> {

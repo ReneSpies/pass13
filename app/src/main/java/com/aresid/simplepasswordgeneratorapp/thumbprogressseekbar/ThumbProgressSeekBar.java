@@ -21,9 +21,9 @@ import com.aresid.simplepasswordgeneratorapp.R;
 public class ThumbProgressSeekBar
 		extends androidx.appcompat.widget.AppCompatSeekBar {
 	private static final String    TAG = "ThumbProgressSeekBar";
-	private              int       mThumbSize;
-	private              TextPaint mTextPaint;
-	private              Rect      mBounds;
+	private final        int       mThumbSize;
+	private final        TextPaint mTextPaint;
+	private final        Rect      mBounds;
 	
 	public ThumbProgressSeekBar(Context context) {
 		this(context, null);

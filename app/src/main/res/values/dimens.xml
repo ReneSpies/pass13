@@ -2,7 +2,6 @@
 <resources>
 	<dimen name="eight">8.13dp</dimen>
 	<dimen name="four">4.13dp</dimen>
-	<dimen name="sixteen">16.13dp</dimen>
 	<dimen name="standard_padding">13.13dp</dimen>
 	<dimen name="standard_margin">13.13dp</dimen>
 	<dimen name="thumb_size">25dp</dimen>

@@ -21,9 +21,4 @@ public class Feature {
 		Log.d(TAG, "getTitle: called");
 		return mTitle;
 	}
-	
-	public void setTitle(String title) {
-		Log.d(TAG, "setTitle: called");
-		mTitle = title;
-	}
 }

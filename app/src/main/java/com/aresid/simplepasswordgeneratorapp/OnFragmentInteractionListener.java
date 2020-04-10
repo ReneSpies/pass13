@@ -6,7 +6,7 @@ package com.aresid.simplepasswordgeneratorapp;
  * Author: René Spies
  * Copyright: © 2020 Ares ID
  */
-public interface OnFragmentInteractionListener {
+interface OnFragmentInteractionListener {
 	void onMainFragmentViewCreated();
 	void onSettingsFragmentViewCreated();
 }
