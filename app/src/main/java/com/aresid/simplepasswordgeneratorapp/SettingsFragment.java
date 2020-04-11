@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
  * Author: René Spies
  * Copyright: © 2019 ARES ID
  */
-class SettingsFragment
+public class SettingsFragment
 		extends Fragment
 		implements View.OnClickListener,
 		           SeekBar.OnSeekBarChangeListener,
