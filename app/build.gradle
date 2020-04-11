@@ -19,7 +19,7 @@ android {
         targetSdkVersion 29
         versionName '2.0.13'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 202
+        versionCode = 203
         signingConfig signingConfigs.release
     }
     buildTypes {
