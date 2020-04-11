@@ -391,12 +391,16 @@ public class MainActivity
 	@Override
 	public void onBillingSetupFinished(BillingResult result) {
 		Log.d(TAG, "onBillingSetupFinished: called");
+		querySkuDetailsAsync();
+		handleAlreadyPurchased();
+	}
+	
+	private void querySkuDetailsAsync() {
+		Log.d(TAG, "querySkuDetailsAsync: called");
 		SkuDetailsParams.Builder paramsBuilder = SkuDetailsParams.newBuilder();
 		paramsBuilder.setSkusList(getSkuList())
 		             .setType(BillingClient.SkuType.INAPP);
-		mBillingClient.querySkuDetailsAsync(paramsBuilder.build(), this /*
-		onSkuDetailsResponse */);
-		handleAlreadyPurchased();
+		mBillingClient.querySkuDetailsAsync(paramsBuilder.build(), this /* onSkuDetailsResponse */);
 	}
 	
 	private List<String> getSkuList() {
@@ -406,16 +410,17 @@ public class MainActivity
 		return skuList;
 	}
 	
+	/**
+	 * This method uses the BillingClient to find out whether or not the user has already bought the item.
+	 */
 	private void handleAlreadyPurchased() {
 		Log.d(TAG, "handleAlreadyPurchased: called");
-		Purchase.PurchasesResult purchasesResult =
-				mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
+		Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
 		if (purchasesResult.getResponseCode() == BillingClient.BillingResponseCode.OK &&
 		    purchasesResult.getPurchasesList() != null) {
 			for (Purchase purchase : purchasesResult.getPurchasesList()) {
 				if (purchase.getSku()
 				            .equals(getString(R.string.pass13_exclusive_id))) {
-					Log.d(TAG, "onBillingSetupFinished: sku = " + purchase.getSku());
 					String key = getString(R.string.pass13_exclusive_preferences_key);
 					SharedPreferences.Editor editor = getSharedPreferences(key, MODE_PRIVATE).edit();
 					editor.putBoolean(key, true);
@@ -464,6 +469,7 @@ public class MainActivity
 		Log.d(TAG, "onUnlockFeaturesDialogPositiveButtonClicked: called");
 		if (mSkuDetailsList.size() == 0) {
 			showErrorSnackbar(findViewById(R.id.toolbar), getString(R.string.bad_connection));
+			querySkuDetailsAsync();
 			return;
 		}
 		BillingFlowParams params = BillingFlowParams.newBuilder()

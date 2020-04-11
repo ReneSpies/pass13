@@ -28,7 +28,7 @@ interface OnUnlockFeaturesDialogInteractionListener {
  * Author: René Spies
  * Copyright: © 2020 ARES ID
  */
-class UnlockFeaturesDialog
+public class UnlockFeaturesDialog
 		extends DialogFragment {
 	private static final String                                    TAG = "UnlockFeaturesDialog";
 	private              OnUnlockFeaturesDialogInteractionListener mListener;

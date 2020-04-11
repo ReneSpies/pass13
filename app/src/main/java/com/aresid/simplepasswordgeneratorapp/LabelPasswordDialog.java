@@ -24,7 +24,7 @@ interface OnLabelPasswordDialogInteractionListener {
  * Author: René Spies
  * Copyright: © 2020 ARES ID
  */
-class LabelPasswordDialog
+public class LabelPasswordDialog
 		extends DialogFragment {
 	private static final String                                   TAG = "LabelPasswordDialog";
 	private              OnLabelPasswordDialogInteractionListener mListener;
