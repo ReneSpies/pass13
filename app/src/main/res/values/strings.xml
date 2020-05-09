@@ -97,6 +97,4 @@
 	<string name = "pending_purchase">Purchase is pending</string>
 	<string name = "bad_connection">Bad connection. Try again in a minute</string>
 	
-	<!-- TODO: Remove or change this placeholder text -->
-	<string name = "hello_blank_fragment">Hello blank fragment</string>
 </resources>
