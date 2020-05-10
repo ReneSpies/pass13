@@ -246,7 +246,7 @@ class SettingsFragment: Fragment(), View.OnClickListener, OnSeekBarChangeListene
 		).setBackgroundTint(
 			ContextCompat.getColor(
 				requireContext(),
-				R.color.error
+				com.google.android.material.R.color.error_color_material_dark
 			)
 		).show()
 	}
@@ -545,13 +545,13 @@ class SettingsFragment: Fragment(), View.OnClickListener, OnSeekBarChangeListene
 			alertDialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(
 				ContextCompat.getColor(
 					requireContext(),
-					R.color.black
+					android.R.color.black
 				)
 			)
 			alertDialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setTextColor(
 				ContextCompat.getColor(
 					requireContext(),
-					R.color.black
+					android.R.color.black
 				)
 			)
 		}

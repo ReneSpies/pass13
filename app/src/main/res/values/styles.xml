@@ -1,19 +1,24 @@
 <resources>
-	<!-- Base application theme. -->
-	<style name="Gratify.AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-		<!-- Customize your theme here. -->
-		<item name="colorPrimary">@color/primary</item>
-		<item name="colorPrimaryDark">@color/primary_dark</item>
-		<item name="colorAccent">@color/secondary</item>
+	
+	<style name="Gratify.AppTheme"
+	       parent="Theme.MaterialComponents.DayNight.NoActionBar">
+		<item name="colorPrimary">@color/primaryColor</item>
+		<item name="colorPrimaryDark">@color/primaryDarkColor</item>
+		<item name="colorPrimaryVariant">@color/primaryLightColor</item>
+		<item name="colorOnPrimary">@color/primaryTextColor</item>
+		<item name="colorSecondary">@color/secondaryColor</item>
+		<item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
+		<item name="colorOnSecondary">@color/secondaryTextColor</item>
 		<item name="actionOverflowButtonStyle">@style/Gratify.Widget.Toolbar.ActionButton</item>
 	</style>
 	
-	<style name="Gratify.AppTheme.Launcher" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+	<style name="Gratify.AppTheme.Launcher"
+	       parent="Gratify.AppTheme">
 		<item name="android:windowBackground">@drawable/ic_launch_screen</item>
-		<item name="colorPrimaryDark">@color/white</item>
 	</style>
 	
-	<style name="Gratify.Widget.Toolbar.ActionButton" parent="Widget.AppCompat.ActionButton.Overflow">
-		<item name="tint">@color/black</item>
+	<style name="Gratify.Widget.Toolbar.ActionButton"
+	       parent="Widget.AppCompat.ActionButton.Overflow">
+		<item name="tint">?attr/colorOnSurface</item>
 	</style>
 </resources>

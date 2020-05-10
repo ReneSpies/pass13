@@ -72,13 +72,13 @@ class LabelPasswordDialog internal constructor(context: Fragment): DialogFragmen
 			alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
 				ContextCompat.getColor(
 					requireContext(),
-					R.color.black
+					android.R.color.black
 				)
 			)
 			alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
 				ContextCompat.getColor(
 					requireContext(),
-					R.color.black
+					android.R.color.black
 				)
 			)
 		}

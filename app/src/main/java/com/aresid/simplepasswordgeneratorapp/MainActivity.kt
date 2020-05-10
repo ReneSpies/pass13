@@ -329,7 +329,7 @@ class MainActivity: AppCompatActivity(), OnFragmentInteractionListener, View.OnC
 			TAG,
 			"onMenuSettingsClicked: called"
 		)
-		mNavController!!.navigate(R.id.action_mainFragment_to_settingsFragment)
+		mNavController!!.navigate(R.id.to_settingsFragment)
 	}
 	
 	private fun onMenuUnlockFeaturesClicked() {
@@ -442,7 +442,7 @@ class MainActivity: AppCompatActivity(), OnFragmentInteractionListener, View.OnC
 		).setBackgroundTint(
 			ContextCompat.getColor(
 				this,
-				R.color.secondary
+				R.color.secondaryColor
 			)
 		).show()
 	}
@@ -581,7 +581,7 @@ class MainActivity: AppCompatActivity(), OnFragmentInteractionListener, View.OnC
 		).setBackgroundTint(
 			ContextCompat.getColor(
 				this,
-				R.color.error
+				com.google.android.material.R.color.error_color_material_dark
 			)
 		).show()
 	}

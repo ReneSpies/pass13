@@ -451,7 +451,7 @@ class MainFragment: Fragment(), View.OnClickListener, OnLabelPasswordDialogInter
 			requireView(),
 			message,
 			Snackbar.LENGTH_LONG
-		).setBackgroundTint(resources.getColor(R.color.secondary)).show()
+		).setBackgroundTint(resources.getColor(R.color.secondaryColor)).show()
 	}
 	
 	private fun showErrorSnackbar(
@@ -469,7 +469,7 @@ class MainFragment: Fragment(), View.OnClickListener, OnLabelPasswordDialogInter
 		).setBackgroundTint(
 			ContextCompat.getColor(
 				requireContext(),
-				R.color.error
+				com.google.android.material.R.color.error_color_material_dark
 			)
 		).show()
 	}
