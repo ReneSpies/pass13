@@ -1,0 +1,15 @@
+<manifest
+	xmlns:dist="http://schemas.android.com/apk/distribution"
+	package="co.aresid.pass13.adfeature"
+	>
+	
+	<dist:module
+		dist:instant="false"
+		dist:title="@string/title_adfeature"
+		>
+		<dist:delivery>
+			<dist:install-time/>
+		</dist:delivery>
+		<dist:fusing dist:include="false"/>
+	</dist:module>
+</manifest>

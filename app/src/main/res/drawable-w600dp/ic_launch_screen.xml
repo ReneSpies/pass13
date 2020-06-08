@@ -2,9 +2,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:drawable="@android:color/white"/>
 	<item
-		android:drawable="@drawable/ic_pass13_logo_144dp"
-		android:gravity="center"/>
+		android:drawable="@drawable/pass13_logo_144dp"
+		android:gravity="center"
+		/>
 	<item
-		android:drawable="@drawable/ic_aresid_logo"
-		android:gravity="center|bottom"/>
+		android:drawable="@drawable/aresid_logo"
+		android:gravity="center|bottom"
+		/>
 </layer-list>
