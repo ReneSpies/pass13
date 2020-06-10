@@ -13,6 +13,9 @@ class MainActivity: AppCompatActivity() {
 	// Binding for the layout
 	private lateinit var binding: ActivityMainBinding
 	
+	// ID for the AdFeature module
+	private val moduleAdFeature by lazy { getString(R.string.title_adfeature) }
+	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		
 		Timber.d("onCreate: called")
@@ -26,8 +29,6 @@ class MainActivity: AppCompatActivity() {
 		setContentView(binding.root)
 		
 		prepareBottomNavigation()
-		
-		// Test Adfeature
 		
 	}
 	
