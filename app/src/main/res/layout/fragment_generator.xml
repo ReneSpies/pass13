@@ -2,6 +2,7 @@
 <layout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	>
 	
 	<data>
@@ -14,14 +15,59 @@
 		>
 		
 		<TextView
+			android:id="@+id/password"
+			android:layout_height="wrap_content"
+			android:layout_width="0dp"
+			android:textAlignment="center"
+			app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
+			app:layout_constraintEnd_toEndOf="@id/guideline_end"
+			app:layout_constraintStart_toStartOf="@id/guideline_start"
+			app:layout_constraintTop_toTopOf="@id/guideline_top"
+			tools:text="Generator"
+			/>
+		
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/refresh"
+			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/generator"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
+			android:layout_marginTop="@dimen/margin_extra_large"
+			android:text="@string/refresh"
+			app:layout_constraintEnd_toEndOf="@id/guideline_end"
+			app:layout_constraintStart_toStartOf="@id/guideline_start"
+			app:layout_constraintTop_toBottomOf="@id/password"
 			/>
-	
+		
+		<androidx.constraintlayout.widget.Guideline
+			android:id="@+id/guideline_top"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			app:layout_constraintGuide_begin="@dimen/margin_small"
+			/>
+		
+		<androidx.constraintlayout.widget.Guideline
+			android:id="@+id/guideline_end"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			app:layout_constraintGuide_end="@dimen/margin_medium"
+			/>
+		
+		<androidx.constraintlayout.widget.Guideline
+			android:id="@+id/guideline_bottom"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			app:layout_constraintGuide_end="@dimen/margin_small"
+			/>
+		
+		<androidx.constraintlayout.widget.Guideline
+			android:id="@+id/guideline_start"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			app:layout_constraintGuide_begin="@dimen/margin_medium"
+			/>
 	</androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

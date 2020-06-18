@@ -13,6 +13,25 @@
 		android:layout_height="match_parent"
 		>
 		
+		<androidx.appcompat.widget.Toolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			>
+			
+			<TextView
+				style="@style/pass13.AppTheme.ToolbarTitle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:fontFamily="@font/comfortaa"
+				android:text="@string/app_name"
+				android:textStyle="bold"
+				/>
+		</androidx.appcompat.widget.Toolbar>
+		
 		<androidx.fragment.app.FragmentContainerView
 			android:id="@+id/navigation_host"
 			android:name="androidx.navigation.fragment.NavHostFragment"
@@ -22,7 +41,7 @@
 			app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/toolbar"
 			app:navGraph="@navigation/navigation_graph"
 			/>
 		
