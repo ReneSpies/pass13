@@ -18,6 +18,10 @@
 			android:name="preloaded_fonts"
 			android:resource="@array/preloaded_fonts"
 			/>
+		<meta-data
+			android:name="com.google.android.gms.ads.APPLICATION_ID"
+			android:value="@string/test_ads_application_id"
+			/>
 		
 		<activity android:name=".activity.MainActivity">
 			<intent-filter>

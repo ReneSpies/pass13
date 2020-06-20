@@ -1,3 +1,1 @@
-include ':adfeature'
-include ':exclusivefeature'
 include ':app'

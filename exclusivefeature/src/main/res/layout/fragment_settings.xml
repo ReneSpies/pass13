@@ -15,10 +15,10 @@
 		>
 		
 		<com.google.android.material.checkbox.MaterialCheckBox
-			android:id="@+id/lower_case_checkbox"
+			android:id="@+id/lower_case"
 			android:layout_width="0dp"
-			android:layout_marginTop="@dimen/margin_extra_small"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/margin_extra_small"
 			android:checked="true"
 			android:text="@string/include_lower_case_characters"
 			app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -27,93 +27,81 @@
 			/>
 		
 		<com.google.android.material.checkbox.MaterialCheckBox
-			android:id="@+id/upper_case_checkbox"
+			android:id="@+id/upper_case"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:text="@string/include_upper_case_characters"
 			app:layout_constraintEnd_toEndOf="@id/guideline_end"
 			app:layout_constraintStart_toStartOf="@id/guideline_start"
-			app:layout_constraintTop_toBottomOf="@id/lower_case_checkbox"
+			app:layout_constraintTop_toBottomOf="@id/lower_case"
 			/>
 		
 		<com.google.android.material.checkbox.MaterialCheckBox
-			android:id="@+id/numbers_checkbox"
+			android:id="@+id/numbers"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/margin_extra_small"
 			android:text="@string/include_numbers"
 			app:layout_constraintEnd_toEndOf="@id/guideline_end"
 			app:layout_constraintStart_toStartOf="@id/guideline_start"
-			app:layout_constraintTop_toBottomOf="@id/upper_case_checkbox"
+			app:layout_constraintTop_toBottomOf="@id/upper_case"
 			/>
 		
 		<com.google.android.material.checkbox.MaterialCheckBox
-			android:id="@+id/special_characters_checkbox"
+			android:id="@+id/special_characters"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/margin_extra_small"
 			android:text="@string/include_upper_special_characters"
 			app:layout_constraintEnd_toEndOf="@id/guideline_end"
 			app:layout_constraintStart_toStartOf="@id/guideline_start"
-			app:layout_constraintTop_toBottomOf="@id/numbers_checkbox"
+			app:layout_constraintTop_toBottomOf="@id/numbers"
 			/>
 		
 		<com.google.android.material.checkbox.MaterialCheckBox
-			android:id="@+id/night_mode_checkbox"
+			android:id="@+id/night_mode"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/margin_extra_small"
-			android:enabled="false"
 			android:text="@string/night_mode"
 			app:layout_constraintEnd_toEndOf="@id/guideline_end"
 			app:layout_constraintStart_toStartOf="@id/guideline_start"
-			app:layout_constraintTop_toBottomOf="@id/special_characters_checkbox"
+			app:layout_constraintTop_toBottomOf="@id/special_characters"
 			/>
 		
 		<TextView
-			android:id="@+id/password_length_title_text"
+			android:id="@+id/password_length_title"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/margin_extra_small"
 			android:paddingHorizontal="@dimen/padding_small"
 			android:text="@string/password_length"
 			android:textAppearance="?attr/textAppearanceBody2"
-			app:layout_constraintEnd_toStartOf="@id/password_length_value_text"
+			app:layout_constraintEnd_toStartOf="@id/password_length_value"
 			app:layout_constraintStart_toStartOf="@id/guideline_start"
-			app:layout_constraintTop_toBottomOf="@id/night_mode_checkbox"
+			app:layout_constraintTop_toBottomOf="@id/night_mode"
 			/>
 		
 		<TextView
-			android:id="@+id/password_length_value_text"
+			android:id="@+id/password_length_value"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/margin_extra_small"
 			android:paddingHorizontal="@dimen/padding_small"
 			android:textAppearance="?attr/textAppearanceBody2"
 			app:layout_constraintEnd_toEndOf="@id/guideline_end"
-			app:layout_constraintTop_toBottomOf="@id/night_mode_checkbox"
+			app:layout_constraintTop_toBottomOf="@id/night_mode"
 			tools:text="64"
 			/>
 		
 		<com.google.android.material.slider.Slider
-			android:id="@+id/password_length_slider"
+			android:id="@+id/password_length"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/margin_extra_small"
 			app:layout_constraintEnd_toEndOf="@id/guideline_end"
 			app:layout_constraintStart_toStartOf="@id/guideline_start"
-			app:layout_constraintTop_toBottomOf="@id/password_length_title_text"
-			/>
-		
-		<com.google.android.material.button.MaterialButton
-			android:id="@+id/purchase_button"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="@dimen/margin_extra_large"
-			android:text="@string/purchase_pass13_exclusive"
-			app:layout_constraintEnd_toEndOf="@id/guideline_end"
-			app:layout_constraintStart_toStartOf="@id/guideline_start"
-			app:layout_constraintTop_toBottomOf="@id/password_length_slider"
+			app:layout_constraintTop_toBottomOf="@id/password_length_title"
 			/>
 		
 		<androidx.constraintlayout.widget.Guideline

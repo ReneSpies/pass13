@@ -66,39 +66,55 @@ android {
 
     }
 
-    dynamicFeatures = [':exclusivefeature', ':adfeature']
+    dynamicFeatures = []
 
 }
 
 dependencies {
 
-    def nav_version = "2.3.0-beta01"
-
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation 'androidx.appcompat:appcompat:1.3.0-alpha01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta6'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta7'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
+    // Google Play Billing with KTX
+    implementation "com.android.billingclient:billing:$versions.billing"
+    implementation "com.android.billingclient:billing-ktx:$versions.billing"
+
     // Kotlin
-    implementation 'androidx.core:core-ktx:1.4.0-alpha01'
+    implementation 'androidx.core:core-ktx:1.5.0-alpha01'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
 
     // Material Design
     implementation 'com.google.android.material:material:1.3.0-alpha01'
 
     // Timber
-    api 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    // Ads
+    implementation 'com.google.android.gms:play-services-ads:19.2.0'
+
+    // Room
+    implementation "androidx.room:room-runtime:$versions.room"
+    implementation "androidx.room:room-ktx:$versions.room"
+    testImplementation "androidx.room:room-testing:$versions.room"
+    kapt "androidx.room:room-compiler:$versions.room"
 
     // Navigation Components
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$versions.navigation"
 
+    // General testing
     androidTestImplementation 'androidx.test:runner:1.3.0-rc01'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-rc01'
     testImplementation 'junit:junit:4.13'
+
 }
+
 repositories {
+
     mavenCentral()
+
 }

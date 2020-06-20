@@ -6,15 +6,16 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.aresid.simplepasswordgeneratorapp.R
 import com.aresid.simplepasswordgeneratorapp.databinding.ActivityMainBinding
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import timber.log.Timber
 
 class MainActivity: AppCompatActivity() {
 	
 	// Binding for the layout
 	private lateinit var binding: ActivityMainBinding
-	
-	// ID for the AdFeature module
-	private val moduleAdFeature by lazy { getString(R.string.title_adfeature) }
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		
@@ -29,6 +30,28 @@ class MainActivity: AppCompatActivity() {
 		setContentView(binding.root)
 		
 		prepareBottomNavigation()
+		
+		prepareAds() // TODO: 20.06.20 Outsource logic to prepareAds() to ViewModel to decide whether to show ads or not
+		
+	}
+	
+	private fun prepareAds() {
+		
+		Timber.d("initAds: called")
+		
+		MobileAds.initialize(this)
+		
+		val adView = AdView(this)
+		
+		adView.adSize = AdSize.BANNER
+		
+		adView.adUnitId = getString(R.string.test_ad_unit_id)
+		
+		binding.adViewContainer.addView(adView)
+		
+		val adRequest = AdRequest.Builder().build()
+		
+		adView.loadAd(adRequest)
 		
 	}
 	

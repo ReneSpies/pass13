@@ -3,8 +3,6 @@
 	<string name="app_name">pass13</string>
 	<string name="generator">Generator</string>
 	<string name="settings">Settings</string>
-	<string name="title_exclusivefeature">Exclusive</string>
-	<string name="title_adfeature">Ads</string>
 	<string name="refresh">Refresh</string>
 	<string name="purchase_pass13_exclusive">Purchase pass13 exclusive</string>
 	<string name="password_length">Password length</string>
@@ -13,4 +11,10 @@
 	<string name="include_numbers">Include numbers</string>
 	<string name="include_lower_case_characters">Include lower case characters</string>
 	<string name="include_upper_case_characters">Include upper case characters</string>
+	<string name="exclusive">&#xA0;exclusive</string>
+	<string name="test_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+	<string name="ad_unit_id">ca-app-pub-8653245564899173/8002689232</string>
+	<string name="test_ads_application_id">ca-app-pub-3940256099942544~3347511713</string>
+	<string name="ads_application_id">ca-app-pub-8653245564899173~5011556209</string>
+	<string name="no_internet_connection">No internet connection</string>
 </resources>

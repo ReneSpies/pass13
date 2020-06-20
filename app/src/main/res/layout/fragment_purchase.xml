@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	>
+	
+	<data>
+	
+	</data>
+	
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		>
+		
+		<com.google.android.material.progressindicator.ProgressIndicator
+			android:id="@+id/loading_spinner"
+			style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Indeterminate"
+			android:layout_width="96dp"
+			android:layout_height="96dp"
+			app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
+			app:layout_constraintEnd_toEndOf="@id/guideline_end"
+			app:layout_constraintStart_toStartOf="@id/guideline_start"
+			app:layout_constraintTop_toTopOf="@id/guideline_top"
+			/>
+		
+		<ImageView
+			android:id="@+id/no_internet_icon"
+			android:layout_width="96dp"
+			android:layout_height="96dp"
+			android:contentDescription="@string/no_internet_connection"
+			android:src="@drawable/ic_baseline_cloud_off_24dp"
+			app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
+			app:layout_constraintEnd_toEndOf="@id/guideline_end"
+			app:layout_constraintStart_toStartOf="@id/guideline_start"
+			app:layout_constraintTop_toTopOf="@id/guideline_top"
+			/>
+		
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/retry_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/margin_extra_large"
+			android:text="@string/retry"
+			app:layout_constraintEnd_toEndOf="@id/guideline_end"
+			app:layout_constraintStart_toStartOf="@id/guideline_start"
+			app:layout_constraintTop_toBottomOf="@id/no_internet_icon"
+			/>
+		
+		<androidx.constraintlayout.widget.Group
+			android:id="@+id/loading"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:visibility="visible"
+			app:constraint_referenced_ids="loading_spinner"
+			/>
+		
+		<androidx.constraintlayout.widget.Group
+			android:id="@+id/no_internet"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:visibility="gone"
+			app:constraint_referenced_ids="no_internet_icon, retry_button"
+			/>
+		
+		<androidx.constraintlayout.widget.Guideline
+			android:id="@+id/guideline_top"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			app:layout_constraintGuide_begin="@dimen/margin_small"
+			/>
+		
+		<androidx.constraintlayout.widget.Guideline
+			android:id="@+id/guideline_end"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			app:layout_constraintGuide_end="@dimen/margin_medium"
+			/>
+		
+		<androidx.constraintlayout.widget.Guideline
+			android:id="@+id/guideline_bottom"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			app:layout_constraintGuide_end="@dimen/margin_small"
+			/>
+		
+		<androidx.constraintlayout.widget.Guideline
+			android:id="@+id/guideline_start"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			app:layout_constraintGuide_begin="@dimen/margin_medium"
+			/>
+	
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
