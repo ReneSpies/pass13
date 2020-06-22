@@ -116,6 +116,17 @@
 			app:layout_constraintTop_toBottomOf="@id/password_length_slider"
 			/>
 		
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/save_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/margin_extra_large"
+			android:text="@string/save_settings"
+			app:layout_constraintEnd_toEndOf="@id/guideline_end"
+			app:layout_constraintStart_toStartOf="@id/guideline_start"
+			app:layout_constraintTop_toBottomOf="@id/purchase_button"
+			/>
+		
 		<androidx.constraintlayout.widget.Guideline
 			android:id="@+id/guideline_top"
 			android:layout_width="match_parent"
