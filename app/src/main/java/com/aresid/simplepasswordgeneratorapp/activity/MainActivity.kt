@@ -1,7 +1,10 @@
 package com.aresid.simplepasswordgeneratorapp.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.aresid.simplepasswordgeneratorapp.R
@@ -17,6 +20,9 @@ class MainActivity: AppCompatActivity() {
 	// Binding for the layout
 	private lateinit var binding: ActivityMainBinding
 	
+	// Corresponding ViewModel
+	private lateinit var mainViewModel: MainViewModel
+	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		
 		Timber.d("onCreate: called")
@@ -25,17 +31,46 @@ class MainActivity: AppCompatActivity() {
 		
 		super.onCreate(savedInstanceState)
 		
+		// Define the binding and inflate the layout
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		
+		// Define the ViewModel
+		mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+		
+		// Set the contentView to the inflated layout
 		setContentView(binding.root)
 		
 		prepareBottomNavigation()
 		
-		prepareAds() // TODO: 20.06.20 Outsource logic to prepareAds() to ViewModel to decide whether to show ads or not
+		// Observe the showAds LiveData to show ads or not
+		mainViewModel.hasPurchased.observe(
+			this,
+			Observer { hasPurchased ->
+				
+				if (!hasPurchased) {
+					
+					prepareAndShowAds()
+					
+				}
+				else if (hasPurchased) {
+					
+					showExclusiveTitle()
+					
+				}
+				
+			})
 		
 	}
 	
-	private fun prepareAds() {
+	private fun showExclusiveTitle() {
+		
+		Timber.d("showExclusiveTitle: called")
+		
+		binding.exclusiveTitle.visibility = View.VISIBLE
+		
+	}
+	
+	private fun prepareAndShowAds() {
 		
 		Timber.d("initAds: called")
 		

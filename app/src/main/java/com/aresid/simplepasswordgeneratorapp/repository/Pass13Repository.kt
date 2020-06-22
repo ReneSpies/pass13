@@ -7,6 +7,8 @@ import com.aresid.simplepasswordgeneratorapp.Util.isOk
 import com.aresid.simplepasswordgeneratorapp.database.Pass13Database
 import com.aresid.simplepasswordgeneratorapp.database.purchasedata.PurchaseData
 import com.aresid.simplepasswordgeneratorapp.database.purchasedata.PurchaseDataDao
+import com.aresid.simplepasswordgeneratorapp.database.settingsdata.SettingsData
+import com.aresid.simplepasswordgeneratorapp.database.settingsdata.SettingsDataDao
 import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsData
 import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsDataDao
 import com.aresid.simplepasswordgeneratorapp.exceptions.BillingClientConnectionException
@@ -57,9 +59,23 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
+	private val settingsDataDao: SettingsDataDao by lazy {
+		
+		if (!::database.isInitialized) {
+			
+			database = Pass13Database.getDatabase(application)
+			
+		}
+		
+		database.getSettingsDataDao()
+		
+	}
+	
 	val allPurchases = purchaseDataDao.getAll()
 	
 	val allSkuDetails = skuDetailsDataDao.getAll()
+	
+	val latestSettings = settingsDataDao.getLatest()
 	
 	suspend fun insert(purchaseData: PurchaseData) {
 		
@@ -77,6 +93,14 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
+	suspend fun insert(settingsData: SettingsData) {
+		
+		Timber.d("insert: called")
+		
+		settingsDataDao.insert(settingsData)
+		
+	}
+	
 	fun getPurchaseData(orderId: String): PurchaseData {
 		
 		Timber.d("getPurchaseData: called")
@@ -90,6 +114,14 @@ class Pass13Repository private constructor(private val application: Application)
 		Timber.d("getSkuDetailsData: called")
 		
 		return skuDetailsDataDao.get(sku)
+		
+	}
+	
+	suspend fun update(settingsData: SettingsData) {
+		
+		Timber.d("update: called")
+		
+		settingsDataDao.update(settingsData)
 		
 	}
 	

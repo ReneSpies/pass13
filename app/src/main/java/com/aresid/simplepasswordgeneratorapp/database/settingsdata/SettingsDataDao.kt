@@ -20,9 +20,9 @@ interface SettingsDataDao {
 	fun getLatest(): LiveData<SettingsData>
 	
 	@Update
-	fun update(data: SettingsData)
+	suspend fun update(data: SettingsData)
 	
 	@Insert
-	fun insert(data: SettingsData)
+	suspend fun insert(data: SettingsData)
 	
 }

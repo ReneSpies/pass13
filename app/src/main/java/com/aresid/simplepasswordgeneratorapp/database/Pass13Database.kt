@@ -6,6 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.aresid.simplepasswordgeneratorapp.database.purchasedata.PurchaseData
 import com.aresid.simplepasswordgeneratorapp.database.purchasedata.PurchaseDataDao
+import com.aresid.simplepasswordgeneratorapp.database.settingsdata.SettingsData
+import com.aresid.simplepasswordgeneratorapp.database.settingsdata.SettingsDataDao
 import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsData
 import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsDataDao
 
@@ -17,7 +19,7 @@ import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsD
  */
 
 @Database(
-	entities = [SkuDetailsData::class, PurchaseData::class],
+	entities = [SkuDetailsData::class, PurchaseData::class, SettingsData::class],
 	version = 1,
 	exportSchema = true
 )
@@ -26,6 +28,8 @@ abstract class Pass13Database: RoomDatabase() {
 	abstract fun getPurchaseDataDao(): PurchaseDataDao
 	
 	abstract fun getSkuDetailsDataDao(): SkuDetailsDataDao
+	
+	abstract fun getSettingsDataDao(): SettingsDataDao
 	
 	companion object {
 		
