@@ -5,10 +5,10 @@
 	>
 	<target
 		android:name="rotationClockwise"
-		android:animation="@animator/clockwise_rotation_indefinite_accelerate_decelerate_interpolator"
+		android:animation="@animator/clockwise_rotation_indefinite_linear_interpolator"
 		/>
 	<target
 		android:name="rotationAntiClockwise"
-		android:animation="@animator/anti_clockwise_rotation_indefinite_accelerate_decelerate_interpolator"
+		android:animation="@animator/anti_clockwise_rotation_indefinite_linear_interpolator"
 		/>
 </animated-vector>

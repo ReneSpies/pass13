@@ -61,6 +61,30 @@ class DatabaseNames {
 			
 		}
 		
+		object SettingsData {
+			
+			const val NAME = "settings_data"
+			
+			object Column {
+				
+				const val ID = "id"
+				
+				const val LOWER_CASE = "lower_case"
+				
+				const val UPPER_CASE = "upper_case"
+				
+				const val SPECIAL_CHARACTERS = "special_characters"
+				
+				const val NUMBERS = "numbers"
+				
+				const val NIGHT_MODE = "night_mode"
+				
+				const val PASSWORD_LENGTH = "password_length"
+				
+			}
+			
+		}
+		
 	}
 	
 }

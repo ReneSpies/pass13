@@ -7,7 +7,7 @@
 		android:gravity="center"
 		/>
 	<item
-		android:drawable="@drawable/aresid_logo"
+		android:drawable="@drawable/aresid_logo_splash_screen"
 		android:gravity="center|bottom"
 		/>
 </layer-list>

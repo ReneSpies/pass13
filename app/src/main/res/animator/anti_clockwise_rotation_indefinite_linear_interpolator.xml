@@ -5,6 +5,6 @@
 	android:interpolator="@android:anim/linear_interpolator"
 	android:propertyName="rotation"
 	android:repeatCount="infinite"
-	android:valueFrom="680"
-	android:valueTo="320"
+	android:valueFrom="360"
+	android:valueTo="0"
 	/>

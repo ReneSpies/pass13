@@ -34,7 +34,7 @@
 				style="@style/pass13.AppTheme.ToolbarTitle"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/exclusive"
+				android:text="@string/whitespace_exclusive"
 				android:textColor="@color/goldColor"
 				android:visibility="gone"
 				/>
@@ -46,7 +46,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
 			app:defaultNavHost="true"
-			app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+			app:layout_constraintBottom_toTopOf="@id/ad_view_container"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/toolbar"
