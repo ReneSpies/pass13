@@ -1,6 +1,5 @@
 package com.aresid.simplepasswordgeneratorapp.database.settingsdata
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -17,7 +16,7 @@ import androidx.room.Update
 interface SettingsDataDao {
 	
 	@Query("SELECT * FROM settings_data ORDER BY id DESC LIMIT 1")
-	fun getLatest(): LiveData<SettingsData>
+	fun getLatest(): SettingsData
 	
 	@Update
 	suspend fun update(data: SettingsData)

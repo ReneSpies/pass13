@@ -6,7 +6,11 @@
 	>
 	
 	<data>
-	
+		
+		<variable
+			name="viewModel"
+			type="com.aresid.simplepasswordgeneratorapp.fragments.generator.GeneratorViewModel"
+			/>
 	</data>
 	
 	<androidx.constraintlayout.widget.ConstraintLayout
@@ -32,6 +36,7 @@
 			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:onClick="@{() -> viewModel.generateNewPassword()}"
 			android:layout_marginTop="@dimen/margin_extra_large"
 			android:text="@string/refresh"
 			app:layout_constraintEnd_toEndOf="@id/guideline_end"
