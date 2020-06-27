@@ -32,7 +32,7 @@ object Util {
 		Snackbar.make(
 			this,
 			message,
-			Snackbar.LENGTH_SHORT
+			500
 		).setBackgroundTint(
 			ContextCompat.getColor(
 				context,
@@ -61,4 +61,15 @@ object Util {
 	
 }
 
-object SharedPreferencesKeys
+object SharedPreferencesKeys {
+	
+	const val SHARED_PREFERENCES_SETTINGS = "aresid.pass13.shared_preferences.settings"
+	
+	const val LOWER_CASE = "aresid.pass13.shared_preferences.lower_case"
+	const val UPPER_CASE = "aresid.pass13.shared_preferences.upper_case"
+	const val SPECIAL_CHARACTERS = "aresid.pass13.shared_preferences.special_characters"
+	const val NUMBERS = "aresid.pass13.shared_preferences.numbers"
+	const val NIGHT_MODE = "aresid.pass13.shared_preferences.night_mode"
+	const val PASSWORD_LENGTH = "aresid.pass13.shared_preferences.password_length"
+	
+}

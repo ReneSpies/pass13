@@ -22,4 +22,6 @@
 	<string name="purchase">Purchase</string>
 	<string name="save_settings">Save settings</string>
 	<string name="no_settings_specified">You must specify one setting at least.</string>
+	<string name="save_successful">Save successful</string>
+	<string name="save_unsuccessful_unkown_error">Save unsuccessful. Unknown error.</string>
 </resources>
