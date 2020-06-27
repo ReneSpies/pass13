@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.aresid.simplepasswordgeneratorapp.database.purchasedata.PurchaseData
 import com.aresid.simplepasswordgeneratorapp.database.purchasedata.PurchaseDataDao
-import com.aresid.simplepasswordgeneratorapp.database.settingsdata.SettingsData
-import com.aresid.simplepasswordgeneratorapp.database.settingsdata.SettingsDataDao
 import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsData
 import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsDataDao
 
@@ -19,8 +19,8 @@ import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsD
  */
 
 @Database(
-	entities = [SkuDetailsData::class, PurchaseData::class, SettingsData::class],
-	version = 1,
+	entities = [SkuDetailsData::class, PurchaseData::class],
+	version = 3,
 	exportSchema = true
 )
 abstract class Pass13Database: RoomDatabase() {
@@ -28,8 +28,6 @@ abstract class Pass13Database: RoomDatabase() {
 	abstract fun getPurchaseDataDao(): PurchaseDataDao
 	
 	abstract fun getSkuDetailsDataDao(): SkuDetailsDataDao
-	
-	abstract fun getSettingsDataDao(): SettingsDataDao
 	
 	companion object {
 		
@@ -56,6 +54,9 @@ abstract class Pass13Database: RoomDatabase() {
 					Pass13Database::class.java,
 					DatabaseNames.Database.NAME
 				
+				).addMigrations(
+					MIGRATION_1_2,
+					MIGRATION_2_3
 				).build()
 				
 				INSTANCE = instance
@@ -68,4 +69,27 @@ abstract class Pass13Database: RoomDatabase() {
 		
 	}
 	
+}
+
+val MIGRATION_1_2 = object: Migration(
+	1,
+	2
+) {
+	
+	override fun migrate(database: SupportSQLiteDatabase) {
+		
+		database.execSQL("CREATE TABLE IF NOT EXISTS `settings_data` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `lower_case` INTEGER NOT NULL, `upper_case` INTEGER NOT NULL, `special_characters` INTEGER NOT NULL, `numbers` INTEGER NOT NULL, `night_mode` INTEGER NOT NULL, `password_length` INTEGER NOT NULL)")
+		
+	}
+	
+}
+
+val MIGRATION_2_3 = object: Migration(
+	2,
+	3
+) {
+	
+	override fun migrate(database: SupportSQLiteDatabase) {
+		
+	}
 }

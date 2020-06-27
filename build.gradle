@@ -18,6 +18,7 @@ buildscript {
 
         google()
         jcenter()
+        mavenCentral()
 
     }
 

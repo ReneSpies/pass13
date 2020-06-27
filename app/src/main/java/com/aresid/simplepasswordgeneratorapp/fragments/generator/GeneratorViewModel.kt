@@ -4,10 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.aresid.simplepasswordgeneratorapp.R
+import androidx.lifecycle.viewModelScope
 import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.random.Random
 
 /**
  *    Created on: 28.05.20
@@ -38,65 +39,9 @@ class GeneratorViewModel(application: Application): AndroidViewModel(application
 		
 	}
 	
-	fun generateNewPassword() {
+	fun generateNewPassword() = viewModelScope.launch(Dispatchers.IO) {
 		
 		Timber.d("generateNewPassword: called")
-		
-		val settingsData = repository.latestSettings
-		
-		val lowerCaseCharacters = "abcdefghijklmnopqrstuvwxyz".toCharArray()
-		
-		val upperCaseCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
-		
-		val specialCharacters = "$%&?=!()".toCharArray()
-		
-		val numbers = "0123456789".toCharArray()
-		
-		val characterPool = emptyArray<CharArray>()
-		
-		if (settingsData.lowerCase) {
-			
-			characterPool.plus(lowerCaseCharacters)
-			
-		}
-		
-		if (settingsData.upperCase) {
-			
-			characterPool.plus(upperCaseCharacters)
-			
-		}
-		
-		if (settingsData.specialCharacters) {
-			
-			characterPool.plus(specialCharacters)
-			
-		}
-		
-		if (settingsData.numbers) {
-			
-			characterPool.plus(numbers)
-			
-		}
-		
-		if (characterPool.isEmpty()) {
-			
-			_password.value = getApplication<Application>().applicationContext.getString(R.string.no_settings_specified)
-			
-		}
-		
-		val password = ""
-		
-		for (i in 0 .. settingsData.passwordLength) {
-			
-			val characterArray = characterPool[Random.nextInt(characterPool.size)]
-			
-			val character = characterArray[Random.nextInt(characterArray.size)]
-			
-			password.plus(character)
-			
-		}
-		
-		_password.value = password
 		
 	}
 	

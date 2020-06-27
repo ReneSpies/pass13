@@ -4,6 +4,7 @@
 	package="com.aresid.simplepasswordgeneratorapp"
 	>
 	
+	<uses-permission android:name="android.permission.INTERNET"/>
 	<application
 		android:name=".application.Pass13Application"
 		android:allowBackup="true"

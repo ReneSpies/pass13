@@ -1,6 +1,5 @@
 package com.aresid.simplepasswordgeneratorapp.database.skudetailsdata
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -17,10 +16,10 @@ import androidx.room.Query
 interface SkuDetailsDataDao {
 	
 	@Query("SELECT * FROM sku_details_data")
-	fun getAll(): LiveData<List<SkuDetailsData>>
+	suspend fun getAll(): List<SkuDetailsData>?
 	
 	@Query("SELECT * FROM sku_details_data WHERE sku = :sku")
-	fun get(sku: String): SkuDetailsData
+	suspend fun get(sku: String): SkuDetailsData?
 	
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	suspend fun insert(data: SkuDetailsData)

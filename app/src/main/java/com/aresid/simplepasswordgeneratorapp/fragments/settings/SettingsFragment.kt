@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.aresid.simplepasswordgeneratorapp.R
 import com.aresid.simplepasswordgeneratorapp.databinding.FragmentSettingsBinding
@@ -22,6 +23,9 @@ class SettingsFragment: Fragment() {
 	// Binding for the layout
 	private lateinit var binding: FragmentSettingsBinding
 	
+	// Corresponding ViewModel
+	private lateinit var settingsViewModel: SettingsViewModel
+	
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -37,9 +41,22 @@ class SettingsFragment: Fragment() {
 			false
 		)
 		
-		binding.purchaseButton.setOnClickListener {
+		// Define the ViewModel
+		settingsViewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
+		
+		// Tell the layout about the ViewModel
+		binding.viewModel = settingsViewModel
+		
+		// Tell the layout about this fragment
+		binding.fragment = this
+		
+		binding.passwordLengthSlider.addOnChangeListener { slider, value, fromUser ->
 			
-			findNavController().navigate(R.id.to_purchaseFragment)
+			// Set the value in the settingsViewModel
+			settingsViewModel.passwordLength = value.toString()
+			
+			// Set the value text
+			binding.passwordLengthValueText.text = value.toInt().toString()
 			
 		}
 		
@@ -47,5 +64,14 @@ class SettingsFragment: Fragment() {
 		return binding.root
 		
 	}
+	
+	fun onPurchaseButtonClicked() {
+		
+		Timber.d("onPurchaseButtonClicked: called")
+		
+		findNavController().navigate(R.id.to_purchaseFragment)
+		
+	}
+	
 }
 
