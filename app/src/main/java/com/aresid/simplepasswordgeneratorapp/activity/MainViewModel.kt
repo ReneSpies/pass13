@@ -21,8 +21,8 @@ import timber.log.Timber
 class MainViewModel(application: Application): AndroidViewModel(application) {
 	
 	// LiveData to decide whether to show ads or not
-	private val _hasPurchased = MutableLiveData<Boolean>()
-	val hasPurchased: LiveData<Boolean>
+	private val _hasPurchased = MutableLiveData<HasPurchased>()
+	val hasPurchased: LiveData<HasPurchased>
 		get() = _hasPurchased
 	
 	init {
@@ -30,7 +30,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		Timber.d("init: called")
 		
 		// Init showAds LiveData
-		_hasPurchased.value = false
+		_hasPurchased.value = HasPurchased.UNKNOWN
 		
 		decideShowAds()
 		
@@ -51,8 +51,18 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		
 		Timber.d("setHasPurchasedValue: called")
 		
-		_hasPurchased.value = hasPurchased
+		_hasPurchased.value = if (hasPurchased) HasPurchased.PURCHASED else HasPurchased.NOT_PURCHASED
 		
 	}
+	
+}
+
+enum class HasPurchased {
+	
+	UNKNOWN,
+	
+	PURCHASED,
+	
+	NOT_PURCHASED
 	
 }

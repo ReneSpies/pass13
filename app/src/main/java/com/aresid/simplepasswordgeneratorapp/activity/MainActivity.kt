@@ -43,22 +43,41 @@ class MainActivity: AppCompatActivity() {
 		prepareBottomNavigation()
 		
 		// Observe the showAds LiveData to show ads or not
-		mainViewModel.hasPurchased.observe(
-			this,
-			Observer { hasPurchased ->
+		mainViewModel.hasPurchased.observe(this,
+		                                   Observer { status ->
+			
+			                                   if (status == HasPurchased.NOT_PURCHASED) {
 				
-				if (!hasPurchased) {
-					
-					prepareAndShowAds()
-					
-				}
-				else if (hasPurchased) {
-					
-					showExclusiveTitle()
-					
-				}
+				                                   hideExclusiveTitle()
 				
-			})
+				                                   prepareAndShowAds()
+				
+			                                   }
+			                                   else if (status == HasPurchased.PURCHASED) {
+				
+				                                   hideAds()
+				
+				                                   showExclusiveTitle()
+				
+			                                   }
+			
+		                                   })
+		
+	}
+	
+	private fun hideAds() {
+		
+		Timber.d("hideAds: called")
+		
+		binding.adViewContainer.visibility = View.GONE
+		
+	}
+	
+	private fun hideExclusiveTitle() {
+		
+		Timber.d("hideExclusiveTitle: called")
+		
+		binding.adViewContainer.visibility = View.GONE
 		
 	}
 	

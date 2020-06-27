@@ -55,8 +55,10 @@ abstract class Pass13Database: RoomDatabase() {
 					DatabaseNames.Database.NAME
 				
 				).addMigrations(
+					
 					MIGRATION_1_2,
 					MIGRATION_2_3
+				
 				).build()
 				
 				INSTANCE = instance
