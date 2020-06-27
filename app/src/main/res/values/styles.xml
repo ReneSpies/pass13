@@ -16,7 +16,7 @@
 	
 	<style name="pass13.AppTheme.Launcher"
 	       parent="pass13.AppTheme">
-		<item name="android:windowBackground">@drawable/ic_launch_screen</item>
+		<item name="android:windowBackground">@drawable/launch_screen</item>
 	</style>
 	
 	<style name="pass13.AppTheme.ToolbarTitle"

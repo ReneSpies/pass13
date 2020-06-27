@@ -58,11 +58,11 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 		
 		initSettings()
 		
-		decideShowPurchaseButton()
+		checkHasPurchased()
 		
 	}
 	
-	private fun decideShowPurchaseButton() = viewModelScope.launch(Dispatchers.IO) {
+	private fun checkHasPurchased() = viewModelScope.launch(Dispatchers.IO) {
 		
 		Timber.d("decideShowPurchaseButton: called")
 		

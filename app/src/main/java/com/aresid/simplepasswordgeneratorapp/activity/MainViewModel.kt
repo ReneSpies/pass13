@@ -1,10 +1,14 @@
 package com.aresid.simplepasswordgeneratorapp.activity
 
 import android.app.Application
+import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.NIGHT_MODE
+import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.SHARED_PREFERENCES_SETTINGS
 import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,13 +36,35 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		// Init showAds LiveData
 		_hasPurchased.value = HasPurchased.UNKNOWN
 		
-		decideShowAds()
+		checkHasPurchased()
+		
+		checkHasNightModeSet()
 		
 	}
 	
-	private fun decideShowAds() = viewModelScope.launch(Dispatchers.IO) {
+	private fun checkHasNightModeSet() {
 		
-		Timber.d("decideShowAds: called")
+		Timber.d("checkHasNightModeSet: called")
+		
+		val application = getApplication<Application>()
+		
+		val sharedPreferences = application.getSharedPreferences(
+			SHARED_PREFERENCES_SETTINGS,
+			Context.MODE_PRIVATE
+		)
+		
+		val hasNightModeSet = sharedPreferences.getBoolean(
+			NIGHT_MODE,
+			false
+		)
+		
+		AppCompatDelegate.setDefaultNightMode(if (hasNightModeSet) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
+		
+	}
+	
+	private fun checkHasPurchased() = viewModelScope.launch(Dispatchers.IO) {
+		
+		Timber.d("checkHasPurchased: called")
 		
 		// Get a repository reference
 		val repository = Pass13Repository.getInstance(getApplication())
