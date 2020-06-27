@@ -1,8 +1,8 @@
 package com.aresid.simplepasswordgeneratorapp.fragments.settings
 
 import android.app.Application
+import android.view.View
 import androidx.lifecycle.AndroidViewModel
-import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
 import timber.log.Timber
 
 /**
@@ -14,12 +14,11 @@ import timber.log.Timber
 
 class SettingsViewModel(application: Application): AndroidViewModel(application) {
 	
-	// Repository instance
-	private val repository: Pass13Repository
+	var passwordLength = 1f
 	
-	var lowerCaseCharactersChecked = true
+	var lowerCaseChecked = true
 	
-	var upperCaseCharactersChecked = false
+	var upperCaseChecked = true
 	
 	var specialCharactersChecked = false
 	
@@ -27,14 +26,15 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 	
 	var nightModeChecked = false
 	
-	var passwordLength = "1"
-	
 	init {
 		
 		Timber.d("init: called")
 		
-		// Define the repository
-		repository = Pass13Repository.getInstance(application)
+	}
+	
+	fun saveSettings(view: View) {
+		
+		Timber.d("saveSettings: called")
 		
 	}
 	

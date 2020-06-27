@@ -50,10 +50,10 @@ class SettingsFragment: Fragment() {
 		// Tell the layout about this fragment
 		binding.fragment = this
 		
-		binding.passwordLengthSlider.addOnChangeListener { slider, value, fromUser ->
+		binding.passwordLengthSlider.addOnChangeListener { _, value, _ ->
 			
 			// Set the value in the settingsViewModel
-			settingsViewModel.passwordLength = value.toString()
+			settingsViewModel.passwordLength = value
 			
 			// Set the value text
 			binding.passwordLengthValueText.text = value.toInt().toString()

@@ -8,68 +8,74 @@
 	
 	</data>
 	
-	<androidx.constraintlayout.widget.ConstraintLayout
+	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		>
 		
-		<androidx.appcompat.widget.Toolbar
-			android:id="@+id/toolbar"
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
+			android:layout_height="match_parent"
 			>
 			
-			<TextView
-				style="@style/pass13.AppTheme.ToolbarTitle"
-				android:layout_width="wrap_content"
+			<androidx.appcompat.widget.Toolbar
+				android:id="@+id/toolbar"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="@string/app_name"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				>
+				
+				<TextView
+					style="@style/pass13.AppTheme.ToolbarTitle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/app_name"
+					/>
+				
+				<TextView
+					android:id="@+id/exclusive_title"
+					style="@style/pass13.AppTheme.ToolbarTitle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/whitespace_exclusive"
+					android:textColor="@color/goldColor"
+					android:visibility="gone"
+					/>
+			</androidx.appcompat.widget.Toolbar>
+			
+			<androidx.fragment.app.FragmentContainerView
+				android:id="@+id/navigation_host"
+				android:name="androidx.navigation.fragment.NavHostFragment"
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				app:defaultNavHost="true"
+				app:layout_constraintBottom_toTopOf="@id/ad_view_container"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/toolbar"
+				app:navGraph="@navigation/navigation_graph"
 				/>
 			
-			<TextView
-				android:id="@+id/exclusive_title"
-				style="@style/pass13.AppTheme.ToolbarTitle"
+			<FrameLayout
+				android:id="@+id/ad_view_container"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/whitespace_exclusive"
-				android:textColor="@color/goldColor"
-				android:visibility="gone"
+				app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
 				/>
-		</androidx.appcompat.widget.Toolbar>
-		
-		<androidx.fragment.app.FragmentContainerView
-			android:id="@+id/navigation_host"
-			android:name="androidx.navigation.fragment.NavHostFragment"
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			app:defaultNavHost="true"
-			app:layout_constraintBottom_toTopOf="@id/ad_view_container"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/toolbar"
-			app:navGraph="@navigation/navigation_graph"
-			/>
-		
-		<FrameLayout
-			android:id="@+id/ad_view_container"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			/>
-		
-		<com.google.android.material.bottomnavigation.BottomNavigationView
-			android:id="@+id/bottom_navigation"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:menu="@menu/menu_bottom_navigation"
-			/>
-	</androidx.constraintlayout.widget.ConstraintLayout>
+			
+			<com.google.android.material.bottomnavigation.BottomNavigationView
+				android:id="@+id/bottom_navigation"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:menu="@menu/menu_bottom_navigation"
+				/>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+	</androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
