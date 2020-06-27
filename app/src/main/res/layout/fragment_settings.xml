@@ -64,7 +64,7 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/margin_extra_small"
-			android:text="@string/include_upper_special_characters"
+			android:text="@string/include_special_characters"
 			android:checked="@={viewModel.specialCharactersChecked}"
 			app:layout_constraintEnd_toEndOf="@id/guideline_end"
 			app:layout_constraintStart_toStartOf="@id/guideline_start"

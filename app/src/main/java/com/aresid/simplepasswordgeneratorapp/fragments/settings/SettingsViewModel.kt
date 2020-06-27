@@ -186,7 +186,7 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 				}
 				else if (!writeIsSuccess) {
 					
-					button.showErrorSnackbar(application.getString(R.string.save_unsuccessful_unkown_error))
+					button.showErrorSnackbar(application.getString(R.string.save_unsuccessful_unknown_error))
 					
 				}
 				

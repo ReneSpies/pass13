@@ -25,5 +25,12 @@
 		<item name="fontFamily">@font/comfortaa</item>
 		<item name="android:textSize">20sp</item>
 	</style>
+	
+	<style name="PasswordTextView"
+	       parent="Widget.MaterialComponents.TextView">
+		<item name="fontFamily">@font/source_code_pro</item>
+		<item name="android:textAlignment">center</item>
+		<item name="android:textSize">20sp</item>
+	</style>
 
 </resources>

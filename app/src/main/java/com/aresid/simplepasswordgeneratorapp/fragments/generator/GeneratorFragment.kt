@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.aresid.simplepasswordgeneratorapp.databinding.FragmentGeneratorBinding
 import timber.log.Timber
@@ -44,6 +45,14 @@ class GeneratorFragment: Fragment() {
 		
 		// Tell the layout about the ViewModel
 		binding.viewModel = generatorViewModel
+		
+		generatorViewModel.password.observe(
+			viewLifecycleOwner,
+			Observer { password ->
+				
+				binding.password.text = password
+				
+			})
 		
 		// Return the inflated layout
 		return binding.root

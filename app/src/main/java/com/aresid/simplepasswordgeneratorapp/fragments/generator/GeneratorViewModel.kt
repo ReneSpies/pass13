@@ -4,10 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.aresid.simplepasswordgeneratorapp.PasswordGenerator
 import timber.log.Timber
 
 /**
@@ -24,24 +21,32 @@ class GeneratorViewModel(application: Application): AndroidViewModel(application
 	val password: LiveData<String>
 		get() = _password
 	
-	// Repository instance
-	private val repository: Pass13Repository
-	
 	init {
 		
 		Timber.d("init: called")
 		
-		// Init repository
-		repository = Pass13Repository.getInstance(application)
-		
 		// Init password LiveData
-		_password.value = ""
+		_password.value = generateNewPassword()
 		
 	}
 	
-	fun generateNewPassword() = viewModelScope.launch(Dispatchers.IO) {
+	private fun generateNewPassword(): String {
 		
 		Timber.d("generateNewPassword: called")
+		
+		val application = getApplication<Application>()
+		
+		val randomPasswordGenerator = PasswordGenerator(application.applicationContext)
+		
+		return randomPasswordGenerator.generatePassword()
+		
+	}
+	
+	fun onRefreshButtonClicked() {
+		
+		Timber.d("onRefreshButtonClicked: called")
+		
+		_password.value = generateNewPassword()
 		
 	}
 	

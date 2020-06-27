@@ -7,7 +7,7 @@
 	<string name="purchase_pass13_exclusive">Purchase pass13 exclusive</string>
 	<string name="password_length">Password length</string>
 	<string name="night_mode">Night Mode</string>
-	<string name="include_upper_special_characters">Include upper special characters</string>
+	<string name="include_special_characters">Include special characters</string>
 	<string name="include_numbers">Include numbers</string>
 	<string name="include_lower_case_characters">Include lower case characters</string>
 	<string name="include_upper_case_characters">Include upper case characters</string>
@@ -23,5 +23,6 @@
 	<string name="save_settings">Save settings</string>
 	<string name="no_settings_specified">You must specify one setting at least.</string>
 	<string name="save_successful">Save successful</string>
-	<string name="save_unsuccessful_unkown_error">Save unsuccessful. Unknown error.</string>
+	<string name="save_unsuccessful_unknown_error">Save unsuccessful. Unknown error.</string>
+	<string name="no_settings">You have to specify one setting at least.</string>
 </resources>
