@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -60,14 +58,6 @@ class SettingsFragment: Fragment() {
 			
 			// Set the value text
 			binding.passwordLengthValueText.text = value.toInt().toString()
-			
-		}
-		
-		binding.nightModeCheckbox.setOnClickListener { view ->
-			
-			val checkbox = view as CheckBox
-			
-			AppCompatDelegate.setDefaultNightMode(if (checkbox.isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
 			
 		}
 		

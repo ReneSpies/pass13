@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.view.View
 import android.widget.Button
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -175,6 +176,12 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 				val writeIsSuccess = withContext(coroutineContext) {
 					
 					commit()
+					
+				}
+				
+				withContext(Dispatchers.Main) {
+					
+					AppCompatDelegate.setDefaultNightMode(if (nightModeChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
 					
 				}
 				
