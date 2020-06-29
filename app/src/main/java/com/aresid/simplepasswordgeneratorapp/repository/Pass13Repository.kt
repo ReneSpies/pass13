@@ -202,9 +202,54 @@ class Pass13Repository private constructor(private val application: Application)
 				// Queries the SkuDetails and then caches them
 				querySkuDetailsAsync(Util.PASS13_SKUS)
 				
+				queryInAppPurchaseHistory()
+				
 			}
 			
 			else -> throw BillingClientConnectionException("BillingClient connection failed with response code ${billingResult.responseCode}")
+			
+		}
+		
+	}
+	
+	private suspend fun queryInAppPurchaseHistory() {
+		
+		Timber.d("queryInAppPurchaseHistory: called")
+		
+		val purchaseHistoryResult = billingClient.queryPurchaseHistory(BillingClient.SkuType.INAPP)
+		
+		purchaseHistoryResult.purchaseHistoryRecordList?.forEach {
+			
+			// Convert the PurchaseHistoryRecord object into a Purchase
+			val purchase = Purchase(
+				
+				it.originalJson,
+				
+				it.signature
+			
+			)
+			
+			// Convert the Purchase object into a PurchaseData
+			val purchaseData = PurchaseData(
+				
+				orderId = purchase.orderId,
+				
+				packageName = purchase.packageName,
+				
+				originalJson = purchase.originalJson,
+				
+				purchaseState = purchase.purchaseState,
+				
+				purchaseToken = purchase.purchaseToken,
+				
+				signature = purchase.signature,
+				
+				isAcknowledged = purchase.isAcknowledged
+			
+			)
+			
+			// Insert the purchaseData into the database
+			purchaseDataDao.insert(purchaseData)
 			
 		}
 		

@@ -1,5 +1,6 @@
 package com.aresid.simplepasswordgeneratorapp.database.purchasedata
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -14,6 +15,9 @@ import androidx.room.Query
 
 @Dao
 interface PurchaseDataDao {
+	
+	@Query("SELECT * FROM purchase_data")
+	fun getAllLiveData(): LiveData<List<PurchaseData>>
 	
 	@Query("SELECT * FROM purchase_data")
 	suspend fun getAll(): List<PurchaseData>?

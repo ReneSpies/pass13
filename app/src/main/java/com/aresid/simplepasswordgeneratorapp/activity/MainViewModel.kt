@@ -7,8 +7,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.NIGHT_MODE
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.SHARED_PREFERENCES_SETTINGS
+import com.aresid.simplepasswordgeneratorapp.BuildConfig
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.APP_VERSION_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.NIGHT_MODE_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.APP_VERSION_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.NIGHT_MODE_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_FIRST_STARTUP_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_SETTINGS_KEY
 import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,6 +34,8 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 	val hasPurchased: LiveData<HasPurchased>
 		get() = _hasPurchased
 	
+	private val repository: Pass13Repository
+	
 	init {
 		
 		Timber.d("init: called")
@@ -36,9 +43,78 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		// Init showAds LiveData
 		_hasPurchased.value = HasPurchased.UNKNOWN
 		
+		// Init the repository
+		repository = Pass13Repository.getInstance(getApplication())
+		
+		checkFirstStartup()
+		
 		checkHasPurchased()
 		
 		checkHasNightModeSet()
+		
+	}
+	
+	override fun onCleared() {
+		
+		Timber.d("onCleared: called")
+		
+		super.onCleared()
+		
+		// End any open connections
+		repository.endConnection()
+		
+	}
+	
+	private fun checkFirstStartup() = viewModelScope.launch(Dispatchers.IO) {
+		
+		Timber.d("checkFirstStartup: called")
+		
+		val application = getApplication<Application>()
+		
+		val sharedPreferences = application.getSharedPreferences(
+			SHARED_PREFERENCES_FIRST_STARTUP_KEY,
+			Context.MODE_PRIVATE
+		)
+		
+		val currentVersionCode = BuildConfig.VERSION_CODE
+		
+		val savedVersionCode = sharedPreferences.getInt(
+			APP_VERSION_KEY,
+			APP_VERSION_DEFAULT
+		)
+		
+		if (currentVersionCode == savedVersionCode) {
+			
+			// Normal run, nothing to do
+			
+			return@launch
+			
+		}
+		else if (currentVersionCode != savedVersionCode) {
+			
+			try {
+				
+				withContext(coroutineContext) {
+					
+					repository.startConnection()
+					
+				}
+				
+			}
+			catch (e: Exception) {
+				
+				Timber.e(e)
+				
+			}
+			
+		}
+		
+		checkHasPurchased()
+		
+		sharedPreferences.edit().putInt(
+			APP_VERSION_KEY,
+			currentVersionCode
+		).apply()
 		
 	}
 	
@@ -49,13 +125,13 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		val application = getApplication<Application>()
 		
 		val sharedPreferences = application.getSharedPreferences(
-			SHARED_PREFERENCES_SETTINGS,
+			SHARED_PREFERENCES_SETTINGS_KEY,
 			Context.MODE_PRIVATE
 		)
 		
 		val hasNightModeSet = sharedPreferences.getBoolean(
-			NIGHT_MODE,
-			false
+			NIGHT_MODE_KEY,
+			NIGHT_MODE_DEFAULT
 		)
 		
 		AppCompatDelegate.setDefaultNightMode(if (hasNightModeSet) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
@@ -66,10 +142,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		
 		Timber.d("checkHasPurchased: called")
 		
-		// Get a repository reference
-		val repository = Pass13Repository.getInstance(getApplication())
-		
-		setHasPurchasedValue(repository.getAllPurchases() != null)
+		setHasPurchasedValue(!repository.getAllPurchases().isNullOrEmpty())
 		
 	}
 	

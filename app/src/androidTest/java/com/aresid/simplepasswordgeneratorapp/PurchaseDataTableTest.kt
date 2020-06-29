@@ -23,9 +23,9 @@ import timber.log.Timber
 @RunWith(AndroidJUnit4::class)
 class PurchaseDataTableTest {
 	
-	lateinit var database: Pass13Database
+	private lateinit var database: Pass13Database
 	
-	lateinit var purchaseDataDao: PurchaseDataDao
+	private lateinit var purchaseDataDao: PurchaseDataDao
 	
 	@Before
 	fun setup() {
@@ -81,11 +81,11 @@ class PurchaseDataTableTest {
 	
 	private fun getAllPurchasesTest() = runBlocking {
 		
-		val allPurchases = purchaseDataDao.getAll()
+		val allPurchases = purchaseDataDao.getAllLiveData()
 		
-		Timber.d("allPurchases = $allPurchases")
+		Timber.d("allPurchases = ${allPurchases.value}")
 		
-		allPurchases?.forEach {
+		allPurchases.value?.forEach {
 			
 			Timber.d("purchase in allPurchases = $it")
 			

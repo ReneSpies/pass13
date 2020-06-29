@@ -10,13 +10,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aresid.simplepasswordgeneratorapp.R
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.LOWER_CASE
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.NIGHT_MODE
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.NUMBERS
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.PASSWORD_LENGTH
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.SHARED_PREFERENCES_SETTINGS
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.SPECIAL_CHARACTERS
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.UPPER_CASE
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.LOWER_CASE_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.NIGHT_MODE_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.NUMBERS_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.PASSWORD_LENGTH_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.SPECIAL_CHARACTERS_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.UPPER_CASE_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.LOWER_CASE_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.NIGHT_MODE_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.NUMBERS_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.PASSWORD_LENGTH_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_SETTINGS_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SPECIAL_CHARACTERS_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.UPPER_CASE_KEY
 import com.aresid.simplepasswordgeneratorapp.Util.showErrorSnackbar
 import com.aresid.simplepasswordgeneratorapp.Util.showSuccessSnackbar
 import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
@@ -75,7 +81,7 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 		
 		withContext(Dispatchers.Main) {
 			
-			_showPurchaseButton.value = (allPurchases != null)
+			_showPurchaseButton.value = (!allPurchases.isNullOrEmpty())
 			
 		}
 		
@@ -88,35 +94,35 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 		val application = getApplication<Application>()
 		
 		val sharedPreferences = application.getSharedPreferences(
-			SHARED_PREFERENCES_SETTINGS,
+			SHARED_PREFERENCES_SETTINGS_KEY,
 			Context.MODE_PRIVATE
 		)
 		
 		with(sharedPreferences) {
 			
 			lowerCaseChecked = getBoolean(
-				LOWER_CASE,
-				true
+				LOWER_CASE_KEY,
+				LOWER_CASE_DEFAULT
 			)
 			upperCaseChecked = getBoolean(
-				UPPER_CASE,
-				false
+				UPPER_CASE_KEY,
+				UPPER_CASE_DEFAULT
 			)
 			specialCharactersChecked = getBoolean(
-				SPECIAL_CHARACTERS,
-				false
+				SPECIAL_CHARACTERS_KEY,
+				SPECIAL_CHARACTERS_DEFAULT
 			)
 			numbersChecked = getBoolean(
-				NUMBERS,
-				false
+				NUMBERS_KEY,
+				NUMBERS_DEFAULT
 			)
 			nightModeChecked = getBoolean(
-				NIGHT_MODE,
-				false
+				NIGHT_MODE_KEY,
+				NIGHT_MODE_DEFAULT
 			)
 			passwordLength.value = getInt(
-				PASSWORD_LENGTH,
-				1
+				PASSWORD_LENGTH_KEY,
+				PASSWORD_LENGTH_DEFAULT
 			)
 			
 		}
@@ -138,7 +144,7 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 		
 		// Get the SharedPreferences
 		val sharedPreferences = application.getSharedPreferences(
-			SHARED_PREFERENCES_SETTINGS,
+			SHARED_PREFERENCES_SETTINGS_KEY,
 			Context.MODE_PRIVATE
 		)
 		
@@ -148,27 +154,27 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 				
 				// Put all values into the SharedPreferences
 				putBoolean(
-					LOWER_CASE,
+					LOWER_CASE_KEY,
 					lowerCaseChecked
 				)
 				putBoolean(
-					UPPER_CASE,
+					UPPER_CASE_KEY,
 					upperCaseChecked
 				)
 				putBoolean(
-					SPECIAL_CHARACTERS,
+					SPECIAL_CHARACTERS_KEY,
 					specialCharactersChecked
 				)
 				putBoolean(
-					NUMBERS,
+					NUMBERS_KEY,
 					numbersChecked
 				)
 				putBoolean(
-					NIGHT_MODE,
+					NIGHT_MODE_KEY,
 					nightModeChecked
 				)
 				putInt(
-					PASSWORD_LENGTH,
+					PASSWORD_LENGTH_KEY,
 					passwordLength.value!!.toInt()
 				)
 				

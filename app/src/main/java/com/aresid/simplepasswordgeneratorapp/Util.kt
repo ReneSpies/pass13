@@ -61,15 +61,36 @@ object Util {
 	
 }
 
-object SharedPreferencesKeys {
+object SharedPreferences {
 	
-	const val SHARED_PREFERENCES_SETTINGS = "aresid.pass13.shared_preferences.settings"
+	object Keys {
+		
+		const val SHARED_PREFERENCES_SETTINGS_KEY = "aresid.pass13.shared_preferences.settings"
+		const val SHARED_PREFERENCES_FIRST_STARTUP_KEY = "aresid.pass13.shared_preferences.first_startup"
+		
+		// Keys for Settings
+		const val LOWER_CASE_KEY = "aresid.pass13.shared_preferences.lower_case"
+		const val UPPER_CASE_KEY = "aresid.pass13.shared_preferences.upper_case"
+		const val SPECIAL_CHARACTERS_KEY = "aresid.pass13.shared_preferences.special_characters"
+		const val NUMBERS_KEY = "aresid.pass13.shared_preferences.numbers"
+		const val NIGHT_MODE_KEY = "aresid.pass13.shared_preferences.night_mode"
+		const val PASSWORD_LENGTH_KEY = "aresid.pass13.shared_preferences.password_length"
+		
+		// Keys for first startup
+		const val APP_VERSION_KEY = "aresid.pass13.shared_preferences.app_version"
+		
+	}
 	
-	const val LOWER_CASE = "aresid.pass13.shared_preferences.lower_case"
-	const val UPPER_CASE = "aresid.pass13.shared_preferences.upper_case"
-	const val SPECIAL_CHARACTERS = "aresid.pass13.shared_preferences.special_characters"
-	const val NUMBERS = "aresid.pass13.shared_preferences.numbers"
-	const val NIGHT_MODE = "aresid.pass13.shared_preferences.night_mode"
-	const val PASSWORD_LENGTH = "aresid.pass13.shared_preferences.password_length"
+	object DefaultValues {
+		
+		const val LOWER_CASE_DEFAULT = true
+		const val UPPER_CASE_DEFAULT = false
+		const val SPECIAL_CHARACTERS_DEFAULT = false
+		const val NUMBERS_DEFAULT = false
+		const val NIGHT_MODE_DEFAULT = false
+		const val PASSWORD_LENGTH_DEFAULT = 8
+		const val APP_VERSION_DEFAULT = -1
+		
+	}
 	
 }

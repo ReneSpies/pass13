@@ -1,12 +1,17 @@
 package com.aresid.simplepasswordgeneratorapp
 
 import android.content.Context
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.LOWER_CASE
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.NUMBERS
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.PASSWORD_LENGTH
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.SHARED_PREFERENCES_SETTINGS
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.SPECIAL_CHARACTERS
-import com.aresid.simplepasswordgeneratorapp.SharedPreferencesKeys.UPPER_CASE
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.LOWER_CASE_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.NUMBERS_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.PASSWORD_LENGTH_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.SPECIAL_CHARACTERS_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.UPPER_CASE_DEFAULT
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.LOWER_CASE_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.NUMBERS_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.PASSWORD_LENGTH_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_SETTINGS_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SPECIAL_CHARACTERS_KEY
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.UPPER_CASE_KEY
 import timber.log.Timber
 
 /**
@@ -35,32 +40,32 @@ class PasswordGenerator(private val context: Context) {
 	
 	private fun populateUserSettingsProperties() {
 		
-		Timber.d("getUsersSettings: called")
+		Timber.d("populateUserSettingsProperties: called")
 		
 		val sharedPreferences = context.getSharedPreferences(
-			SHARED_PREFERENCES_SETTINGS,
+			SHARED_PREFERENCES_SETTINGS_KEY,
 			Context.MODE_PRIVATE
 		)
 		
 		lowerCaseChecked = sharedPreferences.getBoolean(
-			LOWER_CASE,
-			true
+			LOWER_CASE_KEY,
+			LOWER_CASE_DEFAULT
 		)
 		upperCaseChecked = sharedPreferences.getBoolean(
-			UPPER_CASE,
-			true
+			UPPER_CASE_KEY,
+			UPPER_CASE_DEFAULT
 		)
 		specialCharactersChecked = sharedPreferences.getBoolean(
-			SPECIAL_CHARACTERS,
-			true
+			SPECIAL_CHARACTERS_KEY,
+			SPECIAL_CHARACTERS_DEFAULT
 		)
 		numbersChecked = sharedPreferences.getBoolean(
-			NUMBERS,
-			true
+			NUMBERS_KEY,
+			NUMBERS_DEFAULT
 		)
 		passwordLength = sharedPreferences.getInt(
-			PASSWORD_LENGTH,
-			1
+			PASSWORD_LENGTH_KEY,
+			PASSWORD_LENGTH_DEFAULT
 		)
 		
 	}

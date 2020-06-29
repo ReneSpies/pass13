@@ -91,7 +91,7 @@ class MainActivity: AppCompatActivity() {
 	
 	private fun prepareAndShowAds() {
 		
-		Timber.d("initAds: called")
+		Timber.d("prepareAndShowAds: called")
 		
 		MobileAds.initialize(this)
 		
@@ -102,6 +102,8 @@ class MainActivity: AppCompatActivity() {
 		adView.adUnitId = getString(R.string.test_ad_unit_id)
 		
 		binding.adViewContainer.addView(adView)
+		
+		binding.adViewContainer.visibility = View.VISIBLE
 		
 		val adRequest = AdRequest.Builder().build()
 		

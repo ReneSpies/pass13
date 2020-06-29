@@ -74,6 +74,15 @@ class SettingsFragment: Fragment() {
 					binding.nightModeCheckbox.isEnabled = true
 					
 				}
+				else {
+					
+					// Show the purchaseButton
+					binding.purchaseButton.visibility = View.VISIBLE
+					
+					// Disable the nightModeCheckbox
+					binding.nightModeCheckbox.isEnabled = false
+					
+				}
 				
 			})
 		
