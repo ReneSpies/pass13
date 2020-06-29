@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -25,9 +26,18 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		// Get an instance of the repository
 		repository = Pass13Repository.getInstance(application)
 		
-		viewModelScope.launch {
+		viewModelScope.launch(Dispatchers.IO) {
 			
-			repository.startConnection()
+			try {
+				
+				repository.startConnection()
+				
+			}
+			catch (e: Exception) {
+				
+				Timber.e(e)
+				
+			}
 			
 		}
 		
