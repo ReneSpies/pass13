@@ -1,6 +1,8 @@
 package com.aresid.simplepasswordgeneratorapp
 
+import android.graphics.Paint
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.android.billingclient.api.BillingClient
 import com.google.android.material.snackbar.Snackbar
@@ -23,7 +25,9 @@ object Util {
 		
 	}
 	
-	val PASS13_SKUS = listOf("pass13.products.unlock_features")
+	const val EXCLUSIVE_SKU = "pass13.products.unlock_features"
+	
+	val PASS13_SKUS = listOf(EXCLUSIVE_SKU)
 	
 	fun Button.showSuccessSnackbar(message: String) {
 		
@@ -56,6 +60,17 @@ object Util {
 				android.R.color.holo_red_dark
 			)
 		).show()
+		
+	}
+	
+	/**
+	 * Extension function for TextView to underline the TextView.
+	 */
+	fun TextView.underline() {
+		
+		Timber.d("underline: called")
+		
+		paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
 		
 	}
 	

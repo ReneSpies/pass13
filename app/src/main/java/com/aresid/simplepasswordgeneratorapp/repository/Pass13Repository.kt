@@ -273,7 +273,7 @@ class Pass13Repository private constructor(private val application: Application)
 		if (skuDetailsResult.billingResult.responseCode.isOk()) {
 			
 			// Cache the SkuDetails
-			processSkuDetails(skuDetailsResult.skuDetailsList!!)
+			processSkuDetails(skuDetailsResult.skuDetailsList)
 			
 		}
 		
@@ -289,35 +289,30 @@ class Pass13Repository private constructor(private val application: Application)
 	/**
 	 * Caches each SkuDetails from [skuDetails] in [Pass13Database].
 	 */
-	private suspend fun processSkuDetails(skuDetails: List<SkuDetails>) {
+	private suspend fun processSkuDetails(skuDetails: List<SkuDetails>?) {
 		
 		Timber.d("processSkuDetails: called")
 		
-		// If the SkuDetails list is not empty, cache each item
-		if (skuDetails.isNotEmpty()) {
+		// Iterate over every SkuDetails
+		skuDetails?.forEach {
 			
-			// Iterate over every SkuDetails
-			skuDetails.forEach {
+			// Create a SkuDetailsData object from the SkuDetails
+			val skuDetailsData = SkuDetailsData(
 				
-				// Create a SkuDetailsData object from the SkuDetails
-				val skuDetailsData = SkuDetailsData(
-					
-					it.sku,
-					
-					it.title,
-					
-					it.description,
-					
-					it.price,
-					
-					it.originalJson
+				it.sku,
 				
-				)
+				it.title,
 				
-				// Cache the SkuDetailsData in the database
-				skuDetailsDataDao.insert(skuDetailsData)
+				it.description,
 				
-			}
+				it.price,
+				
+				it.originalJson
+			
+			)
+			
+			// Cache the SkuDetailsData in the database
+			skuDetailsDataDao.insert(skuDetailsData)
 			
 		}
 		

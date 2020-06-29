@@ -54,17 +54,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		
 	}
 	
-	override fun onCleared() {
-		
-		Timber.d("onCleared: called")
-		
-		super.onCleared()
-		
-		// End any open connections
-		repository.endConnection()
-		
-	}
-	
 	private fun checkFirstStartup() = viewModelScope.launch(Dispatchers.IO) {
 		
 		Timber.d("checkFirstStartup: called")
@@ -104,6 +93,11 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 			catch (e: Exception) {
 				
 				Timber.e(e)
+				
+			}
+			finally {
+				
+				repository.endConnection()
 				
 			}
 			

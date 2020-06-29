@@ -6,7 +6,11 @@
 	>
 	
 	<data>
-	
+		
+		<variable
+			name="viewModel"
+			type="com.aresid.simplepasswordgeneratorapp.fragments.purchase.PurchaseViewModel"
+			/>
 	</data>
 	
 	<androidx.core.widget.NestedScrollView
@@ -51,16 +55,43 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_extra_large"
 				android:text="@string/retry"
+				android:onClick="@{() -> viewModel.retry()}"
 				app:layout_constraintEnd_toEndOf="@id/guideline_end"
 				app:layout_constraintStart_toStartOf="@id/guideline_start"
 				app:layout_constraintTop_toBottomOf="@id/no_internet_icon"
 				/>
 			
 			<ImageView
+				android:id="@+id/smiley_image"
+				android:layout_width="96dp"
+				android:layout_height="96dp"
+				android:contentDescription="@string/smiley"
+				android:src="@drawable/ic_smiley_24"
+				app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
+				app:layout_constraintEnd_toEndOf="@id/guideline_end"
+				app:layout_constraintStart_toStartOf="@id/guideline_start"
+				app:layout_constraintTop_toTopOf="@id/guideline_top"
+				/>
+			
+			<TextView
+				android:id="@+id/purchased_text"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_medium"
+				android:text="@string/thank_you_for_purchasing"
+				android:textAlignment="center"
+				android:textAppearance="?attr/textAppearanceHeadline5"
+				android:textColor="?attr/colorOnSurface"
+				app:layout_constraintEnd_toEndOf="@id/guideline_end"
+				app:layout_constraintStart_toStartOf="@id/guideline_start"
+				app:layout_constraintTop_toBottomOf="@id/smiley_image"
+				/>
+			
+			<ImageView
 				android:id="@+id/aresid_logo"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:contentDescription="@string/pass13_logo"
+				android:contentDescription="@string/aresid_logo"
 				android:src="@drawable/aresid_logo_low_profile"
 				app:layout_constraintEnd_toEndOf="@id/guideline_end"
 				app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -84,15 +115,31 @@
 				/>
 			
 			<TextView
+				android:id="@+id/exclusive_description_title_text"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_medium"
+				android:text="@string/thank_you_for_considering_to_buy_pass13_exclusive"
+				android:textAlignment="center"
+				android:textAppearance="?attr/textAppearanceBody1"
+				android:textColor="?attr/colorOnSurface"
+				app:layout_constraintEnd_toEndOf="@id/guideline_end"
+				app:layout_constraintStart_toStartOf="@id/guideline_start"
+				app:layout_constraintTop_toBottomOf="@id/exclusive_title_text"
+				/>
+			
+			<TextView
 				android:id="@+id/exclusive_description_text"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_medium"
 				android:textAlignment="center"
 				android:textAppearance="?attr/textAppearanceBody1"
+				android:textColor="?attr/colorOnSurface"
 				app:layout_constraintEnd_toEndOf="@id/guideline_end"
 				app:layout_constraintStart_toStartOf="@id/guideline_start"
-				app:layout_constraintTop_toBottomOf="@id/exclusive_title_text"
+				app:layout_constraintBottom_toTopOf="@id/exclusive_price_text"
+				app:layout_constraintTop_toBottomOf="@id/exclusive_description_title_text"
 				tools:text="Here goes the description"
 				tools:textColor="@color/secondaryTextColor"
 				/>
@@ -104,6 +151,7 @@
 				android:layout_marginBottom="@dimen/margin_medium"
 				android:textAlignment="center"
 				android:textAppearance="?attr/textAppearanceHeadline5"
+				android:textColor="?attr/colorOnSurface"
 				android:textStyle="bold"
 				app:layout_constraintBottom_toTopOf="@id/purchase_button"
 				app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -123,15 +171,15 @@
 				/>
 			
 			<androidx.constraintlayout.widget.Group
-				android:id="@+id/loading"
+				android:id="@+id/loading_screen"
 				android:layout_width="0dp"
 				android:layout_height="0dp"
-				android:visibility="gone"
+				android:visibility="visible"
 				app:constraint_referenced_ids="loading_spinner"
 				/>
 			
 			<androidx.constraintlayout.widget.Group
-				android:id="@+id/no_internet"
+				android:id="@+id/error_screen"
 				android:layout_width="0dp"
 				android:layout_height="0dp"
 				android:visibility="gone"
@@ -139,11 +187,19 @@
 				/>
 			
 			<androidx.constraintlayout.widget.Group
-				android:id="@+id/content"
+				android:id="@+id/content_screen"
 				android:layout_width="0dp"
 				android:layout_height="0dp"
-				android:visibility="visible"
-				app:constraint_referenced_ids="aresid_logo, exclusive_title_text, exclusive_description_text, exclusive_price_text, purchase_button"
+				android:visibility="gone"
+				app:constraint_referenced_ids="aresid_logo, exclusive_title_text, exclusive_description_title_text, exclusive_description_text, exclusive_price_text, purchase_button"
+				/>
+			
+			<androidx.constraintlayout.widget.Group
+				android:id="@+id/purchased_screen"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:visibility="gone"
+				app:constraint_referenced_ids="smiley_image, purchased_text"
 				/>
 			
 			<androidx.constraintlayout.widget.Guideline

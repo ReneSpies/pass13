@@ -2,10 +2,15 @@ package com.aresid.simplepasswordgeneratorapp.fragments.purchase
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.aresid.simplepasswordgeneratorapp.Util
+import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsData
 import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
@@ -19,6 +24,14 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 	
 	private val repository: Pass13Repository
 	
+	private val _toggleScreens = MutableLiveData<PurchaseScreens>()
+	val toggleScreen: LiveData<PurchaseScreens>
+		get() = _toggleScreens
+	
+	private val _exclusiveSkuDetails = MutableLiveData<SkuDetailsData?>()
+	val exclusiveSkuDetails: LiveData<SkuDetailsData?>
+		get() = _exclusiveSkuDetails
+	
 	init {
 		
 		Timber.d("init: called")
@@ -26,32 +39,117 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		// Get an instance of the repository
 		repository = Pass13Repository.getInstance(application)
 		
-		viewModelScope.launch(Dispatchers.IO) {
+		// Init toggleScreens LiveData
+		_toggleScreens.value = PurchaseScreens.UNKNOWN
+		
+		checkHasPurchased()
+		
+	}
+	
+	private fun checkHasPurchased() = viewModelScope.launch(Dispatchers.IO) {
+		
+		Timber.d("checkHasPurchased: called")
+		
+		val allPurchases = repository.getAllPurchases()
+		
+		if (!allPurchases.isNullOrEmpty()) {
+			
+			setToggleScreenValue(PurchaseScreens.PURCHASED)
+			
+		}
+		else {
+			
+			checkCacheAndConnect()
+			
+		}
+		
+	}
+	
+	private fun checkCacheAndConnect() = viewModelScope.launch(Dispatchers.IO) {
+		
+		Timber.d("checkCacheAndConnect: called")
+		
+		var cachedSkuDetailsData = repository.getSkuDetailsData(Util.EXCLUSIVE_SKU)
+		
+		if (cachedSkuDetailsData == null) {
 			
 			try {
 				
-				repository.startConnection()
+				setToggleScreenValue(PurchaseScreens.LOADING)
+				
+				withContext(coroutineContext) {
+					
+					repository.startConnection()
+					
+				}
+				
+				setToggleScreenValue(PurchaseScreens.SUCCESS)
+				
+				cachedSkuDetailsData = repository.getSkuDetailsData(Util.EXCLUSIVE_SKU)
+				
+				setSkuDetailsDataValue(cachedSkuDetailsData)
 				
 			}
 			catch (e: Exception) {
 				
 				Timber.e(e)
 				
+				setToggleScreenValue(PurchaseScreens.ERROR)
+				
 			}
+			finally {
+				
+				repository.endConnection()
+				
+			}
+			
+		}
+		else {
+			
+			setToggleScreenValue(PurchaseScreens.SUCCESS)
+			
+			setSkuDetailsDataValue(cachedSkuDetailsData)
 			
 		}
 		
 	}
 	
-	override fun onCleared() {
+	private suspend fun setSkuDetailsDataValue(skuDetailsData: SkuDetailsData?) = withContext(Dispatchers.Main) {
 		
-		Timber.d("onCleared: called")
+		Timber.d("setSkuDetailsDataValue: called")
 		
-		super.onCleared()
-		
-		// End the connection
-		repository.endConnection()
+		_exclusiveSkuDetails.value = skuDetailsData
 		
 	}
+	
+	private suspend fun setToggleScreenValue(screen: PurchaseScreens) = withContext(Dispatchers.Main) {
+		
+		Timber.d("setToggleScreenValue: called")
+		
+		_toggleScreens.value = screen
+		
+	}
+	
+	fun retry() {
+		
+		Timber.d("retry: called")
+		
+		checkCacheAndConnect()
+		
+	}
+	
+}
+
+enum class PurchaseScreens {
+	
+	UNKNOWN,
+	
+	LOADING,
+	
+	PURCHASED,
+	
+	SUCCESS,
+	
+	ERROR
 	
 }

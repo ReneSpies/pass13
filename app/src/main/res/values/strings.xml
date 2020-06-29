@@ -25,4 +25,8 @@
 	<string name="save_successful">Save successful</string>
 	<string name="save_unsuccessful_unknown_error">Save unsuccessful. Unknown error.</string>
 	<string name="no_settings">You have to specify one setting at least.</string>
+	<string name="smiley">Smiley</string>
+	<string name="thank_you_for_purchasing">Thank you for purchasing!</string>
+	<string name="thank_you_for_considering_to_buy_pass13_exclusive">Thank you for considering to buy pass13 exclusive</string>
+	<string name="aresid_logo">aresid logo</string>
 </resources>
