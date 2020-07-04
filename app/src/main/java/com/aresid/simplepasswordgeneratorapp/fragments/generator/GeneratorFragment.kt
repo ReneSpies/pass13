@@ -46,11 +46,19 @@ class GeneratorFragment: Fragment() {
 		// Tell the layout about the ViewModel
 		binding.viewModel = generatorViewModel
 		
+		binding.passwordText.setOnLongClickListener {
+		
+			generatorViewModel.copyPassword(it)
+			
+			true
+		
+		}
+		
 		generatorViewModel.password.observe(
 			viewLifecycleOwner,
 			Observer { password ->
 				
-				binding.password.text = password
+				binding.passwordText.text = password
 				
 			})
 		

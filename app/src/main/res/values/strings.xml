@@ -29,4 +29,7 @@
 	<string name="thank_you_for_purchasing">Thank you for purchasing!</string>
 	<string name="thank_you_for_considering_to_buy_pass13_exclusive">Thank you for considering to buy pass13 exclusive</string>
 	<string name="aresid_logo">aresid logo</string>
+	<string name="copy">Copy</string>
+	<string name="some_copied_text">Some copied text</string>
+	<string name="copied">Copied!</string>
 </resources>

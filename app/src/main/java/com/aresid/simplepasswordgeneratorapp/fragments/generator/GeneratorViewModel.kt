@@ -1,10 +1,17 @@
 package com.aresid.simplepasswordgeneratorapp.fragments.generator
 
 import android.app.Application
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.view.View
+import android.widget.Button
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.aresid.simplepasswordgeneratorapp.PasswordGenerator
+import com.aresid.simplepasswordgeneratorapp.R
+import com.aresid.simplepasswordgeneratorapp.Util.showSuccessSnackbar
 import timber.log.Timber
 
 /**
@@ -47,6 +54,26 @@ class GeneratorViewModel(application: Application): AndroidViewModel(application
 		Timber.d("onRefreshButtonClicked: called")
 		
 		_password.value = generateNewPassword()
+		
+	}
+	
+	fun copyPassword(view: View) {
+		
+		Timber.d("onCopyButtonClicked: called")
+		
+		val button = view as Button
+		
+		val context = button.context
+		
+		val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+		
+		val label = context.getString(R.string.some_copied_text)
+		
+		val clipData = ClipData.newPlainText(label, _password.value)
+		
+		clipboardManager.setPrimaryClip(clipData)
+		
+		button.showSuccessSnackbar(context.getString(R.string.copied))
 		
 	}
 	
