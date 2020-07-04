@@ -32,7 +32,7 @@ class PasswordGenerator(private val context: Context) {
 	
 	init {
 		
-		Timber.d(": called")
+		Timber.d("init: called")
 		
 		populateUserSettingsProperties()
 		

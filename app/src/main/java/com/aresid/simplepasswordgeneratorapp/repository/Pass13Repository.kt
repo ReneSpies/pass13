@@ -1,5 +1,6 @@
 package com.aresid.simplepasswordgeneratorapp.repository
 
+import android.app.Activity
 import android.app.Application
 import com.android.billingclient.api.*
 import com.aresid.simplepasswordgeneratorapp.Util
@@ -10,6 +11,7 @@ import com.aresid.simplepasswordgeneratorapp.database.purchasedata.PurchaseDataD
 import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsData
 import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsDataDao
 import com.aresid.simplepasswordgeneratorapp.exceptions.BillingClientConnectionException
+import com.aresid.simplepasswordgeneratorapp.exceptions.PurchaseResultException
 import com.aresid.simplepasswordgeneratorapp.exceptions.RetryCountReachedException
 import com.aresid.simplepasswordgeneratorapp.exceptions.SkuDetailsQueryException
 import kotlinx.coroutines.channels.Channel
@@ -105,7 +107,43 @@ class Pass13Repository private constructor(private val application: Application)
 		
 		Timber.d("endConnection: called")
 		
-		billingClient.endConnection()
+		if (!::billingClient.isInitialized) {
+			
+			billingClient.endConnection()
+			
+		}
+		
+	}
+	
+	suspend fun launchBillingFlow(activity: Activity, skuDetailsData: SkuDetailsData) {
+		
+		Timber.d("launchBillingFlow: called")
+		
+		val skuDetails = SkuDetails(skuDetailsData.originalJson)
+		
+		val billingFlowParameter = BillingFlowParams.newBuilder().setSkuDetails(skuDetails).build()
+		
+		billingClient.launchBillingFlow(activity, billingFlowParameter)
+		
+		val purchaseResult = purchaseChannel.receive()
+		
+		if (purchaseResult.responseCode.isOk()) {
+			
+			Timber.d("purchaseList = ${purchaseResult.purchasesList}")
+			Timber.d("purchaseList size = ${purchaseResult.purchasesList}")
+			
+			purchaseResult.purchasesList?.forEach {
+				
+				Timber.d("got a purchase = $it")
+				
+			}
+			
+		}
+		else {
+			
+			throw PurchaseResultException("Purchase failed with response code ${purchaseResult.responseCode}")
+			
+		}
 		
 	}
 	

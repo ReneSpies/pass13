@@ -9,7 +9,7 @@ buildscript {
             'minSdk'    : 21,
             'kotlin'    : '1.3.72',
             'room'      : '2.2.5',
-            'navigation': '2.3.0-rc01',
+            'navigation': '2.3.0',
             'billing'   : '3.0.0'
 
     ]
