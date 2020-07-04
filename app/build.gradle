@@ -114,6 +114,9 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$versions.navigation"
 
+    // Typewriter
+    implementation 'com.krsticdragan:autotypetextview:1.1'
+
     // General testing
     androidTestImplementation 'androidx.test:runner:1.3.0-rc01'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-rc01'

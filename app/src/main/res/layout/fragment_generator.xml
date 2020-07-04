@@ -2,6 +2,7 @@
 <layout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:attv="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	>
 	
@@ -18,17 +19,17 @@
 		android:layout_height="match_parent"
 		>
 		
-		<TextView
+		<com.dragankrstic.autotypetextview.AutoTypeTextView
 			android:id="@+id/password_text"
-			android:layout_height="wrap_content"
-			android:layout_width="0dp"
 			style="@style/PasswordTextView"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:longClickable="true"
 			app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
 			app:layout_constraintEnd_toEndOf="@id/guideline_end"
 			app:layout_constraintStart_toStartOf="@id/guideline_start"
 			app:layout_constraintTop_toTopOf="@id/guideline_top"
 			tools:text="Generator"
-			android:longClickable="true"
 			/>
 		
 		<com.google.android.material.button.MaterialButton
@@ -36,8 +37,8 @@
 			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:onClick="@{() -> viewModel.onRefreshButtonClicked()}"
 			android:layout_marginTop="@dimen/margin_extra_large"
+			android:onClick="@{() -> viewModel.onRefreshButtonClicked()}"
 			android:text="@string/refresh"
 			app:layout_constraintEnd_toEndOf="@id/guideline_end"
 			app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -45,10 +46,10 @@
 			/>
 		
 		<com.google.android.material.button.MaterialButton
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
 			android:id="@+id/copy_button"
 			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/margin_extra_large"
 			android:onClick="@{(view) -> viewModel.copyPassword(view)}"
 			android:text="@string/copy"

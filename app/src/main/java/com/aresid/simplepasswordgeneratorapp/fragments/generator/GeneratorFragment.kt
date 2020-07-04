@@ -1,12 +1,16 @@
 package com.aresid.simplepasswordgeneratorapp.fragments.generator
 
+import android.content.res.AssetManager
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.aresid.simplepasswordgeneratorapp.R
 import com.aresid.simplepasswordgeneratorapp.databinding.FragmentGeneratorBinding
 import timber.log.Timber
 
@@ -46,21 +50,30 @@ class GeneratorFragment: Fragment() {
 		// Tell the layout about the ViewModel
 		binding.viewModel = generatorViewModel
 		
-		binding.passwordText.setOnLongClickListener {
+		// I am using a third party library to animate the TextView's text like a typewriter
+		// This third party library seems to not allow to change the font per XML so I do it here
+		val sourceCodeProTypeface = ResourcesCompat.getFont(requireContext(), R.font.source_code_pro)
+		binding.passwordText.typeface = sourceCodeProTypeface
 		
+		// When the user long clicks the passwordText, copy it to the clipboard
+		binding.passwordText.setOnLongClickListener {
+			
 			generatorViewModel.copyPassword(it)
 			
 			true
-		
+			
 		}
 		
-		generatorViewModel.password.observe(
-			viewLifecycleOwner,
-			Observer { password ->
-				
-				binding.passwordText.text = password
-				
-			})
+		// Observe the password here to animate the passwordText
+		generatorViewModel.password.observe(viewLifecycleOwner, Observer { password ->
+			
+			val delay = 500 / password.length
+			
+			binding.passwordText.typingSpeed = delay
+			
+			binding.passwordText.setTextAutoTyping(password)
+			
+		})
 		
 		// Return the inflated layout
 		return binding.root

@@ -1,6 +1,7 @@
 package com.aresid.simplepasswordgeneratorapp
 
 import android.graphics.Paint
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -29,7 +30,7 @@ object Util {
 	
 	val PASS13_SKUS = listOf(EXCLUSIVE_SKU)
 	
-	fun Button.showSuccessSnackbar(message: String) {
+	fun View.showSuccessSnackbar(message: String) {
 		
 		Timber.d("showSuccessSnackbar: called")
 		
@@ -46,7 +47,7 @@ object Util {
 		
 	}
 	
-	fun Button.showErrorSnackbar(message: String) {
+	fun View.showErrorSnackbar(message: String) {
 		
 		Timber.d("showErrorSnackbar: called")
 		

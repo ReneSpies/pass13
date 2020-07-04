@@ -61,9 +61,7 @@ class GeneratorViewModel(application: Application): AndroidViewModel(application
 		
 		Timber.d("onCopyButtonClicked: called")
 		
-		val button = view as Button
-		
-		val context = button.context
+		val context = view.context
 		
 		val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 		
@@ -73,7 +71,7 @@ class GeneratorViewModel(application: Application): AndroidViewModel(application
 		
 		clipboardManager.setPrimaryClip(clipData)
 		
-		button.showSuccessSnackbar(context.getString(R.string.copied))
+		view.showSuccessSnackbar(context.getString(R.string.copied))
 		
 	}
 	
