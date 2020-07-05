@@ -31,7 +31,26 @@ class Pass13Repository private constructor(private val application: Application)
 	private lateinit var database: Pass13Database
 	
 	// BillingClient
-	private lateinit var billingClient: BillingClient
+	private val billingClient: BillingClient by lazy {
+		
+		// Build the BillingClient
+		BillingClient.newBuilder(application.applicationContext).enablePendingPurchases().setListener { billingResult, purchases ->
+			
+			Timber.d("Purchases updated listener called")
+			
+			purchaseChannel.offer(
+				
+				// Create a PurchaseResult object from the listeners parameters
+				Purchase.PurchasesResult(
+					billingResult,
+					purchases
+				)
+			
+			)
+			
+		}.build()
+		
+	}
 	
 	private val purchaseChannel: Channel<Purchase.PurchasesResult> = Channel(Channel.UNLIMITED)
 	
@@ -99,7 +118,7 @@ class Pass13Repository private constructor(private val application: Application)
 		
 		Timber.d("startConnection: called")
 		
-		defineAndConnectToGooglePlay()
+		connectToGooglePlayBilling()
 		
 	}
 	
@@ -107,24 +126,39 @@ class Pass13Repository private constructor(private val application: Application)
 		
 		Timber.d("endConnection: called")
 		
-		if (!::billingClient.isInitialized) {
-			
-			billingClient.endConnection()
-			
-		}
+		billingClient.endConnection()
 		
 	}
 	
-	suspend fun launchBillingFlow(activity: Activity, skuDetailsData: SkuDetailsData) {
+	suspend fun launchBillingFlow(
+		activity: Activity,
+		skuDetailsData: SkuDetailsData
+	) {
 		
 		Timber.d("launchBillingFlow: called")
+		
+		/*
+		For the case that I get my SkuDetails from the database I have to connect to the Google Play Billing service
+		I do this here, because if the user does not decide to click the purchase button, which calls this method,
+		I would have connected to the service without any reason and wasted resources.
+		*/
+		if (!billingClient.isReady) {
+			
+			connectToGooglePlayBilling()
+			
+		}
 		
 		val skuDetails = SkuDetails(skuDetailsData.originalJson)
 		
 		val billingFlowParameter = BillingFlowParams.newBuilder().setSkuDetails(skuDetails).build()
 		
-		billingClient.launchBillingFlow(activity, billingFlowParameter)
+		// This calls the PurchasesUpdateListener which puts the PurchaseResult into the purchaseChannel
+		billingClient.launchBillingFlow(
+			activity,
+			billingFlowParameter
+		)
 		
+		// And I can simply receive this PurchaseResult here from the purchaseChannel
 		val purchaseResult = purchaseChannel.receive()
 		
 		if (purchaseResult.responseCode.isOk()) {
@@ -144,32 +178,6 @@ class Pass13Repository private constructor(private val application: Application)
 			throw PurchaseResultException("Purchase failed with response code ${purchaseResult.responseCode}")
 			
 		}
-		
-	}
-	
-	private suspend fun defineAndConnectToGooglePlay() {
-		
-		Timber.d("defineAndConnectToGooglePlay: called")
-		
-		// Build the BillingClient
-		billingClient = BillingClient.newBuilder(application.applicationContext).enablePendingPurchases().setListener { billingResult, purchases ->
-			
-			Timber.d("Purchases updated listener called")
-			
-			purchaseChannel.offer(
-				
-				// Create a PurchaseResult object from the listeners parameters
-				Purchase.PurchasesResult(
-					billingResult,
-					purchases
-				)
-			
-			)
-			
-		}.build()
-		
-		// Connect to the BillingService and query and cache the SkuDetails
-		connectToGooglePlayBilling()
 		
 	}
 	

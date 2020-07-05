@@ -1,10 +1,14 @@
 package com.aresid.simplepasswordgeneratorapp.fragments.purchase
 
+import android.app.Activity
 import android.app.Application
+import android.view.View
+import android.view.ViewOutlineProvider
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.android.billingclient.api.SkuDetails
 import com.aresid.simplepasswordgeneratorapp.Util
 import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsData
 import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
@@ -28,9 +32,9 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 	val toggleScreen: LiveData<PurchaseScreens>
 		get() = _toggleScreens
 	
-	private val _exclusiveSkuDetails = MutableLiveData<SkuDetailsData?>()
+	private val _exclusiveSkuDetailsData = MutableLiveData<SkuDetailsData?>()
 	val exclusiveSkuDetails: LiveData<SkuDetailsData?>
-		get() = _exclusiveSkuDetails
+		get() = _exclusiveSkuDetailsData
 	
 	init {
 		
@@ -118,7 +122,7 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		
 		Timber.d("setSkuDetailsDataValue: called")
 		
-		_exclusiveSkuDetails.value = skuDetailsData
+		_exclusiveSkuDetailsData.value = skuDetailsData
 		
 	}
 	
@@ -135,6 +139,31 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		Timber.d("retry: called")
 		
 		checkCacheAndConnect()
+		
+	}
+	
+	fun purchase(activity: Activity) = viewModelScope.launch(Dispatchers.IO) {
+		
+		Timber.d("purchase: called")
+		
+		// If the exclusiveSkuDetailsData's value is null and the user is able to press this button,
+		// then it is a bug and should just return and do nothing as nothing is displayed on the screen
+		// in the first place
+		val skuDetailsData = _exclusiveSkuDetailsData.value ?: return@launch
+		
+		try {
+			
+			repository.launchBillingFlow(
+				activity,
+				skuDetailsData
+			)
+			
+		}
+		catch (e: Exception) {
+			
+			Timber.e(e)
+			
+		}
 		
 	}
 	

@@ -47,6 +47,9 @@ class PurchaseFragment: Fragment() {
 		// Tell the binding about the ViewModel
 		binding.viewModel = purchaseViewModel
 		
+		// Tell the binding about this fragment
+		binding.fragment = this
+		
 		// Observe the toggleScreen LiveData
 		purchaseViewModel.toggleScreen.observe(
 			viewLifecycleOwner,
@@ -159,6 +162,14 @@ class PurchaseFragment: Fragment() {
 		
 		// Show purchasedScreen
 		binding.purchasedScreen.visibility = View.VISIBLE
+		
+	}
+	
+	fun purchase() {
+		
+		Timber.d("purchase: called")
+		
+		purchaseViewModel.purchase(requireActivity())
 		
 	}
 	

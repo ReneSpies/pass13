@@ -8,6 +8,11 @@
 	<data>
 		
 		<variable
+			name="fragment"
+			type="com.aresid.simplepasswordgeneratorapp.fragments.purchase.PurchaseFragment"
+			/>
+		
+		<variable
 			name="viewModel"
 			type="com.aresid.simplepasswordgeneratorapp.fragments.purchase.PurchaseViewModel"
 			/>
@@ -17,6 +22,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:fillViewport="true"
+		android:animateLayoutChanges="true"
 		>
 		
 		<androidx.constraintlayout.widget.ConstraintLayout
@@ -54,8 +60,8 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_extra_large"
-				android:text="@string/retry"
 				android:onClick="@{() -> viewModel.retry()}"
+				android:text="@string/retry"
 				app:layout_constraintEnd_toEndOf="@id/guideline_end"
 				app:layout_constraintStart_toStartOf="@id/guideline_start"
 				app:layout_constraintTop_toBottomOf="@id/no_internet_icon"
@@ -136,9 +142,9 @@
 				android:textAlignment="center"
 				android:textAppearance="?attr/textAppearanceBody1"
 				android:textColor="?attr/colorOnSurface"
+				app:layout_constraintBottom_toTopOf="@id/exclusive_price_text"
 				app:layout_constraintEnd_toEndOf="@id/guideline_end"
 				app:layout_constraintStart_toStartOf="@id/guideline_start"
-				app:layout_constraintBottom_toTopOf="@id/exclusive_price_text"
 				app:layout_constraintTop_toBottomOf="@id/exclusive_description_title_text"
 				tools:text="Here goes the description"
 				tools:textColor="@color/secondaryTextColor"
@@ -164,6 +170,7 @@
 				android:id="@+id/purchase_button"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:onClick="@{() -> fragment.purchase()}"
 				android:text="@string/purchase"
 				app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
 				app:layout_constraintEnd_toEndOf="@id/guideline_end"
