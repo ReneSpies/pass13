@@ -67,9 +67,7 @@ class GeneratorFragment: Fragment() {
 		// Observe the password here to animate the passwordText
 		generatorViewModel.password.observe(viewLifecycleOwner, Observer { password ->
 			
-			val delay = 500 / password.length
-			
-			binding.passwordText.typingSpeed = delay
+			binding.passwordText.typingSpeed = 30
 			
 			binding.passwordText.setTextAutoTyping(password)
 			
