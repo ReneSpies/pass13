@@ -77,7 +77,7 @@ class MainActivity: AppCompatActivity() {
 		
 		Timber.d("hideExclusiveTitle: called")
 		
-		binding.adViewContainer.visibility = View.GONE
+		binding.exclusiveTitle.visibility = View.GONE
 		
 	}
 	
@@ -115,7 +115,7 @@ class MainActivity: AppCompatActivity() {
 		
 		Timber.d("prepareBottomNavigation: called")
 		
-		binding.bottomNavigation.setupWithNavController((supportFragmentManager.findFragmentById(R.id.navigation_host) as NavHostFragment).navController)
+		binding.bottomNavigation?.setupWithNavController((supportFragmentManager.findFragmentById(R.id.navigation_host) as NavHostFragment).navController)
 		
 	}
 	
