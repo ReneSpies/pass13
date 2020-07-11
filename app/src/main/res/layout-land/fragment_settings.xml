@@ -106,7 +106,6 @@
 				android:id="@+id/password_length_value_text"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_extra_small"
 				android:paddingHorizontal="@dimen/padding_small"
 				android:text="@{viewModel.passwordLength.toString()}"
 				android:textAppearance="?attr/textAppearanceBody2"

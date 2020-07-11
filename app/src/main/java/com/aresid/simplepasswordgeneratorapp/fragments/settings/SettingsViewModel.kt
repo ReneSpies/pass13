@@ -52,16 +52,16 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 	
 	var nightModeChecked = false
 	
-	private val _showPurchaseButton = MutableLiveData<Boolean>()
-	val showPurchaseButton: LiveData<Boolean>
-		get() = _showPurchaseButton
+	private val _hasPurchased = MutableLiveData<Boolean>()
+	val hasPurchased: LiveData<Boolean>
+		get() = _hasPurchased
 	
 	init {
 		
 		Timber.d("init: called")
 		
 		// Init showPurchaseButton LiveData
-		_showPurchaseButton.value = true
+		_hasPurchased.value = true
 		
 		initSettings()
 		
@@ -81,7 +81,7 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 		
 		withContext(Dispatchers.Main) {
 			
-			_showPurchaseButton.value = (!allPurchases.isNullOrEmpty())
+			_hasPurchased.value = (!allPurchases.isNullOrEmpty())
 			
 		}
 		

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.aresid.simplepasswordgeneratorapp.R
 import com.aresid.simplepasswordgeneratorapp.databinding.FragmentSettingsBinding
+import com.aresid.simplepasswordgeneratorapp.fragments.purchase.PurchaseFragment
 import timber.log.Timber
 
 /**
@@ -61,17 +62,19 @@ class SettingsFragment: Fragment() {
 			
 		}
 		
-		settingsViewModel.showPurchaseButton.observe(
-			viewLifecycleOwner,
-			Observer { hasPurchased ->
+		// Observe whether the user has purchased or not
+		// Note: This does not check if the user purchases live
+		// In this case, the user will have to restart the app
+		settingsViewModel.hasPurchased.observe(viewLifecycleOwner,
+		                                       Observer { hasPurchased ->
+			
+			                                       if (hasPurchased) {
 				
-				if (hasPurchased) {
-					
-					// Hide the purchaseButton
-					binding.purchaseButton.visibility = View.GONE
-					
-					// Enable the nightModeCheckbox
-					binding.nightModeCheckbox.isEnabled = true
+				                                       // Hide the purchaseButton
+				                                       binding.purchaseButton.visibility = View.GONE
+				
+				                                       // Enable the nightModeCheckbox
+				                                       binding.nightModeCheckbox.isEnabled = true
 					
 				}
 				else {
@@ -81,21 +84,61 @@ class SettingsFragment: Fragment() {
 					
 					// Disable the nightModeCheckbox
 					binding.nightModeCheckbox.isEnabled = false
-					
-				}
 				
-			})
+			                                       }
+			
+		                                       })
 		
 		// Return the inflated layout
 		return binding.root
 		
 	}
 	
+	/**
+	 * Navigates based on the layout size.
+	 */
 	fun onPurchaseButtonClicked() {
 		
 		Timber.d("onPurchaseButtonClicked: called")
 		
-		findNavController().navigate(R.id.to_purchaseFragment)
+		/*
+		This integer changes with the layout size because in each integer.xml file
+		another integer is stored and the files get loaded dynamically based on the
+		layout size.
+		 */
+		when (resources.getInteger(R.integer.layout_size)) {
+			
+			0 -> findNavController().navigate(R.id.to_purchaseFragment)
+			
+			1, 2 -> navigateToPurchaseFragmentWithFragmentManager()
+			
+		}
+		
+	}
+	
+	/**
+	 * This function is using simple FragmentTransactions to navigate
+	 * because in the large & x-large screen sizes there is no NavHost
+	 * anymore.
+	 */
+	private fun navigateToPurchaseFragmentWithFragmentManager() {
+		
+		Timber.d("navigateWithFragmentManager: called")
+		
+		// Create and define a new fragmentTransaction
+		val fragmentTransaction = parentFragmentManager.beginTransaction()
+		
+		// Tell the fragmentTransaction to replace the fragment with another
+		fragmentTransaction.replace(
+			R.id.settings_fragment,
+			PurchaseFragment()
+		)
+		
+		// Add the fragmentTransaction to the backstack to handle the back button
+		fragmentTransaction.addToBackStack("purchase fragment")
+		
+		// Commit the fragmentTransaction and navigate
+		fragmentTransaction.commit()
 		
 	}
 	
