@@ -128,6 +128,14 @@ class SettingsFragment: Fragment() {
 		// Create and define a new fragmentTransaction
 		val fragmentTransaction = parentFragmentManager.beginTransaction()
 		
+		// Give the transaction some animations
+		fragmentTransaction.setCustomAnimations(
+			R.anim.slide_in_from_right,
+			R.anim.slide_out_to_left,
+			R.anim.slide_in_from_left,
+			R.anim.slide_out_to_right
+		)
+		
 		// Tell the fragmentTransaction to replace the fragment with another
 		fragmentTransaction.replace(
 			R.id.settings_fragment,
