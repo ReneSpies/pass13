@@ -14,6 +14,7 @@ import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.APP_VERSION_
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.NIGHT_MODE_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_FIRST_STARTUP_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_SETTINGS_KEY
+import com.aresid.simplepasswordgeneratorapp.Util.isPurchased
 import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -136,15 +137,21 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		
 		Timber.d("checkHasPurchased: called")
 		
-		setHasPurchasedValue(!repository.getAllPurchases().isNullOrEmpty())
+		setHasPurchasedValue(repository.getLatestPurchase()?.purchaseState?.isPurchased())
 		
 	}
 	
-	private suspend fun setHasPurchasedValue(hasPurchased: Boolean) = withContext(Dispatchers.Main) {
+	private suspend fun setHasPurchasedValue(hasPurchased: Boolean?) = withContext(Dispatchers.Main) {
 		
 		Timber.d("setHasPurchasedValue: called")
 		
-		_hasPurchased.value = if (hasPurchased) HasPurchased.PURCHASED else HasPurchased.NOT_PURCHASED
+		_hasPurchased.value = when (hasPurchased) {
+			
+			null, false -> HasPurchased.NOT_PURCHASED
+			
+			true -> HasPurchased.PURCHASED
+			
+		}
 		
 	}
 	

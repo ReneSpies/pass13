@@ -23,8 +23,10 @@ import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.PASSWORD_LEN
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_SETTINGS_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SPECIAL_CHARACTERS_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.UPPER_CASE_KEY
+import com.aresid.simplepasswordgeneratorapp.Util.isPurchased
 import com.aresid.simplepasswordgeneratorapp.Util.showErrorSnackbar
 import com.aresid.simplepasswordgeneratorapp.Util.showSuccessSnackbar
+import com.aresid.simplepasswordgeneratorapp.activity.HasPurchased
 import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,8 +54,8 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 	
 	var nightModeChecked = false
 	
-	private val _hasPurchased = MutableLiveData<Boolean>()
-	val hasPurchased: LiveData<Boolean>
+	private val _hasPurchased = MutableLiveData<HasPurchased>()
+	val hasPurchased: LiveData<HasPurchased>
 		get() = _hasPurchased
 	
 	init {
@@ -61,7 +63,7 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 		Timber.d("init: called")
 		
 		// Init showPurchaseButton LiveData
-		_hasPurchased.value = true
+		_hasPurchased.value = HasPurchased.UNKNOWN
 		
 		initSettings()
 		
@@ -77,11 +79,17 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 		
 		val repository = Pass13Repository.getInstance(application)
 		
-		val allPurchases = repository.getAllPurchases()
+		val hasPurchased = repository.getLatestPurchase()?.purchaseState?.isPurchased()
 		
 		withContext(Dispatchers.Main) {
 			
-			_hasPurchased.value = (!allPurchases.isNullOrEmpty())
+			_hasPurchased.value = when (hasPurchased) {
+				
+				null, false -> HasPurchased.NOT_PURCHASED
+				
+				true -> HasPurchased.PURCHASED
+				
+			}
 			
 		}
 		

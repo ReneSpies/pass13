@@ -15,7 +15,9 @@ import com.aresid.simplepasswordgeneratorapp.database.DatabaseNames
 @Entity(tableName = DatabaseNames.Table.PurchaseData.NAME)
 data class PurchaseData(
 	
-	@PrimaryKey @ColumnInfo(name = DatabaseNames.Table.PurchaseData.Column.ORDER_ID) val orderId: String,
+	@PrimaryKey(autoGenerate = true) @ColumnInfo(name = DatabaseNames.Table.PurchaseData.Column.ID) val id: Int = 0,
+	
+	@ColumnInfo(name = DatabaseNames.Table.PurchaseData.Column.ORDER_ID) val orderId: String,
 	
 	@ColumnInfo(name = DatabaseNames.Table.PurchaseData.Column.PACKAGE_NAME) val packageName: String,
 	

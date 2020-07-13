@@ -22,6 +22,9 @@ interface PurchaseDataDao {
 	@Query("SELECT * FROM purchase_data")
 	suspend fun getAll(): List<PurchaseData>?
 	
+	@Query("SELECT * FROM purchase_data ORDER BY id DESC LIMIT 1")
+	suspend fun getLatest(): PurchaseData?
+	
 	@Query("SELECT * FROM purchase_data WHERE order_id = :orderId")
 	suspend fun get(orderId: String): PurchaseData?
 	

@@ -2,14 +2,12 @@ package com.aresid.simplepasswordgeneratorapp.fragments.purchase
 
 import android.app.Activity
 import android.app.Application
-import android.view.View
-import android.view.ViewOutlineProvider
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.android.billingclient.api.SkuDetails
 import com.aresid.simplepasswordgeneratorapp.Util
+import com.aresid.simplepasswordgeneratorapp.Util.isPurchased
 import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsData
 import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
 import kotlinx.coroutines.Dispatchers
@@ -54,16 +52,11 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		
 		Timber.d("checkHasPurchased: called")
 		
-		val allPurchases = repository.getAllPurchases()
-		
-		if (!allPurchases.isNullOrEmpty()) {
+		when (repository.getLatestPurchase()?.purchaseState?.isPurchased()) {
 			
-			setToggleScreenValue(PurchaseScreens.PURCHASED)
+			false -> checkCacheAndConnect()
 			
-		}
-		else {
-			
-			checkCacheAndConnect()
+			true -> setToggleScreenValue(PurchaseScreens.PURCHASED)
 			
 		}
 		

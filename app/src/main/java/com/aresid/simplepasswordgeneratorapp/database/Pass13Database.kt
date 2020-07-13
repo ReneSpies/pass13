@@ -20,7 +20,7 @@ import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsD
 
 @Database(
 	entities = [SkuDetailsData::class, PurchaseData::class],
-	version = 3,
+	version = 4,
 	exportSchema = true
 )
 abstract class Pass13Database: RoomDatabase() {
@@ -57,7 +57,8 @@ abstract class Pass13Database: RoomDatabase() {
 				).addMigrations(
 					
 					MIGRATION_1_2,
-					MIGRATION_2_3
+					MIGRATION_2_3,
+					MIGRATION_3_4
 				
 				).build()
 				
@@ -93,5 +94,15 @@ val MIGRATION_2_3 = object: Migration(
 	
 	override fun migrate(database: SupportSQLiteDatabase) {
 		
+	}
+}
+
+val MIGRATION_3_4 = object: Migration(
+	3,
+	4
+) {
+	override fun migrate(database: SupportSQLiteDatabase) {
+		database.execSQL("DROP TABLE purchase_data")
+		database.execSQL("CREATE TABLE IF NOT EXISTS `purchase_data` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `order_id` TEXT NOT NULL, `package_name` TEXT NOT NULL, `original_json` TEXT NOT NULL, `purchase_state` INTEGER NOT NULL, `purchase_token` TEXT NOT NULL, `signature` TEXT NOT NULL, `is_acknowledged` INTEGER NOT NULL)")
 	}
 }

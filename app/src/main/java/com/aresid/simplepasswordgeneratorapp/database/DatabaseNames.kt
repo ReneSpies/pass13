@@ -43,7 +43,9 @@ class DatabaseNames {
 			
 			object Column {
 				
-				const val ORDER_ID = "order_id" // Primary Key
+				const val ID = "id" // Primary Key
+				
+				const val ORDER_ID = "order_id"
 				
 				const val PACKAGE_NAME = "package_name"
 				

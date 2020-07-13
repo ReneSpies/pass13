@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.aresid.simplepasswordgeneratorapp.R
+import com.aresid.simplepasswordgeneratorapp.activity.HasPurchased
 import com.aresid.simplepasswordgeneratorapp.databinding.FragmentSettingsBinding
 import com.aresid.simplepasswordgeneratorapp.fragments.purchase.PurchaseFragment
 import timber.log.Timber
@@ -68,22 +69,30 @@ class SettingsFragment: Fragment() {
 		settingsViewModel.hasPurchased.observe(viewLifecycleOwner,
 		                                       Observer { hasPurchased ->
 			
-			                                       if (hasPurchased) {
+			                                       when (hasPurchased) {
 				
-				                                       // Hide the purchaseButton
-				                                       binding.purchaseButton.visibility = View.GONE
+				                                       HasPurchased.UNKNOWN -> {
+				                                       }
 				
-				                                       // Enable the nightModeCheckbox
-				                                       binding.nightModeCheckbox.isEnabled = true
+				                                       HasPurchased.PURCHASED -> {
 					
-				}
-				else {
+					                                       // Hide the purchaseButton
+					                                       binding.purchaseButton.visibility = View.GONE
 					
-					// Show the purchaseButton
-					binding.purchaseButton.visibility = View.VISIBLE
+					                                       // Enable the nightModeCheckbox
+					                                       binding.nightModeCheckbox.isEnabled = true
 					
-					// Disable the nightModeCheckbox
-					binding.nightModeCheckbox.isEnabled = false
+				                                       }
+				
+				                                       HasPurchased.NOT_PURCHASED -> {
+					
+					                                       // Show the purchaseButton
+					                                       binding.purchaseButton.visibility = View.VISIBLE
+					
+					                                       // Disable the nightModeCheckbox
+					                                       binding.nightModeCheckbox.isEnabled = false
+					
+				                                       }
 				
 			                                       }
 			

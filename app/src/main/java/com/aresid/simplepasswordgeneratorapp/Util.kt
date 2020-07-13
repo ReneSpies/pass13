@@ -2,10 +2,10 @@ package com.aresid.simplepasswordgeneratorapp
 
 import android.graphics.Paint
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.Purchase
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
@@ -23,6 +23,14 @@ object Util {
 		Timber.d("isSuccess: called")
 		
 		return this == BillingClient.BillingResponseCode.OK
+		
+	}
+	
+	fun Int.isPurchased(): Boolean {
+		
+		Timber.d("isPurchased: called")
+		
+		return this == Purchase.PurchaseState.PURCHASED
 		
 	}
 	

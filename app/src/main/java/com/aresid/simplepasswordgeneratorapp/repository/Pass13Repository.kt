@@ -82,6 +82,8 @@ class Pass13Repository private constructor(private val application: Application)
 	
 	suspend fun getAllPurchases() = purchaseDataDao.getAll()
 	
+	suspend fun getLatestPurchase() = purchaseDataDao.getLatest()
+	
 	suspend fun insert(purchaseData: PurchaseData) {
 		
 		Timber.d("insert: called")
@@ -168,7 +170,20 @@ class Pass13Repository private constructor(private val application: Application)
 			
 			purchaseResult.purchasesList?.forEach {
 				
-				Timber.d("got a purchase = $it")
+				acknowledgePurchase(it)
+				
+				val purchaseData = PurchaseData(
+					0,
+					it.orderId,
+					it.packageName,
+					it.originalJson,
+					it.purchaseState,
+					it.purchaseToken,
+					it.signature,
+					it.isAcknowledged
+				)
+				
+				purchaseDataDao.insert(purchaseData)
 				
 			}
 			
@@ -176,6 +191,20 @@ class Pass13Repository private constructor(private val application: Application)
 		else {
 			
 			throw PurchaseResultException("Purchase failed with response code ${purchaseResult.responseCode}")
+			
+		}
+		
+	}
+	
+	private fun acknowledgePurchase(purchase: Purchase) {
+		
+		Timber.d("acknowledgePurchase: called")
+		
+		val acknowledgePurchaseParameter = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
+		
+		billingClient.acknowledgePurchase(acknowledgePurchaseParameter) {
+			
+			Timber.d("acknowledgePurchaseListener code = ${it.responseCode}")
 			
 		}
 		
@@ -277,6 +306,8 @@ class Pass13Repository private constructor(private val application: Application)
 			
 			// Convert the Purchase object into a PurchaseData
 			val purchaseData = PurchaseData(
+				
+				id = 0,
 				
 				orderId = purchase.orderId,
 				
