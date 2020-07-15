@@ -44,7 +44,9 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		// Init toggleScreens LiveData
 		_toggleScreens.value = PurchaseScreens.UNKNOWN
 		
-		checkHasPurchased()
+		//		checkHasPurchased()
+		
+		checkCacheAndConnect()
 		
 	}
 	

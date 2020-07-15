@@ -20,7 +20,7 @@ object Util {
 	
 	fun Int.isOk(): Boolean {
 		
-		Timber.d("isSuccess: called")
+		Timber.d("isOk: called")
 		
 		return this == BillingClient.BillingResponseCode.OK
 		

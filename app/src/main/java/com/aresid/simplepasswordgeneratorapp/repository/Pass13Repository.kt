@@ -172,19 +172,6 @@ class Pass13Repository private constructor(private val application: Application)
 				
 				acknowledgePurchase(it)
 				
-				val purchaseData = PurchaseData(
-					0,
-					it.orderId,
-					it.packageName,
-					it.originalJson,
-					it.purchaseState,
-					it.purchaseToken,
-					it.signature,
-					it.isAcknowledged
-				)
-				
-				purchaseDataDao.insert(purchaseData)
-				
 			}
 			
 		}
@@ -196,7 +183,7 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
-	private fun acknowledgePurchase(purchase: Purchase) {
+	private suspend fun acknowledgePurchase(purchase: Purchase) {
 		
 		Timber.d("acknowledgePurchase: called")
 		
@@ -205,6 +192,23 @@ class Pass13Repository private constructor(private val application: Application)
 		billingClient.acknowledgePurchase(acknowledgePurchaseParameter) {
 			
 			Timber.d("acknowledgePurchaseListener code = ${it.responseCode}")
+			
+			if (it.responseCode.isOk()) {
+				
+				val purchaseData = PurchaseData(
+					0,
+					purchase.orderId,
+					purchase.packageName,
+					purchase.originalJson,
+					purchase.purchaseState,
+					purchase.purchaseToken,
+					purchase.signature,
+					purchase.isAcknowledged
+				)
+				
+				purchaseDataDao.insert(purchaseData)
+				
+			}
 			
 		}
 		
