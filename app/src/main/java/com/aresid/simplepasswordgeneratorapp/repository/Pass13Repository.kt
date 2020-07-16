@@ -15,7 +15,9 @@ import com.aresid.simplepasswordgeneratorapp.exceptions.PurchaseResultException
 import com.aresid.simplepasswordgeneratorapp.exceptions.RetryCountReachedException
 import com.aresid.simplepasswordgeneratorapp.exceptions.SkuDetailsQueryException
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.suspendCoroutine
 
 /**
@@ -165,9 +167,6 @@ class Pass13Repository private constructor(private val application: Application)
 		
 		if (purchaseResult.responseCode.isOk()) {
 			
-			Timber.d("purchaseList = ${purchaseResult.purchasesList}")
-			Timber.d("purchaseList size = ${purchaseResult.purchasesList}")
-			
 			purchaseResult.purchasesList?.forEach {
 				
 				acknowledgePurchase(it)
@@ -206,7 +205,7 @@ class Pass13Repository private constructor(private val application: Application)
 					purchase.isAcknowledged
 				)
 				
-				purchaseDataDao.insert(purchaseData)
+					purchaseDataDao.insert(purchaseData)
 				
 			}
 			
