@@ -15,9 +15,8 @@ import com.aresid.simplepasswordgeneratorapp.exceptions.PurchaseResultException
 import com.aresid.simplepasswordgeneratorapp.exceptions.RetryCountReachedException
 import com.aresid.simplepasswordgeneratorapp.exceptions.SkuDetailsQueryException
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.withContext
 import timber.log.Timber
-import kotlin.coroutines.coroutineContext
+import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 /**
@@ -188,28 +187,34 @@ class Pass13Repository private constructor(private val application: Application)
 		
 		val acknowledgePurchaseParameter = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
 		
-		billingClient.acknowledgePurchase(acknowledgePurchaseParameter) {
+		val acknowledgedPurchase = suspendCoroutine<Purchase> { continuation ->
 			
-			Timber.d("acknowledgePurchaseListener code = ${it.responseCode}")
-			
-			if (it.responseCode.isOk()) {
+			billingClient.acknowledgePurchase(acknowledgePurchaseParameter) {
 				
-				val purchaseData = PurchaseData(
-					0,
-					purchase.orderId,
-					purchase.packageName,
-					purchase.originalJson,
-					purchase.purchaseState,
-					purchase.purchaseToken,
-					purchase.signature,
-					purchase.isAcknowledged
-				)
+				Timber.d("acknowledgePurchaseListener code = ${it.responseCode}")
 				
-					purchaseDataDao.insert(purchaseData)
+				if (it.responseCode.isOk()) {
+					
+					continuation.resume(purchase)
+					
+				}
 				
 			}
 			
 		}
+		
+		val purchaseData = PurchaseData(
+			0,
+			orderId = acknowledgedPurchase.orderId,
+			packageName = acknowledgedPurchase.purchaseToken,
+			originalJson = acknowledgedPurchase.originalJson,
+			purchaseState = acknowledgedPurchase.purchaseState,
+			purchaseToken = acknowledgedPurchase.purchaseToken,
+			signature = acknowledgedPurchase.signature,
+			isAcknowledged = acknowledgedPurchase.isAcknowledged
+		)
+		
+		purchaseDataDao.insert(purchaseData)
 		
 	}
 	
