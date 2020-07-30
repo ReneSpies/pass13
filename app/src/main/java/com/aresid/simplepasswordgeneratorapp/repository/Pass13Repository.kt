@@ -79,8 +79,6 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
-	suspend fun getAllSkuDetails() = skuDetailsDataDao.getAll()
-	
 	suspend fun getAllPurchases() = purchaseDataDao.getAll()
 	
 	suspend fun getLatestPurchase() = purchaseDataDao.getLatest()
@@ -98,14 +96,6 @@ class Pass13Repository private constructor(private val application: Application)
 		Timber.d("insert: called")
 		
 		skuDetailsDataDao.insert(skuDetailsData)
-		
-	}
-	
-	suspend fun getPurchaseData(orderId: String): PurchaseData? {
-		
-		Timber.d("getPurchaseData: called")
-		
-		return purchaseDataDao.get(orderId)
 		
 	}
 	

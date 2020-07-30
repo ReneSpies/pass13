@@ -21,8 +21,6 @@ object RetryPolicies {
 	
 	private const val BASE_DELAY_MILLIS = 500
 	
-	private const val TASK_DELAY_MILLIS = 2000L
-	
 	fun resetRetryCounter() {
 		
 		Timber.d("resetRetryCounter: called")

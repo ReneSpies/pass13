@@ -44,7 +44,7 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		// Init toggleScreens LiveData
 		_toggleScreens.value = PurchaseScreens.UNKNOWN
 		
-		//		checkHasPurchased()
+		checkHasPurchased()
 		
 		checkCacheAndConnect()
 		
@@ -141,9 +141,11 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		
 		Timber.d("purchase: called")
 		
-		// If the exclusiveSkuDetailsData's value is null and the user is able to press this button,
-		// then it is a bug and should just return and do nothing as nothing is displayed on the screen
-		// in the first place
+		/*
+		If the exclusiveSkuDetailsData's value is null and the user is able to press this button,
+		then it is a bug and should just return and do nothing as nothing is displayed on the screen
+		in the first place
+		*/
 		val skuDetailsData = _exclusiveSkuDetailsData.value ?: return@launch
 		
 		try {
@@ -152,6 +154,8 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 				activity,
 				skuDetailsData
 			)
+			
+			checkHasPurchased()
 			
 		}
 		catch (e: Exception) {

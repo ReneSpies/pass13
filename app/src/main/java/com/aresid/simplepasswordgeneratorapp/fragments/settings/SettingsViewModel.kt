@@ -67,7 +67,7 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 		
 		initSettings()
 		
-//		checkHasPurchased()
+		checkHasPurchased()
 		
 	}
 	

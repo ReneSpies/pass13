@@ -1,7 +1,5 @@
 package com.aresid.simplepasswordgeneratorapp.fragments.generator
 
-import android.content.res.AssetManager
-import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
