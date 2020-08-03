@@ -53,8 +53,10 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
+	// Channel to suspend the PurchaseUpdatedListener
 	private val purchaseChannel: Channel<Purchase.PurchasesResult> = Channel(Channel.UNLIMITED)
 	
+	// PurchaseDataDao
 	private val purchaseDataDao: PurchaseDataDao by lazy {
 		
 		if (!::database.isInitialized) {
@@ -67,6 +69,7 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
+	// SkuDetailsDataDao
 	private val skuDetailsDataDao: SkuDetailsDataDao by lazy {
 		
 		if (!::database.isInitialized) {
@@ -79,10 +82,19 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
+	/**
+	 * Returns all [PurchaseData] stored in the [Pass13Database].
+	 */
 	suspend fun getAllPurchases() = purchaseDataDao.getAll()
 	
+	/**
+	 * Returns the latest [PurchaseData] stored in the [Pass13Database].
+	 */
 	suspend fun getLatestPurchase() = purchaseDataDao.getLatest()
 	
+	/**
+	 * Inserts the [purchaseData] into the [Pass13Database] using the [purchaseDataDao].
+	 */
 	suspend fun insert(purchaseData: PurchaseData) {
 		
 		Timber.d("insert: called")
@@ -91,6 +103,9 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
+	/**
+	 * Inserts the [skuDetailsData] into the [Pass13Database] using the [skuDetailsDataDao].
+	 */
 	suspend fun insert(skuDetailsData: SkuDetailsData) {
 		
 		Timber.d("insert: called")
@@ -99,6 +114,9 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
+	/**
+	 * Gets the requested [SkuDetailsData] from the [Pass13Database] by the passed [sku].
+	 */
 	suspend fun getSkuDetailsData(sku: String): SkuDetailsData? {
 		
 		Timber.d("getSkuDetailsData: called")
@@ -107,14 +125,56 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
+	/**
+	 * Connects to the Google Play Billing service, queries the [SkuDetails] and caches them
+	 * in the [Pass13Database].
+	 * Throws [RetryCountReachedException] if the connection is not possible.
+	 */
 	suspend fun startConnection() {
 		
 		Timber.d("startConnection: called")
 		
-		connectToGooglePlayBilling()
+		val billingConnectionResult = suspendCoroutine<BillingResult> { continuation ->
+			
+			if (!billingClient.isReady) {
+				
+				billingClient.startConnection(object: BillingClientStateListener {
+					
+					override fun onBillingServiceDisconnected() {
+						
+						Timber.d("onBillingServiceDisconnected: called")
+						
+						// RetryCountReachedException is thrown in connectionRetryPolicy
+						RetryPolicies.connectionRetryPolicy {
+							
+							startConnection()
+							
+						}
+						
+					}
+					
+					override fun onBillingSetupFinished(billingResult: BillingResult) {
+						
+						Timber.d("onBillingSetupFinished: called")
+						
+						continuation.resumeWith(Result.success(billingResult))
+						
+					}
+					
+				})
+				
+			}
+			
+		}
+		
+		// Check if the result is OK and if, query and cache the SkuDetails
+		processBillingConnectionResult(billingConnectionResult)
 		
 	}
 	
+	/**
+	 * Ends the connection on the [billingClient].
+	 */
 	fun endConnection() {
 		
 		Timber.d("endConnection: called")
@@ -123,6 +183,11 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
+	/**
+	 * Checks if the [billingClient] is ready and if not, calls [startConnection].
+	 * Calls [BillingClient.launchBillingFlow] and then calls [processPurchaseResult]
+	 * to process the [Purchase.PurchasesResult] returned by [BillingClient.launchBillingFlow].
+	 */
 	suspend fun launchBillingFlow(
 		activity: Activity,
 		skuDetailsData: SkuDetailsData
@@ -137,7 +202,7 @@ class Pass13Repository private constructor(private val application: Application)
 		*/
 		if (!billingClient.isReady) {
 			
-			connectToGooglePlayBilling()
+			startConnection()
 			
 		}
 		
@@ -152,28 +217,47 @@ class Pass13Repository private constructor(private val application: Application)
 		)
 		
 		// And I can simply receive this PurchaseResult here from the purchaseChannel
-		val purchaseResult = purchaseChannel.receive()
+		val purchasesResult = purchaseChannel.receive()
 		
-		if (purchaseResult.responseCode.isOk()) {
+		processPurchaseResult(purchasesResult)
+		
+	}
+	
+	/**
+	 * Checks if the [purchasesResult] is ok and then calls [acknowledgeAndCachePurchase] on each
+	 * purchase from [Purchase.PurchasesResult.getPurchasesList].
+	 *
+	 * If the [Purchase.PurchasesResult.getResponseCode] is not ok, throws [PurchaseResultException].
+	 */
+	private suspend fun processPurchaseResult(purchasesResult: Purchase.PurchasesResult) {
+		
+		Timber.d("processPurchaseResult: called")
+		
+		if (purchasesResult.responseCode.isOk()) {
 			
-			purchaseResult.purchasesList?.forEach {
+			purchasesResult.purchasesList?.forEach {
 				
-				acknowledgePurchase(it)
+				acknowledgeAndCachePurchase(it)
 				
 			}
 			
 		}
 		else {
 			
-			throw PurchaseResultException("Purchase failed with response code ${purchaseResult.responseCode}")
+			throw PurchaseResultException("Purchase failed with response code ${purchasesResult.responseCode}")
 			
 		}
 		
 	}
 	
-	private suspend fun acknowledgePurchase(purchase: Purchase) {
+	/**
+	 * Acknowledges the [purchase] by calling [BillingClient.acknowledgePurchase]
+	 * and if the [BillingResult.getResponseCode] is ok, converts the [purchase] to
+	 * [PurchaseData] and then caches it.
+	 */
+	private suspend fun acknowledgeAndCachePurchase(purchase: Purchase) {
 		
-		Timber.d("acknowledgePurchase: called")
+		Timber.d("acknowledgeAndCachePurchase: called")
 		
 		val acknowledgePurchaseParameter = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
 		
@@ -209,54 +293,8 @@ class Pass13Repository private constructor(private val application: Application)
 	}
 	
 	/**
-	 * Connects to the BillingService, queries the SkuDetails and caches them.
-	 * Throws [RetryCountReachedException] if the connection is not possible.
-	 */
-	private suspend fun connectToGooglePlayBilling() {
-		
-		Timber.d("connectToGooglePlayBilling: called")
-		
-		val billingConnectionResult = suspendCoroutine<BillingResult> { continuation ->
-			
-			if (!billingClient.isReady) {
-				
-				billingClient.startConnection(object: BillingClientStateListener {
-					
-					override fun onBillingServiceDisconnected() {
-						
-						Timber.d("onBillingServiceDisconnected: called")
-						
-						// RetryCountReachedException is thrown in connectionRetryPolicy
-						RetryPolicies.connectionRetryPolicy {
-							
-							connectToGooglePlayBilling()
-							
-						}
-						
-					}
-					
-					override fun onBillingSetupFinished(billingResult: BillingResult) {
-						
-						Timber.d("onBillingSetupFinished: called")
-						
-						continuation.resumeWith(Result.success(billingResult))
-						
-					}
-					
-				})
-				
-			}
-			
-		}
-		
-		// Check if the result is OK and if, query and cache the SkuDetails
-		processBillingConnectionResult(billingConnectionResult)
-		
-	}
-	
-	/**
-	 * Checks if the [billingResult] is OK and if, queries and caches the SkuDetails.
-	 * Throws a [BillingClientConnectionException] if the [billingResult] is not OK.
+	 * Checks if the [billingResult] is ok and if, queries and caches the [SkuDetails].
+	 * Throws a [BillingClientConnectionException] if the [billingResult] is not ok.
 	 */
 	private suspend fun processBillingConnectionResult(billingResult: BillingResult) {
 		
@@ -275,7 +313,7 @@ class Pass13Repository private constructor(private val application: Application)
 				// Queries the SkuDetails and then caches them
 				querySkuDetailsAsync(Util.PASS13_SKUS)
 				
-				queryInAppPurchaseHistory()
+				queryAndCacheInAppPurchaseHistory()
 				
 			}
 			
@@ -285,7 +323,11 @@ class Pass13Repository private constructor(private val application: Application)
 		
 	}
 	
-	private suspend fun queryInAppPurchaseHistory() {
+	/**
+	 * Calls [BillingClient.queryPurchaseHistory] and converts it's result first to [Purchase]
+	 * and then to [PurchaseData] and then caches the [PurchaseData].
+	 */
+	private suspend fun queryAndCacheInAppPurchaseHistory() {
 		
 		Timber.d("queryInAppPurchaseHistory: called")
 		
@@ -331,8 +373,8 @@ class Pass13Repository private constructor(private val application: Application)
 	}
 	
 	/**
-	 * Queries and caches the SkuDetails in the [Pass13Database].
-	 * Throws a [SkuDetailsQueryException] if the query is not OK.
+	 * Queries and caches the [SkuDetails] in the [Pass13Database].
+	 * Throws a [SkuDetailsQueryException] if the query is not ok.
 	 */
 	private suspend fun querySkuDetailsAsync(skuList: List<String>) {
 		
@@ -362,7 +404,8 @@ class Pass13Repository private constructor(private val application: Application)
 	}
 	
 	/**
-	 * Caches each SkuDetails from [skuDetails] in [Pass13Database].
+	 * Converts the [skuDetails] to [SkuDetailsData] and then caches
+	 * the [SkuDetailsData] in the [Pass13Database].
 	 */
 	private suspend fun processSkuDetails(skuDetails: List<SkuDetails>?) {
 		

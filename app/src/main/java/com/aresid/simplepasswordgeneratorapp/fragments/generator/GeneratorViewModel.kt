@@ -36,18 +36,28 @@ class GeneratorViewModel(application: Application): AndroidViewModel(application
 		
 	}
 	
+	/**
+	 * Returns a new generated password.
+	 */
 	private fun generateNewPassword(): String {
 		
 		Timber.d("generateNewPassword: called")
 		
+		// Get the application
 		val application = getApplication<Application>()
 		
+		// Define a PasswordGenerator object by passing in the applicationContext
 		val randomPasswordGenerator = PasswordGenerator(application.applicationContext)
 		
+		// Return the new generated password
 		return randomPasswordGenerator.generatePassword()
 		
 	}
 	
+	/**
+	 * Generates a new password and saves it in the
+	 * _password LiveData.
+	 */
 	fun onRefreshButtonClicked() {
 		
 		Timber.d("onRefreshButtonClicked: called")
@@ -56,20 +66,32 @@ class GeneratorViewModel(application: Application): AndroidViewModel(application
 		
 	}
 	
+	/**
+	 * Copies the current password to the clipboard.
+	 */
 	fun copyPassword(view: View) {
 		
-		Timber.d("onCopyButtonClicked: called")
+		Timber.d("copyPassword: called")
 		
+		// Get the view's context
 		val context = view.context
 		
+		// Define a ClipboardManager object
 		val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 		
+		// Create a label labelling the ClipData
 		val label = context.getString(R.string.some_copied_text)
 		
-		val clipData = ClipData.newPlainText(label, _password.value)
+		// Define a ClipData object for plain text
+		val clipData = ClipData.newPlainText(
+			label,
+			_password.value
+		)
 		
+		// Pass the clipData to the clipboardManager
 		clipboardManager.setPrimaryClip(clipData)
 		
+		// Show feedback to the user
 		view.showSuccessSnackbar(context.getString(R.string.copied))
 		
 	}

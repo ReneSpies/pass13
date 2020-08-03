@@ -21,6 +21,9 @@ object RetryPolicies {
 	
 	private const val BASE_DELAY_MILLIS = 500
 	
+	/**
+	 * Resets the [retryCounter].
+	 */
 	fun resetRetryCounter() {
 		
 		Timber.d("resetRetryCounter: called")
@@ -29,6 +32,10 @@ object RetryPolicies {
 		
 	}
 	
+	/**
+	 * Calls the [block] function after a calculated delay and throws
+	 * [RetryCountReachedException] if [MAX_RETRIES] is exceeded.
+	 */
 	fun connectionRetryPolicy(block: suspend () -> Unit) {
 		
 		Timber.d("connectionRetryPolicy: called")

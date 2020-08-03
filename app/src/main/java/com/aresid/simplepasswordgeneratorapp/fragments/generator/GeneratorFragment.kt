@@ -67,7 +67,10 @@ class GeneratorFragment: Fragment() {
 			
 			binding.passwordText.typingSpeed = 30
 			
-			binding.passwordText.setTextAutoTyping(password)
+			binding.passwordText.setTextAutoTypingWithMistakes(
+				password,
+				6
+			)
 			
 		})
 		

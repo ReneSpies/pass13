@@ -6,6 +6,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues
+import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
@@ -18,6 +20,10 @@ import timber.log.Timber
 
 object Util {
 	
+	/**
+	 * Returns true if the Integer equals [BillingClient.BillingResponseCode.OK].
+	 * Otherwise false.
+	 */
 	fun Int.isOk(): Boolean {
 		
 		Timber.d("isOk: called")
@@ -26,6 +32,10 @@ object Util {
 		
 	}
 	
+	/**
+	 * Returns true if the Integer equals [Purchase.PurchaseState.PURCHASED].
+	 * Otherwise false.
+	 */
 	fun Int.isPurchased(): Boolean {
 		
 		Timber.d("isPurchased: called")
@@ -34,10 +44,15 @@ object Util {
 		
 	}
 	
+	// Const val holding the Sku's ID defined in the Google Play Console
 	const val EXCLUSIVE_SKU = "pass13.products.unlock_features"
 	
+	// A list holding all Skus for this app
 	val PASS13_SKUS = listOf(EXCLUSIVE_SKU)
 	
+	/**
+	 * Shows a Snackbar with background color [android.R.color.holo_green_light] using the View's context.
+	 */
 	fun View.showSuccessSnackbar(message: String) {
 		
 		Timber.d("showSuccessSnackbar: called")
@@ -55,6 +70,9 @@ object Util {
 		
 	}
 	
+	/**
+	 * Shows a Snackbar with background color [android.R.color.holo_red_dark] using the View's context.
+	 */
 	fun View.showErrorSnackbar(message: String) {
 		
 		Timber.d("showErrorSnackbar: called")
@@ -73,7 +91,7 @@ object Util {
 	}
 	
 	/**
-	 * Extension function for TextView to underline the TextView.
+	 * Extension function for TextView to underline the it's text.
 	 */
 	fun TextView.underline() {
 		
@@ -85,8 +103,14 @@ object Util {
 	
 }
 
+/**
+ * Object holding the information for the SharedPreference's [Keys] and [DefaultValues].
+ */
 object SharedPreferences {
 	
+	/**
+	 * Object holding the information for the SharedPreference's [Keys].
+	 */
 	object Keys {
 		
 		const val SHARED_PREFERENCES_SETTINGS_KEY = "aresid.pass13.shared_preferences.settings"
@@ -105,6 +129,9 @@ object SharedPreferences {
 		
 	}
 	
+	/**
+	 * Object holding the information for the SharedPreference's [DefaultValues].
+	 */
 	object DefaultValues {
 		
 		const val LOWER_CASE_DEFAULT = true
