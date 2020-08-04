@@ -50,6 +50,11 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		
 	}
 	
+	/**
+	 * Checks the latest purchase cached in the [com.aresid.simplepasswordgeneratorapp.database.Pass13Database]
+	 * and if no purchase could be found, calls [checkCacheAndConnect]
+	 * else, calls [setToggleScreenValue] with [PurchaseScreens.PURCHASED].
+	 */
 	private fun checkHasPurchased() = viewModelScope.launch(Dispatchers.IO) {
 		
 		Timber.d("checkHasPurchased: called")
@@ -64,6 +69,12 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		
 	}
 	
+	/**
+	 * Checks the [com.aresid.simplepasswordgeneratorapp.database.Pass13Database] for any
+	 * cached [com.android.billingclient.api.SkuDetails] and if none are found,
+	 * updates the screen, starts the connection in the [Pass13Repository] and caches the
+	 * [com.android.billingclient.api.SkuDetails] from the Google Play Console.
+	 */
 	private fun checkCacheAndConnect() = viewModelScope.launch(Dispatchers.IO) {
 		
 		Timber.d("checkCacheAndConnect: called")
@@ -113,6 +124,9 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		
 	}
 	
+	/**
+	 * Saves the [skuDetailsData] in [_exclusiveSkuDetailsData].
+	 */
 	private suspend fun setSkuDetailsDataValue(skuDetailsData: SkuDetailsData?) = withContext(Dispatchers.Main) {
 		
 		Timber.d("setSkuDetailsDataValue: called")
@@ -121,6 +135,9 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		
 	}
 	
+	/**
+	 * Saves the [screen] in [_toggleScreens].
+	 */
 	private suspend fun setToggleScreenValue(screen: PurchaseScreens) = withContext(Dispatchers.Main) {
 		
 		Timber.d("setToggleScreenValue: called")
@@ -129,6 +146,9 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		
 	}
 	
+	/**
+	 * Calls [checkCacheAndConnect].
+	 */
 	fun retry() {
 		
 		Timber.d("retry: called")
@@ -137,6 +157,9 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 		
 	}
 	
+	/**
+	 * Tries to call [Pass13Repository.launchBillingFlow] and catches any errors.
+	 */
 	fun purchase(activity: Activity) = viewModelScope.launch(Dispatchers.IO) {
 		
 		Timber.d("purchase: called")
@@ -168,6 +191,9 @@ class PurchaseViewModel(application: Application): AndroidViewModel(application)
 	
 }
 
+/**
+ * Class that holds the information how to update the screen.
+ */
 enum class PurchaseScreens {
 	
 	UNKNOWN,

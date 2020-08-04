@@ -12,9 +12,6 @@ import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.PASSWORD_LEN
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_SETTINGS_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SPECIAL_CHARACTERS_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.UPPER_CASE_KEY
-import com.aresid.simplepasswordgeneratorapp.Util.hasLowerCase
-import com.aresid.simplepasswordgeneratorapp.Util.hasNumber
-import com.aresid.simplepasswordgeneratorapp.Util.hasUpperCase
 import timber.log.Timber
 
 /**

@@ -56,7 +56,7 @@ class GeneratorViewModel(application: Application): AndroidViewModel(application
 	
 	/**
 	 * Generates a new password and saves it in the
-	 * _password LiveData.
+	 * [_password] LiveData.
 	 */
 	fun onRefreshButtonClicked() {
 		

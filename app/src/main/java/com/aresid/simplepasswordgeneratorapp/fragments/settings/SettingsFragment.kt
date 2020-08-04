@@ -71,6 +71,9 @@ class SettingsFragment: Fragment() {
 			
 			                                       when (hasPurchased) {
 				
+				                                       null -> {
+				                                       }
+				
 				                                       HasPurchased.UNKNOWN -> {
 				                                       }
 				
@@ -132,7 +135,7 @@ class SettingsFragment: Fragment() {
 	 */
 	private fun navigateToPurchaseFragmentWithFragmentManager() {
 		
-		Timber.d("navigateWithFragmentManager: called")
+		Timber.d("navigateToPurchaseFragmentWithFragmentManager: called")
 		
 		// Create and define a new fragmentTransaction
 		val fragmentTransaction = parentFragmentManager.beginTransaction()

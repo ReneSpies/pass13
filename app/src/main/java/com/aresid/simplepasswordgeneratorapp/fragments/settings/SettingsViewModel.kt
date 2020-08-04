@@ -71,9 +71,13 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 		
 	}
 	
+	/**
+	 * Checks the latest purchase cached in the [com.aresid.simplepasswordgeneratorapp.database.Pass13Database]
+	 * and changes the [_hasPurchased] value accordingly.
+	 */
 	private fun checkHasPurchased() = viewModelScope.launch(Dispatchers.IO) {
 		
-		Timber.d("decideShowPurchaseButton: called")
+		Timber.d("checkHasPurchased: called")
 		
 		val application = getApplication<Application>()
 		
@@ -95,6 +99,10 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 		
 	}
 	
+	/**
+	 * Extracts the user's settings from the SharedPreferences and saves
+	 * it's information in the member variables.
+	 */
 	private fun initSettings() {
 		
 		Timber.d("initSettings: called")
@@ -138,7 +146,7 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 	}
 	
 	/**
-	 * Saves the settings into the SharedPreferences and shows feedback to the user.
+	 * Saves the user's settings in the SharedPreferences and shows feedback to the user.
 	 */
 	fun saveSettings(view: View) {
 		

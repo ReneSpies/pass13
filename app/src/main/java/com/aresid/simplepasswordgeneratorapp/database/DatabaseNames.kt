@@ -7,6 +7,9 @@ package com.aresid.simplepasswordgeneratorapp.database
  *    Copyright: © 2020 ARES ID
  */
 
+/**
+ * Class that holds the information about all names and IDs in relation with the [Pass13Database].
+ */
 class DatabaseNames {
 	
 	object Database {
@@ -24,13 +27,9 @@ class DatabaseNames {
 			object Column {
 				
 				const val SKU = "sku" // Primary Key
-				
 				const val TITLE = "title"
-				
 				const val DESCRIPTION = "description"
-				
 				const val PRICE = "price"
-				
 				const val ORIGINAL_JSON = "original_json"
 				
 			}
@@ -44,19 +43,12 @@ class DatabaseNames {
 			object Column {
 				
 				const val ID = "id" // Primary Key
-				
 				const val ORDER_ID = "order_id"
-				
 				const val PACKAGE_NAME = "package_name"
-				
 				const val ORIGINAL_JSON = "original_json"
-				
 				const val PURCHASE_STATE = "purchase_state"
-				
 				const val PURCHASE_TOKEN = "purchase_token"
-				
 				const val SIGNATURE = "signature"
-				
 				const val IS_ACKNOWLEDGED = "is_acknowledged"
 				
 			}

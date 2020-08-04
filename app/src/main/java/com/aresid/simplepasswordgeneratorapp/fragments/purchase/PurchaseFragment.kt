@@ -93,6 +93,11 @@ class PurchaseFragment: Fragment() {
 		
 	}
 	
+	/**
+	 * Hides [FragmentPurchaseBinding.errorScreen], [FragmentPurchaseBinding.contentScreen]
+	 * and [FragmentPurchaseBinding.purchasedScreen] and
+	 * shows [FragmentPurchaseBinding.loadingScreen].
+	 */
 	private fun showLoadingScreen() {
 		
 		Timber.d("showLoadingScreen: called")
@@ -111,6 +116,11 @@ class PurchaseFragment: Fragment() {
 		
 	}
 	
+	/**
+	 * Hides [FragmentPurchaseBinding.loadingScreen], [FragmentPurchaseBinding.contentScreen]
+	 * and [FragmentPurchaseBinding.purchasedScreen] and
+	 * shows [FragmentPurchaseBinding.errorScreen].
+	 */
 	private fun showErrorScreen() {
 		
 		Timber.d("showErrorScreen: called")
@@ -129,6 +139,11 @@ class PurchaseFragment: Fragment() {
 		
 	}
 	
+	/**
+	 * Hides [FragmentPurchaseBinding.loadingScreen], [FragmentPurchaseBinding.errorScreen]
+	 * and [FragmentPurchaseBinding.purchasedScreen] and
+	 * shows [FragmentPurchaseBinding.contentScreen].
+	 */
 	private fun showContentScreen() {
 		
 		Timber.d("showContentScreen: called")
@@ -147,6 +162,11 @@ class PurchaseFragment: Fragment() {
 		
 	}
 	
+	/**
+	 * Hides [FragmentPurchaseBinding.loadingScreen], [FragmentPurchaseBinding.errorScreen]
+	 * and [FragmentPurchaseBinding.contentScreen] and
+	 * shows [FragmentPurchaseBinding.purchasedScreen].
+	 */
 	private fun showPurchasedScreen() {
 		
 		Timber.d("showPurchasedScreen: called")
@@ -165,6 +185,9 @@ class PurchaseFragment: Fragment() {
 		
 	}
 	
+	/**
+	 * Calls [PurchaseViewModel.purchase].
+	 */
 	fun purchase() {
 		
 		Timber.d("purchase: called")

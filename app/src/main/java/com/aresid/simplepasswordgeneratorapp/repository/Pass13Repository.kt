@@ -416,17 +416,11 @@ class Pass13Repository private constructor(private val application: Application)
 			
 			// Create a SkuDetailsData object from the SkuDetails
 			val skuDetailsData = SkuDetailsData(
-				
 				it.sku,
-				
 				it.title,
-				
 				it.description,
-				
 				it.price,
-				
 				it.originalJson
-			
 			)
 			
 			// Cache the SkuDetailsData in the database

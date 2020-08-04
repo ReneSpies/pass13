@@ -25,8 +25,14 @@ import com.aresid.simplepasswordgeneratorapp.database.skudetailsdata.SkuDetailsD
 )
 abstract class Pass13Database: RoomDatabase() {
 	
+	/**
+	 * Returns [PurchaseDataDao].
+	 */
 	abstract fun getPurchaseDataDao(): PurchaseDataDao
 	
+	/**
+	 * Returns [SkuDetailsDataDao].
+	 */
 	abstract fun getSkuDetailsDataDao(): SkuDetailsDataDao
 	
 	companion object {

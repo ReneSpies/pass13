@@ -55,6 +55,11 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		
 	}
 	
+	/**
+	 * Checks if it is the first startup of the app at all or after an update and if so,
+	 * starts the connection to the Google Play Billing service to cache any
+	 * [com.android.billingclient.api.SkuDetails].
+	 */
 	private fun checkFirstStartup() = viewModelScope.launch(Dispatchers.IO) {
 		
 		Timber.d("checkFirstStartup: called")
@@ -113,6 +118,10 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		
 	}
 	
+	/**
+	 * Extracts the information if the night mode has been set from the SharedPreferences
+	 * and if so, set the night mode accordingly.
+	 */
 	private fun checkHasNightModeSet() {
 		
 		Timber.d("checkHasNightModeSet: called")
@@ -133,6 +142,9 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		
 	}
 	
+	/**
+	 * Checks if any purchase has been made and calls [setHasPurchasedValue] with the information.
+	 */
 	private fun checkHasPurchased() = viewModelScope.launch(Dispatchers.IO) {
 		
 		Timber.d("checkHasPurchased: called")
@@ -141,6 +153,9 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		
 	}
 	
+	/**
+	 * Evaluates [hasPurchased] and sets [_hasPurchased] accordingly.
+	 */
 	private suspend fun setHasPurchasedValue(hasPurchased: Boolean?) = withContext(Dispatchers.Main) {
 		
 		Timber.d("setHasPurchasedValue: called")

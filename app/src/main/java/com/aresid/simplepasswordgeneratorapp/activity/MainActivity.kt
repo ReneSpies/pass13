@@ -40,7 +40,7 @@ class MainActivity: AppCompatActivity() {
 		// Set the contentView to the inflated layout
 		setContentView(binding.root)
 		
-		prepareBottomNavigation()
+		initBottomNavigation()
 		
 		// Observe the showAds LiveData to show ads or not
 		mainViewModel.hasPurchased.observe(this,
@@ -65,6 +65,9 @@ class MainActivity: AppCompatActivity() {
 		
 	}
 	
+	/**
+	 * Hides [ActivityMainBinding.adViewContainer].
+	 */
 	private fun hideAds() {
 		
 		Timber.d("hideAds: called")
@@ -73,6 +76,9 @@ class MainActivity: AppCompatActivity() {
 		
 	}
 	
+	/**
+	 * Hides [ActivityMainBinding.exclusiveTitle].
+	 */
 	private fun hideExclusiveTitle() {
 		
 		Timber.d("hideExclusiveTitle: called")
@@ -81,6 +87,9 @@ class MainActivity: AppCompatActivity() {
 		
 	}
 	
+	/**
+	 * Shows [ActivityMainBinding.exclusiveTitle].
+	 */
 	private fun showExclusiveTitle() {
 		
 		Timber.d("showExclusiveTitle: called")
@@ -89,6 +98,9 @@ class MainActivity: AppCompatActivity() {
 		
 	}
 	
+	/**
+	 * Initialize [MobileAds] and shows the ads.
+	 */
 	private fun prepareAndShowAds() {
 		
 		Timber.d("prepareAndShowAds: called")
@@ -99,7 +111,7 @@ class MainActivity: AppCompatActivity() {
 		
 		adView.adSize = AdSize.BANNER
 		
-		adView.adUnitId = getString(R.string.test_ad_unit_id)
+		adView.adUnitId = getString(R.string.ad_unit_id)
 		
 		binding.adViewContainer.addView(adView)
 		
@@ -111,9 +123,12 @@ class MainActivity: AppCompatActivity() {
 		
 	}
 	
-	private fun prepareBottomNavigation() {
+	/**
+	 * Initializes the [ActivityMainBinding.bottomNavigation].
+	 */
+	private fun initBottomNavigation() {
 		
-		Timber.d("prepareBottomNavigation: called")
+		Timber.d("initBottomNavigation: called")
 		
 		binding.bottomNavigation?.setupWithNavController((supportFragmentManager.findFragmentById(R.id.navigation_host) as NavHostFragment).navController)
 		
