@@ -5,16 +5,20 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
 
     signingConfigs {
 
         release {
 
-            storeFile file('/home/rene/Documents/Keystore/pass13/pass13_keystore.jks')
-            storePassword '2He-p4=I7F-kVf4_F+o8<nC8'
-            keyPassword '2He-p4=I7F-kVf4_F+o8<nC8'
-            keyAlias = 'pass13_release_key'
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyPassword keystoreProperties['keyPassword']
+            keyAlias = keystoreProperties['keyAlias']
 
         }
 
