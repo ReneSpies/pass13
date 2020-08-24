@@ -32,7 +32,7 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         applicationId "com.aresid.simplepasswordgeneratorapp"
-        versionName '3.1.13'
+        versionName '3.0.13'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 301
         signingConfig signingConfigs.release
