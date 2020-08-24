@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.aresid.simplepasswordgeneratorapp.R
 import com.aresid.simplepasswordgeneratorapp.databinding.FragmentGeneratorBinding
@@ -50,7 +49,10 @@ class GeneratorFragment: Fragment() {
 		
 		// I am using a third party library to animate the TextView's text like a typewriter
 		// This third party library seems to not allow to change the font per XML so I do it here
-		val sourceCodeProTypeface = ResourcesCompat.getFont(requireContext(), R.font.source_code_pro)
+		val sourceCodeProTypeface = ResourcesCompat.getFont(
+			requireContext(),
+			R.font.source_code_pro
+		)
 		binding.passwordText.typeface = sourceCodeProTypeface
 		
 		// When the user long clicks the passwordText, copy it to the clipboard
@@ -63,16 +65,14 @@ class GeneratorFragment: Fragment() {
 		}
 		
 		// Observe the password here to animate the passwordText
-		generatorViewModel.password.observe(viewLifecycleOwner, Observer { password ->
+		generatorViewModel.password.observe(viewLifecycleOwner,
+		                                    { password ->
 			
-			binding.passwordText.typingSpeed = 30
+			                                    binding.passwordText.typingSpeed = 20
 			
-			binding.passwordText.setTextAutoTypingWithMistakes(
-				password,
-				6
-			)
+			                                    binding.passwordText.setTextAutoTyping(password)
 			
-		})
+		                                    })
 		
 		// Return the inflated layout
 		return binding.root
