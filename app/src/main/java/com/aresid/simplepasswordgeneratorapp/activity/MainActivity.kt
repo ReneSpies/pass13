@@ -1,18 +1,12 @@
 package com.aresid.simplepasswordgeneratorapp.activity
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.aresid.simplepasswordgeneratorapp.R
 import com.aresid.simplepasswordgeneratorapp.databinding.ActivityMainBinding
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
 import timber.log.Timber
 
 class MainActivity: AppCompatActivity() {
@@ -40,95 +34,16 @@ class MainActivity: AppCompatActivity() {
 		// Set the contentView to the inflated layout
 		setContentView(binding.root)
 		
-		initBottomNavigation()
-		
-		// Observe the showAds LiveData to show ads or not
-		mainViewModel.hasPurchased.observe(this,
-		                                   Observer { status ->
-			
-			                                   if (status == HasPurchased.NOT_PURCHASED) {
-				
-				                                   hideExclusiveTitle()
-				
-				                                   prepareAndShowAds()
-				
-			                                   }
-			                                   else if (status == HasPurchased.PURCHASED) {
-				
-				                                   hideAds()
-				
-				                                   showExclusiveTitle()
-				
-			                                   }
-			
-		                                   })
+		createBottomNavigation()
 		
 	}
 	
 	/**
-	 * Hides [ActivityMainBinding.adViewContainer].
+	 * Creates the [ActivityMainBinding.bottomNavigation].
 	 */
-	private fun hideAds() {
+	private fun createBottomNavigation() {
 		
-		Timber.d("hideAds: called")
-		
-		binding.adViewContainer.visibility = View.GONE
-		
-	}
-	
-	/**
-	 * Hides [ActivityMainBinding.exclusiveTitle].
-	 */
-	private fun hideExclusiveTitle() {
-		
-		Timber.d("hideExclusiveTitle: called")
-		
-		binding.exclusiveTitle.visibility = View.GONE
-		
-	}
-	
-	/**
-	 * Shows [ActivityMainBinding.exclusiveTitle].
-	 */
-	private fun showExclusiveTitle() {
-		
-		Timber.d("showExclusiveTitle: called")
-		
-		binding.exclusiveTitle.visibility = View.VISIBLE
-		
-	}
-	
-	/**
-	 * Initialize [MobileAds] and shows the ads.
-	 */
-	private fun prepareAndShowAds() {
-		
-		Timber.d("prepareAndShowAds: called")
-		
-		MobileAds.initialize(this)
-		
-		val adView = AdView(this)
-		
-		adView.adSize = AdSize.BANNER
-		
-		adView.adUnitId = getString(R.string.ad_unit_id)
-		
-		binding.adViewContainer.addView(adView)
-		
-		binding.adViewContainer.visibility = View.VISIBLE
-		
-		val adRequest = AdRequest.Builder().build()
-		
-		adView.loadAd(adRequest)
-		
-	}
-	
-	/**
-	 * Initializes the [ActivityMainBinding.bottomNavigation].
-	 */
-	private fun initBottomNavigation() {
-		
-		Timber.d("initBottomNavigation: called")
+		Timber.d("createBottomNavigation: called")
 		
 		binding.bottomNavigation?.setupWithNavController((supportFragmentManager.findFragmentById(R.id.navigation_host) as NavHostFragment).navController)
 		

@@ -25,16 +25,16 @@ android {
     }
 
     compileSdkVersion versions.compileSdk
-    buildToolsVersion '30.0.1'
+    buildToolsVersion '30.0.2'
 
     defaultConfig {
 
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         applicationId "com.aresid.simplepasswordgeneratorapp"
-        versionName '3.0.13'
+        versionName '4.0.13'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 301
+        versionCode = 401
         signingConfig signingConfigs.release
 
     }
@@ -70,16 +70,6 @@ android {
 
     }
 
-    kapt {
-
-        arguments {
-
-            arg("room.schemaLocation", "$projectDir/schemas".toString())
-
-        }
-
-    }
-
 }
 
 dependencies {
@@ -87,15 +77,11 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    // Google Play Billing with KTX
-    implementation "com.android.billingclient:billing:$versions.billing"
-    implementation "com.android.billingclient:billing-ktx:$versions.billing"
-
     // Kotlin
-    implementation 'androidx.core:core-ktx:1.5.0-alpha02'
+    implementation 'androidx.core:core-ktx:1.5.0-alpha03'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
 
     // Material Design
@@ -103,15 +89,6 @@ dependencies {
 
     // Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
-
-    // Ads
-    implementation 'com.google.android.gms:play-services-ads:19.3.0'
-
-    // Room
-    implementation "androidx.room:room-runtime:$versions.room"
-    implementation "androidx.room:room-ktx:$versions.room"
-    testImplementation "androidx.room:room-testing:$versions.room"
-    kapt "androidx.room:room-compiler:$versions.room"
 
     // Navigation Components
     implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
@@ -122,11 +99,11 @@ dependencies {
     implementation 'com.krsticdragan:autotypetextview:1.1'
 
     // General testing
-    androidTestImplementation 'androidx.test:runner:1.3.0-rc03'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-rc03'
-    androidTestImplementation 'androidx.test:core:1.3.0-rc03'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.2-rc03'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test:core:1.3.0'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.2'
     testImplementation 'junit:junit:4.13'
 
 }

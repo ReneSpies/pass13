@@ -7,10 +7,8 @@ buildscript {
             'compileSdk': 30,
             'targetSdk' : 30,
             'minSdk'    : 21,
-            'kotlin'    : '1.4.0',
-            'room'      : '2.2.5',
+            'kotlin'    : '1.4.10',
             'navigation': '2.3.0',
-            'billing'   : '3.0.0'
 
     ]
 

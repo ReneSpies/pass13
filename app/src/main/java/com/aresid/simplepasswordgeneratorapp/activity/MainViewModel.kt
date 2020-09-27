@@ -4,21 +4,9 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.aresid.simplepasswordgeneratorapp.BuildConfig
-import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.APP_VERSION_DEFAULT
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues.NIGHT_MODE_DEFAULT
-import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.APP_VERSION_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.NIGHT_MODE_KEY
-import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_FIRST_STARTUP_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_SETTINGS_KEY
-import com.aresid.simplepasswordgeneratorapp.Util.isPurchased
-import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
@@ -30,91 +18,11 @@ import timber.log.Timber
 
 class MainViewModel(application: Application): AndroidViewModel(application) {
 	
-	// LiveData to decide whether to show ads or not
-	private val _hasPurchased = MutableLiveData<HasPurchased>()
-	val hasPurchased: LiveData<HasPurchased>
-		get() = _hasPurchased
-	
-	private val repository: Pass13Repository
-	
 	init {
 		
 		Timber.d("init: called")
 		
-		// Init showAds LiveData
-		_hasPurchased.value = HasPurchased.UNKNOWN
-		
-		// Init the repository
-		repository = Pass13Repository.getInstance(getApplication())
-		
-		checkFirstStartup()
-		
-		checkHasPurchased()
-		
 		checkHasNightModeSet()
-		
-	}
-	
-	/**
-	 * Checks if it is the first startup of the app at all or after an update and if so,
-	 * starts the connection to the Google Play Billing service to cache any
-	 * [com.android.billingclient.api.SkuDetails].
-	 */
-	private fun checkFirstStartup() = viewModelScope.launch(Dispatchers.IO) {
-		
-		Timber.d("checkFirstStartup: called")
-		
-		val application = getApplication<Application>()
-		
-		val sharedPreferences = application.getSharedPreferences(
-			SHARED_PREFERENCES_FIRST_STARTUP_KEY,
-			Context.MODE_PRIVATE
-		)
-		
-		val currentVersionCode = BuildConfig.VERSION_CODE
-		
-		val savedVersionCode = sharedPreferences.getInt(
-			APP_VERSION_KEY,
-			APP_VERSION_DEFAULT
-		)
-		
-		if (currentVersionCode == savedVersionCode) {
-			
-			// Normal run, nothing to do
-			
-			return@launch
-			
-		}
-		else if (currentVersionCode != savedVersionCode) {
-			
-			try {
-				
-				withContext(coroutineContext) {
-					
-					repository.startConnection()
-					
-				}
-				
-			}
-			catch (e: Exception) {
-				
-				Timber.e(e)
-				
-			}
-			finally {
-				
-				repository.endConnection()
-				
-			}
-			
-		}
-		
-		checkHasPurchased()
-		
-		sharedPreferences.edit().putInt(
-			APP_VERSION_KEY,
-			currentVersionCode
-		).apply()
 		
 	}
 	
@@ -141,43 +49,5 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 		AppCompatDelegate.setDefaultNightMode(if (hasNightModeSet) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
 		
 	}
-	
-	/**
-	 * Checks if any purchase has been made and calls [setHasPurchasedValue] with the information.
-	 */
-	private fun checkHasPurchased() = viewModelScope.launch(Dispatchers.IO) {
-		
-		Timber.d("checkHasPurchased: called")
-		
-		setHasPurchasedValue(repository.getLatestPurchase()?.purchaseState?.isPurchased())
-		
-	}
-	
-	/**
-	 * Evaluates [hasPurchased] and sets [_hasPurchased] accordingly.
-	 */
-	private suspend fun setHasPurchasedValue(hasPurchased: Boolean?) = withContext(Dispatchers.Main) {
-		
-		Timber.d("setHasPurchasedValue: called")
-		
-		_hasPurchased.value = when (hasPurchased) {
-			
-			null, false -> HasPurchased.NOT_PURCHASED
-			
-			true -> HasPurchased.PURCHASED
-			
-		}
-		
-	}
-	
-}
-
-enum class HasPurchased {
-	
-	UNKNOWN,
-	
-	PURCHASED,
-	
-	NOT_PURCHASED
 	
 }

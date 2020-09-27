@@ -134,7 +134,7 @@ class PasswordGenerator(private val context: Context) {
 		// If the arrayPool is empty, display a message that the length is invalid
 		if (arrayPool.isEmpty()) {
 			
-			return context.getString(R.string.no_settings)
+			return context.getString(R.string.no_settings_specified)
 			
 		}
 		

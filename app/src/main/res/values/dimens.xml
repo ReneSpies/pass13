@@ -5,16 +5,11 @@
 	<dimen name="margin_extra_small">4dp</dimen>
 	<dimen name="margin_small">8dp</dimen>
 	<dimen name="margin_medium">16dp</dimen>
-	<dimen name="margin_large">24dp</dimen>
 	<dimen name="margin_extra_large">28dp</dimen>
 	<!-- END margins -->
 	
 	<!-- START padding -->
-	<dimen name="padding_extra_small">2dp</dimen>
 	<dimen name="padding_small">6dp</dimen>
-	<dimen name="padding_medium">12dp</dimen>
-	<dimen name="padding_large">18dp</dimen>
-	<dimen name="padding_extra_large">22dp</dimen>
 	<!-- END padding -->
 
 </resources>

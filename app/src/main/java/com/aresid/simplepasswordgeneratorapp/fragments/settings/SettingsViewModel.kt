@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aresid.simplepasswordgeneratorapp.R
@@ -23,11 +22,8 @@ import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.PASSWORD_LEN
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_SETTINGS_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SPECIAL_CHARACTERS_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.UPPER_CASE_KEY
-import com.aresid.simplepasswordgeneratorapp.Util.isPurchased
 import com.aresid.simplepasswordgeneratorapp.Util.showErrorSnackbar
 import com.aresid.simplepasswordgeneratorapp.Util.showSuccessSnackbar
-import com.aresid.simplepasswordgeneratorapp.activity.HasPurchased
-import com.aresid.simplepasswordgeneratorapp.repository.Pass13Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -43,59 +39,17 @@ import timber.log.Timber
 class SettingsViewModel(application: Application): AndroidViewModel(application) {
 	
 	val passwordLength = MutableLiveData<Int>()
-	
 	var lowerCaseChecked = true
-	
 	var upperCaseChecked = false
-	
 	var specialCharactersChecked = false
-	
 	var numbersChecked = false
-	
 	var nightModeChecked = false
-	
-	private val _hasPurchased = MutableLiveData<HasPurchased>()
-	val hasPurchased: LiveData<HasPurchased>
-		get() = _hasPurchased
 	
 	init {
 		
 		Timber.d("init: called")
 		
-		// Init showPurchaseButton LiveData
-		_hasPurchased.value = HasPurchased.UNKNOWN
-		
-		initSettings()
-		
-		checkHasPurchased()
-		
-	}
-	
-	/**
-	 * Checks the latest purchase cached in the [com.aresid.simplepasswordgeneratorapp.database.Pass13Database]
-	 * and changes the [_hasPurchased] value accordingly.
-	 */
-	private fun checkHasPurchased() = viewModelScope.launch(Dispatchers.IO) {
-		
-		Timber.d("checkHasPurchased: called")
-		
-		val application = getApplication<Application>()
-		
-		val repository = Pass13Repository.getInstance(application)
-		
-		val hasPurchased = repository.getLatestPurchase()?.purchaseState?.isPurchased()
-		
-		withContext(Dispatchers.Main) {
-			
-			_hasPurchased.value = when (hasPurchased) {
-				
-				null, false -> HasPurchased.NOT_PURCHASED
-				
-				true -> HasPurchased.PURCHASED
-				
-			}
-			
-		}
+		initializeSettings()
 		
 	}
 	
@@ -103,9 +57,9 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 	 * Extracts the user's settings from the SharedPreferences and saves
 	 * it's information in the member variables.
 	 */
-	private fun initSettings() {
+	private fun initializeSettings() {
 		
-		Timber.d("initSettings: called")
+		Timber.d("initializeSettings: called")
 		
 		val application = getApplication<Application>()
 		

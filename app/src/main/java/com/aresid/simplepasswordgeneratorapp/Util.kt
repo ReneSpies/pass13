@@ -1,11 +1,7 @@
 package com.aresid.simplepasswordgeneratorapp
 
-import android.graphics.Paint
 import android.view.View
-import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.Purchase
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys
 import com.google.android.material.snackbar.Snackbar
@@ -19,36 +15,6 @@ import timber.log.Timber
  */
 
 object Util {
-	
-	/**
-	 * Returns true if the Integer equals [BillingClient.BillingResponseCode.OK].
-	 * Otherwise false.
-	 */
-	fun Int.isOk(): Boolean {
-		
-		Timber.d("isOk: called")
-		
-		return this == BillingClient.BillingResponseCode.OK
-		
-	}
-	
-	/**
-	 * Returns true if the Integer equals [Purchase.PurchaseState.PURCHASED].
-	 * Otherwise false.
-	 */
-	fun Int.isPurchased(): Boolean {
-		
-		Timber.d("isPurchased: called")
-		
-		return this == Purchase.PurchaseState.PURCHASED
-		
-	}
-	
-	// Const val holding the Sku's ID defined in the Google Play Console
-	const val EXCLUSIVE_SKU = "pass13.products.unlock_features"
-	
-	// A list holding all Skus for this app
-	val PASS13_SKUS = listOf(EXCLUSIVE_SKU)
 	
 	/**
 	 * Shows a Snackbar with background color [android.R.color.holo_green_light] using the View's context.
@@ -90,17 +56,6 @@ object Util {
 		
 	}
 	
-	/**
-	 * Extension function for TextView to underline the it's text.
-	 */
-	fun TextView.underline() {
-		
-		Timber.d("underline: called")
-		
-		paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
-		
-	}
-	
 }
 
 /**
@@ -114,7 +69,6 @@ object SharedPreferences {
 	object Keys {
 		
 		const val SHARED_PREFERENCES_SETTINGS_KEY = "aresid.pass13.shared_preferences.settings"
-		const val SHARED_PREFERENCES_FIRST_STARTUP_KEY = "aresid.pass13.shared_preferences.first_startup"
 		
 		// Keys for Settings
 		const val LOWER_CASE_KEY = "aresid.pass13.shared_preferences.lower_case"
@@ -123,9 +77,6 @@ object SharedPreferences {
 		const val NUMBERS_KEY = "aresid.pass13.shared_preferences.numbers"
 		const val NIGHT_MODE_KEY = "aresid.pass13.shared_preferences.night_mode"
 		const val PASSWORD_LENGTH_KEY = "aresid.pass13.shared_preferences.password_length"
-		
-		// Keys for first startup
-		const val APP_VERSION_KEY = "aresid.pass13.shared_preferences.app_version"
 		
 	}
 	
@@ -140,7 +91,6 @@ object SharedPreferences {
 		const val NUMBERS_DEFAULT = false
 		const val NIGHT_MODE_DEFAULT = false
 		const val PASSWORD_LENGTH_DEFAULT = 8
-		const val APP_VERSION_DEFAULT = -1
 		
 	}
 	

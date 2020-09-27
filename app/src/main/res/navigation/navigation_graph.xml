@@ -3,7 +3,6 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/navigation_graph"
 	app:startDestination="@id/generatorFragment"
 	>
 	
@@ -18,20 +17,5 @@
 		android:name="com.aresid.simplepasswordgeneratorapp.fragments.settings.SettingsFragment"
 		android:label="SettingsFragment"
 		tools:layout="@layout/fragment_settings"
-		>
-		<action
-			android:id="@+id/to_purchaseFragment"
-			app:destination="@id/purchaseFragment"
-			app:enterAnim="@anim/slide_in_from_right"
-			app:exitAnim="@anim/slide_out_to_left"
-			app:popEnterAnim="@anim/slide_in_from_left"
-			app:popExitAnim="@anim/slide_out_to_right"
-			/>
-	</fragment>
-	<fragment
-		android:id="@+id/purchaseFragment"
-		android:name="com.aresid.simplepasswordgeneratorapp.fragments.purchase.PurchaseFragment"
-		android:label="PurchaseFragment"
-		tools:layout="@layout/fragment_purchase"
 		/>
 </navigation>

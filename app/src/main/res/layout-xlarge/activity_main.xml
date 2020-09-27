@@ -33,16 +33,6 @@
 					android:layout_height="wrap_content"
 					android:text="@string/app_name"
 					/>
-				
-				<TextView
-					android:id="@+id/exclusive_title"
-					style="@style/pass13.AppTheme.ToolbarTitle"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/whitespace_exclusive"
-					android:textColor="@color/goldColor"
-					android:visibility="gone"
-					/>
 			</androidx.appcompat.widget.Toolbar>
 			
 			<androidx.fragment.app.FragmentContainerView
@@ -61,19 +51,10 @@
 				android:name="com.aresid.simplepasswordgeneratorapp.fragments.settings.SettingsFragment"
 				android:layout_width="match_parent"
 				android:layout_height="0dp"
-				app:layout_constraintBottom_toTopOf="@id/ad_view_container"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toTopOf="@id/guideline_horizontal_center"
-				/>
-			
-			<FrameLayout
-				android:id="@+id/ad_view_container"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="@id/guideline_horizontal_center"
 				/>
 			
 			<androidx.constraintlayout.widget.Guideline

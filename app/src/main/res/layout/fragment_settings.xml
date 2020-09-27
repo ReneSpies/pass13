@@ -83,7 +83,6 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_extra_small"
 				android:checked="@={viewModel.nightModeChecked}"
-				android:enabled="false"
 				android:text="@string/night_mode"
 				app:layout_constraintEnd_toEndOf="@id/guideline_end"
 				app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -133,18 +132,6 @@
 				/>
 			
 			<com.google.android.material.button.MaterialButton
-				android:id="@+id/purchase_button"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_extra_large"
-				android:onClick="@{() -> fragment.onPurchaseButtonClicked()}"
-				android:text="@string/purchase_pass13_exclusive"
-				app:layout_constraintEnd_toEndOf="@id/guideline_end"
-				app:layout_constraintStart_toStartOf="@id/guideline_start"
-				app:layout_constraintTop_toBottomOf="@id/password_length_slider"
-				/>
-			
-			<com.google.android.material.button.MaterialButton
 				android:id="@+id/save_button"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -154,7 +141,7 @@
 				app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
 				app:layout_constraintEnd_toEndOf="@id/guideline_end"
 				app:layout_constraintStart_toStartOf="@id/guideline_start"
-				app:layout_constraintTop_toBottomOf="@id/purchase_button"
+				app:layout_constraintTop_toBottomOf="@id/password_length_slider"
 				/>
 			
 			<androidx.constraintlayout.widget.Guideline
