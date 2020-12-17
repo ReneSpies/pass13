@@ -7,8 +7,8 @@ buildscript {
             'compileSdk': 30,
             'targetSdk' : 30,
             'minSdk'    : 21,
-            'kotlin'    : '1.4.10',
-            'navigation': '2.3.0',
+            'kotlin'    : '1.4.21',
+            'navigation': '2.3.2',
 
     ]
 
