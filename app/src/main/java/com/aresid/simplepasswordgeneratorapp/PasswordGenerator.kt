@@ -12,6 +12,7 @@ import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.PASSWORD_LEN
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SHARED_PREFERENCES_SETTINGS_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.SPECIAL_CHARACTERS_KEY
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys.UPPER_CASE_KEY
+import com.aresid.simplepasswordgeneratorapp.Util.secureRandom
 import timber.log.Timber
 
 /**
@@ -149,10 +150,10 @@ class PasswordGenerator(private val context: Context) {
 		for (i in 1 .. passwordLength) {
 			
 			// Pick a random CharArray from the arrayPool
-			val randomCharacterArray = arrayPool.random()
+			val randomCharacterArray = arrayPool.secureRandom()
 			
 			// Pick a random Char from the randomly picked CharArray
-			val randomCharacter = randomCharacterArray.random()
+			val randomCharacter = randomCharacterArray.secureRandom()
 			
 			// Append the randomly picked Char to the password
 			password += randomCharacter

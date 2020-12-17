@@ -6,6 +6,7 @@ import com.aresid.simplepasswordgeneratorapp.SharedPreferences.DefaultValues
 import com.aresid.simplepasswordgeneratorapp.SharedPreferences.Keys
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
+import java.security.SecureRandom
 
 /**
  *    Created on: 20.06.20
@@ -53,6 +54,30 @@ object Util {
 				android.R.color.holo_red_dark
 			)
 		).show()
+		
+	}
+	
+	fun CharArray.secureRandom(): Char {
+		
+		Timber.d("secureRandom: called")
+		
+		return this[getSecureRandomIndex(size)]
+		
+	}
+	
+	fun Array<CharArray>.secureRandom(): CharArray {
+		
+		Timber.d("secureRandom: called")
+		
+		return this[getSecureRandomIndex(size)]
+		
+	}
+	
+	private fun getSecureRandomIndex(bounds: Int): Int {
+		
+		Timber.d("getSecureRandomIndex: called")
+		
+		return SecureRandom().nextInt(bounds)
 		
 	}
 	
