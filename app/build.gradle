@@ -34,7 +34,7 @@ android {
         applicationId "com.aresid.simplepasswordgeneratorapp"
         versionName '4.1.13'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 402
+        versionCode = 404
         signingConfig signingConfigs.release
 
     }
