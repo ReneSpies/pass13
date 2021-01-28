@@ -12,7 +12,7 @@ You can clone the repository on Android Studio or whatever IDE you might use and
 
 ### Get the app from Google Play
 
-The app is uploaded to the production track and available for download [here](https://play.google.com/store/apps/details?id=com.aresid.simplepasswordgeneratorapp)
+The app is uploaded to the production track and available for download [here](https://play.google.com/store/apps/details?id=com.aresid.simplepasswordgeneratorapp).
 <br><br>
 ## Screenshots & presentation
 
