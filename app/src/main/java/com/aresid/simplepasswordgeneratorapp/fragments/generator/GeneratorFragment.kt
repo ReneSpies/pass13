@@ -30,7 +30,7 @@ class GeneratorFragment: Fragment() {
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
-	): View? {
+	): View {
 		
 		Timber.d("onCreateView: called")
 		
