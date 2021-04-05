@@ -16,7 +16,7 @@ The app is uploaded to the production track and available for download [here](ht
 <br><br>
 ## Screenshots & presentation
 
-![](https://i.imgur.com/2U8siGel.png) ![](https://i.imgur.com/BLs235Al.png)
+![](https://i.imgur.com/3zOGzYIl.png) ![](https://i.imgur.com/nftjcYIl.png)
 
 #### Video presentation
 [![](http://img.youtube.com/vi/401Cis0TLe4/0.jpg)](https://youtu.be/401Cis0TLe4)
