@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	
-	<!-- START margins -->
-	<dimen name="margin_extra_small">4dp</dimen>
-	<dimen name="margin_small">8dp</dimen>
-	<dimen name="margin_medium">16dp</dimen>
-	<dimen name="margin_extra_large">28dp</dimen>
-	<!-- END margins -->
-	
-	<!-- START padding -->
-	<dimen name="padding_small">6dp</dimen>
-	<!-- END padding -->
+
+    <!-- START margins -->
+    <dimen name="margin_extra_small">4dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_extra_large">28dp</dimen>
+    <!-- END margins -->
+
+    <!-- START padding -->
+    <dimen name="padding_small">6dp</dimen>
+    <!-- END padding -->
 
 </resources>

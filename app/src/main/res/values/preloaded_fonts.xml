@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<array name="preloaded_fonts"
-	       translatable="false">
-		<item>@font/comfortaa</item>
-		<item>@font/source_code_pro</item>
-		<item>@font/ubuntu</item>
-	</array>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/comfortaa</item>
+        <item>@font/source_code_pro</item>
+        <item>@font/ubuntu</item>
+    </array>
 </resources>

@@ -18,65 +18,65 @@ import timber.log.Timber
  *    Copyright: © 2020 ARES ID
  */
 
-class GeneratorFragment: Fragment() {
-	
-	// Binding for the layout
-	private lateinit var binding: FragmentGeneratorBinding
-	
-	// Corresponding ViewModel
-	private lateinit var generatorViewModel: GeneratorViewModel
-	
-	override fun onCreateView(
-		inflater: LayoutInflater,
-		container: ViewGroup?,
-		savedInstanceState: Bundle?
-	): View {
-		
-		Timber.d("onCreateView: called")
-		
-		// Define the binding and inflate the layout
-		binding = FragmentGeneratorBinding.inflate(
-			inflater,
-			container,
-			false
-		)
-		
-		// Define the ViewModel
-		generatorViewModel = ViewModelProvider(this).get(GeneratorViewModel::class.java)
-		
-		// Tell the layout about the ViewModel
-		binding.viewModel = generatorViewModel
-		
-		// I am using a third party library to animate the TextView's text like a typewriter
-		// This third party library seems to not allow to change the font per XML so I do it here
-		val sourceCodeProTypeface = ResourcesCompat.getFont(
-			requireContext(),
-			R.font.source_code_pro
-		)
-		binding.passwordText.typeface = sourceCodeProTypeface
-		
-		// When the user long clicks the passwordText, copy it to the clipboard
-		binding.passwordText.setOnLongClickListener {
-			
-			generatorViewModel.copyPassword(it)
-			
-			true
-			
-		}
-		
-		// Observe the password here to animate the passwordText
-		generatorViewModel.password.observe(viewLifecycleOwner,
-		                                    { password ->
-			
-			                                    binding.passwordText.typingSpeed = 20
-			
-			                                    binding.passwordText.setTextAutoTyping(password)
-			
-		                                    })
-		
-		// Return the inflated layout
-		return binding.root
-		
-	}
-	
+class GeneratorFragment : Fragment() {
+
+    // Binding for the layout
+    private lateinit var binding: FragmentGeneratorBinding
+
+    // Corresponding ViewModel
+    private lateinit var generatorViewModel: GeneratorViewModel
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        Timber.d("onCreateView: called")
+
+        // Define the binding and inflate the layout
+        binding = FragmentGeneratorBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+
+        // Define the ViewModel
+        generatorViewModel = ViewModelProvider(this).get(GeneratorViewModel::class.java)
+
+        // Tell the layout about the ViewModel
+        binding.viewModel = generatorViewModel
+
+        // I am using a third party library to animate the TextView's text like a typewriter
+        // This third party library seems to not allow to change the font per XML so I do it here
+        val sourceCodeProTypeface = ResourcesCompat.getFont(
+            requireContext(),
+            R.font.source_code_pro
+        )
+        binding.passwordText.typeface = sourceCodeProTypeface
+
+        // When the user long clicks the passwordText, copy it to the clipboard
+        binding.passwordText.setOnLongClickListener {
+
+            generatorViewModel.copyPassword(it)
+
+            true
+
+        }
+
+        // Observe the password here to animate the passwordText
+        generatorViewModel.password.observe(viewLifecycleOwner,
+            { password ->
+
+                binding.passwordText.typingSpeed = 20
+
+                binding.passwordText.setTextAutoTyping(password)
+
+            })
+
+        // Return the inflated layout
+        return binding.root
+
+    }
+
 }
