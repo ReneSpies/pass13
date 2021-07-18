@@ -23,120 +23,86 @@ import timber.log.Timber
  */
 
 class PasswordGenerator(private val context: Context) {
-
-    // Properties to hold the user's settings
-    private var lowerCaseChecked = false
-    private var upperCaseChecked = false
-    private var specialCharactersChecked = false
-    private var numbersChecked = false
-    private var passwordLength = 1
+    private var lowerCaseChecked = LOWER_CASE_DEFAULT
+    private var upperCaseChecked = UPPER_CASE_DEFAULT
+    private var specialCharactersChecked = SPECIAL_CHARACTERS_DEFAULT
+    private var numbersChecked = NUMBERS_DEFAULT
+    private var passwordLength = PASSWORD_LENGTH_DEFAULT
 
     init {
-
         Timber.d("init: called")
-
-        // First, extract the user's settings from the SharedPreferences
         populateUserSettingsProperties()
-
     }
 
-    /**
-     * Takes the user's settings from the SharedPreferences and saves
-     * the information in the member variables.
-     */
     private fun populateUserSettingsProperties() {
-
         Timber.d("populateUserSettingsProperties: called")
 
-        // Create a new sharedPreferences object
         val sharedPreferences = context.getSharedPreferences(
             SHARED_PREFERENCES_SETTINGS_KEY,
             Context.MODE_PRIVATE
         )
 
-        // Extract the settings from the SharedPreferences and put them
-        // into the member variables
         lowerCaseChecked = sharedPreferences.getBoolean(
             LOWER_CASE_KEY,
             LOWER_CASE_DEFAULT
         )
+
         upperCaseChecked = sharedPreferences.getBoolean(
             UPPER_CASE_KEY,
             UPPER_CASE_DEFAULT
         )
+
         specialCharactersChecked = sharedPreferences.getBoolean(
             SPECIAL_CHARACTERS_KEY,
             SPECIAL_CHARACTERS_DEFAULT
         )
+
         numbersChecked = sharedPreferences.getBoolean(
             NUMBERS_KEY,
             NUMBERS_DEFAULT
         )
+
         passwordLength = sharedPreferences.getInt(
             PASSWORD_LENGTH_KEY,
             PASSWORD_LENGTH_DEFAULT
         )
-
     }
 
-    /**
-     * Returns an Array of CharArray impacted by the user's settings.
-     */
     private fun getArrayPool(): Array<CharArray> {
-
         Timber.d("getArrayPool: called")
 
-        // Create CharArrays with all kinds of selectable options
         val lowerCharacters = "abcdefghijklmnopqrstuvwxyz".toCharArray()
         val upperCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
         val specialCharacters = "$%&?=.!+#".toCharArray()
         val numbers = "0123456789".toCharArray()
-
-        // Create an empty array of CharArray
         var arrayPool = emptyArray<CharArray>()
 
-        // Add any selected CharArray to the arrayPool
         if (lowerCaseChecked) {
-
             arrayPool = arrayPool.plus(lowerCharacters)
-
         }
+
         if (upperCaseChecked) {
-
             arrayPool = arrayPool.plus(upperCharacters)
-
         }
+
         if (specialCharactersChecked) {
-
             arrayPool = arrayPool.plus(specialCharacters)
-
         }
+
         if (numbersChecked) {
-
             arrayPool = arrayPool.plus(numbers)
-
         }
 
         return arrayPool
-
     }
 
-    /**
-     * Generates and returns a new String or, if the array returned from
-     * [getArrayPool] is empty, returns a message saying that the length is invalid.
-     */
     fun generatePassword(): String {
-
         Timber.d("generatePassword: called")
 
-        // Get the array pool impacted by the settings
         val arrayPool = getArrayPool()
 
-        // If the arrayPool is empty, display a message that the length is invalid
         if (arrayPool.isEmpty()) {
-
             return context.getString(R.string.no_settings_specified)
-
         }
 
         var password = ""
@@ -148,20 +114,12 @@ class PasswordGenerator(private val context: Context) {
         it less secure.
          */
         for (i in 1..passwordLength) {
-
-            // Pick a random CharArray from the arrayPool
             val randomCharacterArray = arrayPool.secureRandom()
-
-            // Pick a random Char from the randomly picked CharArray
             val randomCharacter = randomCharacterArray.secureRandom()
 
-            // Append the randomly picked Char to the password
             password += randomCharacter
-
         }
 
         return password
-
     }
-
 }

@@ -5,7 +5,7 @@ buildscript {
             'compileSdk': 30,
             'targetSdk' : 30,
             'minSdk'    : 21,
-            'kotlin'    : '1.5.10',
+            'kotlin'    : '1.5.21',
             'navigation': '2.3.5',
     ]
 
@@ -15,7 +15,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath 'com.android.tools.build:gradle:4.2.2'
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 
@@ -29,7 +29,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
 }
 

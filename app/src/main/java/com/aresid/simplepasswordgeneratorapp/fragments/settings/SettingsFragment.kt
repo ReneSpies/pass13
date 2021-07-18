@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.aresid.simplepasswordgeneratorapp.Extensions.bindInputToBoolean
+import com.aresid.simplepasswordgeneratorapp.Extensions.bindInputToInteger
 import com.aresid.simplepasswordgeneratorapp.databinding.FragmentSettingsBinding
 import timber.log.Timber
 
@@ -17,11 +19,7 @@ import timber.log.Timber
  */
 
 class SettingsFragment : Fragment() {
-
-    // Binding for the layout
     private lateinit var binding: FragmentSettingsBinding
-
-    // Corresponding ViewModel
     private lateinit var settingsViewModel: SettingsViewModel
 
     override fun onCreateView(
@@ -29,36 +27,29 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         Timber.d("onCreateView: called")
 
-        // Define the binding and inflate the layout
         binding = FragmentSettingsBinding.inflate(
             inflater,
             container,
             false
         )
 
-        // Define the ViewModel
         settingsViewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
 
-        // Tell the layout about the ViewModel
-        binding.viewModel = settingsViewModel
-
-        binding.passwordLengthSlider.addOnChangeListener { _, value, _ ->
-
-            // Set the value in the settingsViewModel
-            settingsViewModel.passwordLength.value = value.toInt()
-
-            // Set the value text
-            binding.passwordLengthValueText.text = value.toInt().toString()
-
+        settingsViewModel.passwordLength.observe(viewLifecycleOwner) {
+            binding.passwordLengthValueText.text = it.toString()
         }
 
-        // Return the inflated layout
+        binding.saveButton.setOnClickListener(settingsViewModel::saveSettings)
+        binding.lowerCaseCheckbox.bindInputToBoolean(viewLifecycleOwner, settingsViewModel.lowerCaseChecked)
+        binding.upperCaseCheckbox.bindInputToBoolean(viewLifecycleOwner, settingsViewModel.upperCaseChecked)
+        binding.numbersCheckbox.bindInputToBoolean(viewLifecycleOwner, settingsViewModel.numbersChecked)
+        binding.specialCharactersCheckbox.bindInputToBoolean(viewLifecycleOwner, settingsViewModel.specialCharactersChecked)
+        binding.nightModeCheckbox.bindInputToBoolean(viewLifecycleOwner, settingsViewModel.nightModeChecked)
+        binding.passwordLengthSlider.bindInputToInteger(viewLifecycleOwner, settingsViewModel.passwordLength)
+
         return binding.root
-
     }
-
 }
 

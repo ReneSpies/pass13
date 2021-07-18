@@ -11,17 +11,8 @@ import timber.log.Timber
  */
 
 class Pass13Application : Application() {
-
-    /*
-    ONLY EDIT IF REALLY NECESSARY!
-     */
-
     override fun onCreate() {
-
         super.onCreate()
-
-        // Init Timber for logging
         Timber.plant(Timber.DebugTree())
-
     }
 }
